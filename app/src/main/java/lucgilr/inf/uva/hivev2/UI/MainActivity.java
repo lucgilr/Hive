@@ -41,14 +41,14 @@ public class MainActivity extends ActionBarActivity {
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
         //Grid.Shape shape = Grid.Shape.RECTANGLE;
-        int radius = 2;
+        int radius = 3;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            radius = extras.getInt("GRID_RADIUS", 2);
+            radius = extras.getInt("GRID_RADIUS", 3);
             shape = Grid.Shape.valueOf(extras.getString("GRID_SHAPE"));
             if (shape == null) {
-                radius = 2;
+                radius = 3;
                 shape = Grid.Shape.HEXAGON_POINTY_TOP;
                 //shape = Grid.Shape.RECTANGLE;
             }
@@ -211,7 +211,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Prueba prueba = new Prueba(which, hex);
                 solucion.add(prueba);
-                initGridView(2, Grid.Shape.HEXAGON_POINTY_TOP);
+                initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         });
         alert.create();
