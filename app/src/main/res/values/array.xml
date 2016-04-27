@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="prueba">
+        <item>Bee</item>
+        <item>Grasshopper</item>
+        <item>Spider</item>
+        <item>Beetle</item>
+        <item>Ant</item>
+    </array>
+</resources>
