@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import lucgilr.inf.uva.hivev2.GameModel.Coords;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
+import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.ModelUI.Cube;
 import lucgilr.inf.uva.hivev2.ModelUI.Grid;
 import lucgilr.inf.uva.hivev2.ModelUI.Hex;
@@ -27,13 +29,14 @@ public class MainActivity extends ActionBarActivity {
     private RelativeLayout mRelativeLayout;
     private ArrayList<Prueba> solucion;
     private Game game;
+    private Player player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Init Game
+        //Create new Game
         game = new Game();
 
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
@@ -100,6 +103,11 @@ public class MainActivity extends ActionBarActivity {
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
             final Grid grid = new Grid(radius, scale, shape);
 
+            //My stuff
+            player = game.playerTurn();
+            ArrayList<Coords> gaps = new ArrayList<>();
+            gaps = game.getHive().getPlayerGapsAvailable(player);
+
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 
@@ -133,6 +141,9 @@ public class MainActivity extends ActionBarActivity {
                 }
             };
 
+
+
+
             for(Cube cube : grid.nodes) {
                 Hex hex = null;
                 switch (shape) {
@@ -147,26 +158,33 @@ public class MainActivity extends ActionBarActivity {
                 CircleImageView view = new CircleImageView(this);
                 view.setHex(hex);
 
-                int size = solucion.size();
-                if(size!=0) {
-                    String hexView = view.getHex().toString();
-                    String sol = solucion.get(size-1).getHex().toString();
-                    if (hexView.equals(sol)) {
-                        switch(solucion.get(size-1).getInsect()){
-                            case 0: view.setBackgroundResource(R.drawable.whitebee);
-                                break;
-                            case 1: view.setBackgroundResource(R.drawable.whitegrass);
-                                break;
-                            case 2: view.setBackgroundResource(R.drawable.whitespider);
-                                break;
-                            case 3: view.setBackgroundResource(R.drawable.whitebeetle);
-                                break;
-                            case 4: view.setBackgroundResource(R.drawable.whiteant);
-                                break;
-                        }
-                    }
+                //First check if is an empry gap
+                if(checkIfGapAvailable(view.getHex(), gaps)){
+                    view.setBackgroundResource(R.drawable.greyhex);
                 }else{
-                    view.setBackgroundResource(R.drawable.hexagonwhite);
+                    int size = solucion.size();
+                    if(size!=0) {
+
+                        String hexView = view.getHex().toString();
+                        String sol = solucion.get(size-1).getHex().toString();
+
+                        if (hexView.equals(sol)) {
+                            switch(solucion.get(size-1).getInsect()){
+                                case 0: view.setBackgroundResource(R.drawable.whitebee);
+                                    break;
+                                case 1: view.setBackgroundResource(R.drawable.whitegrass);
+                                    break;
+                                case 2: view.setBackgroundResource(R.drawable.whitespider);
+                                    break;
+                                case 3: view.setBackgroundResource(R.drawable.whitebeetle);
+                                    break;
+                                case 4: view.setBackgroundResource(R.drawable.whiteant);
+                                    break;
+                            }
+                        }
+                    }else{
+                        view.setBackgroundResource(R.drawable.hexagonwhite);
+                    }
                 }
                 view.setOnTouchListener(gridNodeTouchListener);
                 addViewToLayout(view, hex, grid);
@@ -179,6 +197,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return null;
+    }
+
+    private boolean checkIfGapAvailable(Hex hex, ArrayList<Coords> gaps) {
+        for(int i=0;i<gaps.size();i++){
+            if(hex.getQ()==gaps.get(i).getY() && hex.getR()==gaps.get(i).getX()) return true;
+        }
+        return false;
     }
 
     private void addViewToLayout(View view, Hex hex, Grid grid) {
@@ -204,18 +229,25 @@ public class MainActivity extends ActionBarActivity {
 
     private void OnGridHexClick(final Hex hex) {
         Toast.makeText(MainActivity.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
-        //Alert Dialog
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setItems(R.array.prueba, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Prueba prueba = new Prueba(which, hex);
-                solucion.add(prueba);
-                initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
-            }
-        });
-        alert.create();
-        alert.show();
+
+        ArrayList<Coords> gaps = new ArrayList<>();
+        gaps = game.getHive().getPlayerGapsAvailable(player);
+
+        if(checkIfGapAvailable(hex, gaps)) {
+            //Alert Dialog
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setItems(R.array.prueba, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Prueba prueba = new Prueba(which, hex);
+                    solucion.add(prueba);
+                    //Quitar gap de available!!!!!
+                    initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
+            });
+            alert.create();
+            alert.show();
+        }
 
     }
 

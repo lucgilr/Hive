@@ -304,6 +304,26 @@ public final class Hive {
     }
 
     /**
+     *
+     * @param player
+     * @return
+     */
+    public ArrayList<Coords> getPlayerGapsAvailable(Player player){
+        ArrayList<Coords> gaps = new ArrayList<>();
+        for(int i=0;i<this.availableGaps.size();i++)
+            //A token can only be placed in the lower level of the hive
+            if(this.availableGaps.get(i).getZ()==0){
+                if(player.getTurn()!=1){
+                    if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
+                        gaps.add(this.availableGaps.get(i));
+                }else{
+                    gaps.add(this.availableGaps.get(i));
+                }
+            }
+        return gaps;
+    }
+
+    /**
      * Checks if there are available gaps for a player to place a token
      * @param player
      * @return
