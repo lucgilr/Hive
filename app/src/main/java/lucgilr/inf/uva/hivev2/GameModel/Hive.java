@@ -214,34 +214,34 @@ public final class Hive {
         int z = 0;
         Token[] n = new Token[6];
         //
-        while(isInBoard(new Coords(x-2,y,z))) z=z+1;
-        if(z==0) n[0]=searchToken(new Coords(x-2,y,z));
-        else n[0]=searchToken(new Coords(x-2,y,z-1));
+        while(isInBoard(new Coords(x+1,y-1,z))) z=z+1;
+        if(z==0) n[0]=searchToken(new Coords(x+1,y-1,z));
+        else n[0]=searchToken(new Coords(x+1,y-1,z-1));
+        z=0;
+        //
+        while(isInBoard(new Coords(x+1,y,z))) z=z+1;
+        if(z==0) n[1]=searchToken(new Coords(x+1,y,z));
+        else n[1]=searchToken(new Coords(x+1,y,z-1));
+        z=0;
+        //
+        while(isInBoard(new Coords(x,y+1,z))) z=z+1;
+        if(z==0) n[2]=searchToken(new Coords(x,y+1,z));
+        else n[2]=searchToken(new Coords(x,y+1,z-1));
         z=0;
         //
         while(isInBoard(new Coords(x-1,y+1,z))) z=z+1;
-        if(z==0) n[1]=searchToken(new Coords(x-1,y+1,z));
-        else n[1]=searchToken(new Coords(x-1,y+1,z-1));
+        if(z==0) n[3]=searchToken(new Coords(x-1,y+1,z));
+        else n[3]=searchToken(new Coords(x-1,y+1,z-1));
         z=0;
         //
-        while(isInBoard(new Coords(x+1,y+1,z))) z=z+1;
-        if(z==0) n[2]=searchToken(new Coords(x+1,y+1,z));
-        else n[2]=searchToken(new Coords(x+1,y+1,z-1));
+        while(isInBoard(new Coords(x-1,y,z))) z=z+1;
+        if(z==0) n[4]=searchToken(new Coords(x-1,y,z));
+        else n[4]=searchToken(new Coords(x-1,y,z-1));
         z=0;
         //
-        while(isInBoard(new Coords(x+2,y,z))) z=z+1;
-        if(z==0) n[3]=searchToken(new Coords(x+2,y,z));
-        else n[3]=searchToken(new Coords(x+2,y,z-1));
-        z=0;
-        //
-        while(isInBoard(new Coords(x+1,y-1,z))) z=z+1;
-        if(z==0) n[4]=searchToken(new Coords(x+1,y-1,z));
-        else n[4]=searchToken(new Coords(x+1,y-1,z-1));
-        z=0;
-        //
-        while(isInBoard(new Coords(x-1,y-1,z))) z=z+1;
-        if(z==0) n[5]=searchToken(new Coords(x-1,y-1,z));
-        else n[5]=searchToken(new Coords(x-1,y-1,z-1));
+        while(isInBoard(new Coords(x,y-1,z))) z=z+1;
+        if(z==0) n[5]=searchToken(new Coords(x,y-1,z));
+        else n[5]=searchToken(new Coords(x,y-1,z-1));
         z=0;
         //
         return n;
@@ -372,9 +372,19 @@ public final class Hive {
         int z = 0;
         ArrayList<Coords> neighbours = new ArrayList<Coords>();
 
-        while(isInBoard(new Coords(x-2,y,z)))
+        while(isInBoard(new Coords(x+1,y-1,z)))
             z=z+1;
-        neighbours.add(new Coords(x-2,y,z));
+        neighbours.add(new Coords(x+1,y-1,z));
+        z=0;
+
+        while(isInBoard(new Coords(x+1,y,z)))
+            z=z+1;
+        neighbours.add(new Coords(x+1,y,z));
+        z=0;
+
+        while(isInBoard(new Coords(x,y+1,z)))
+            z=z+1;
+        neighbours.add(new Coords(x,y+1,z));
         z=0;
 
         while(isInBoard(new Coords(x-1,y+1,z)))
@@ -382,24 +392,14 @@ public final class Hive {
         neighbours.add(new Coords(x-1,y+1,z));
         z=0;
 
-        while(isInBoard(new Coords(x+1,y+1,z)))
+        while(isInBoard(new Coords(x-1,y,z)))
             z=z+1;
-        neighbours.add(new Coords(x+1,y+1,z));
+        neighbours.add(new Coords(x-1,y,z));
         z=0;
 
-        while(isInBoard(new Coords(x+2,y,z)))
+        while(isInBoard(new Coords(x,y-1,z)))
             z=z+1;
-        neighbours.add(new Coords(x+2,y,z));
-        z=0;
-
-        while(isInBoard(new Coords(x+1,y-1,z)))
-            z=z+1;
-        neighbours.add(new Coords(x+1,y-1,z));
-        z=0;
-
-        while(isInBoard(new Coords(x-1,y-1,z)))
-            z=z+1;
-        neighbours.add(new Coords(x-1,y-1,z));
+        neighbours.add(new Coords(x,y-1,z));
 
         return neighbours;
     }
@@ -573,12 +573,12 @@ public final class Hive {
     private boolean checkIfBlockedByFourNeighbours(Coords coords){
         int x = coords.getX();
         int y = coords.getY();
-        if(!isInBoard(new Coords(x-2,y,0)) && !isInBoard(new Coords(x-1,y+1,0))) return false;
-        else if(!isInBoard(new Coords(x-1,y+1,0)) && !isInBoard(new Coords(x+1,y+1,0))) return false;
-        else if(!isInBoard(new Coords(x+1,y+1,0)) && !isInBoard(new Coords(x+2,y,0))) return false;
-        else if(!isInBoard(new Coords(x+2,y,0)) && !isInBoard(new Coords(x+1,y-1,0))) return false;
-        else if(!isInBoard(new Coords(x+1,y-1,0)) && !isInBoard(new Coords(x-1,y-1,0))) return false;
-        else if(!isInBoard(new Coords(x-1,y-1,0)) && !isInBoard(new Coords(x-2,y,0))) return false;
+        if(!isInBoard(new Coords(x+1,y-1,0)) && !isInBoard(new Coords(x+1,y,0))) return false;
+        else if(!isInBoard(new Coords(x+1,y,0)) && !isInBoard(new Coords(x,y+1,0))) return false;
+        else if(!isInBoard(new Coords(x,y+1,0)) && !isInBoard(new Coords(x-1,y+1,0))) return false;
+        else if(!isInBoard(new Coords(x-1,y+1,0)) && !isInBoard(new Coords(x-1,y,0))) return false;
+        else if(!isInBoard(new Coords(x-1,y,0)) && !isInBoard(new Coords(x,y-1,0))) return false;
+        else if(!isInBoard(new Coords(x,y-1,0)) && !isInBoard(new Coords(x+1,y-1,0))) return false;
         else return true;
     }
 
@@ -590,8 +590,8 @@ public final class Hive {
     private boolean checkIfBlockedByThreeNeighbours(Coords coords){
         int x = coords.getX();
         int y = coords.getY();
-        if(!isInBoard(new Coords(x-2,y,0)) && !isInBoard(new Coords(x+1,y+1,0)) && !isInBoard(new Coords(x+1,y-1,0))) return true;
-        else if(!isInBoard(new Coords(x-1,y+1,0)) && !isInBoard(new Coords(x+2,y,0)) && !isInBoard(new Coords(x-1,y-1,0))) return true;
+        if(!isInBoard(new Coords(x,y-1,0)) && !isInBoard(new Coords(x+1,y,0)) && !isInBoard(new Coords(x-1,y+1,0))) return true;
+        else if(!isInBoard(new Coords(x+1,y-1,0)) && !isInBoard(new Coords(x,y+1,0)) && !isInBoard(new Coords(x-1,y,0))) return true;
         else return false;
     }
 
@@ -630,46 +630,8 @@ public final class Hive {
         int y = coords.getY();
         //Check 6 sides: While there is a neighbour -> keep jumping
         //Face 1
-        int i=2;
-        while(isInBoard(new Coords(x-i,y,0)))i=i+2;
-        if(i!=2){
-            Coords c = new Coords(coords.getX()-i,coords.getY(),0);
-            possibleGaps.add(c);
-        }
-        //Face 2
-        i=1;
+        int i=1;
         int j=1;
-        while(isInBoard(new Coords(x-i,y+j,0))){
-            i=i+1;
-            j=j+1;
-        }
-        if(i!=1 && j!=1){
-            Coords c = new Coords(coords.getX()-i,coords.getY()+j,0);
-            possibleGaps.add(c);
-        }
-        //Face 3
-        i=1;
-        j=1;
-        while(isInBoard(new Coords(x+i,y+j,0))){
-            i=i+1;
-            j=j+1;
-        }
-        if(i!=1 && j!=1){
-            Coords c = new Coords(coords.getX()+i,coords.getY()+j,0);
-            possibleGaps.add(c);
-        }
-        //Face 4
-        i=2;
-        while(isInBoard(new Coords(x+i,y,0))){
-            i=i+2;
-        }
-        if(i!=2){
-            Coords c = new Coords(coords.getX()+i,coords.getY(),0);
-            possibleGaps.add(c);
-        }
-        //Face 5
-        i=1;
-        j=1;
         while(isInBoard(new Coords(x+i,y-j,0))){
             i=i+1;
             j=j+1;
@@ -678,15 +640,51 @@ public final class Hive {
             Coords c = new Coords(coords.getX()+i,coords.getY()-j,0);
             possibleGaps.add(c);
         }
-        //Face 6
+        //Face 2
+        i=1;
+        while(isInBoard(new Coords(x+i,y,0))){
+            i=i+1;
+        }
+        if(i!=1){
+            Coords c = new Coords(coords.getX()+i,coords.getY(),0);
+            possibleGaps.add(c);
+        }
+        //Face 3
+        j=1;
+        while(isInBoard(new Coords(x,y+j,0))){
+            j=j+1;
+        }
+        if(j!=1){
+            Coords c = new Coords(coords.getX(),coords.getY()+j,0);
+            possibleGaps.add(c);
+        }
+        //Face 4
         i=1;
         j=1;
-        while(isInBoard(new Coords(x-i,y-j,0))){
+        while(isInBoard(new Coords(x-i,y+j,0))){
             i=i+1;
             j=j+1;
         }
         if(i!=1 && j!=1){
-            Coords c = new Coords(coords.getX()-i,coords.getY()-j,0);
+            Coords c = new Coords(coords.getX()-i,coords.getY()+j,0);
+            possibleGaps.add(c);
+        }
+        //Face 5
+        i=1;
+        while(isInBoard(new Coords(x-i,y,0))){
+            i=i+1;
+        }
+        if(i!=1){
+            Coords c = new Coords(coords.getX()-i,coords.getY(),0);
+            possibleGaps.add(c);
+        }
+        //Face 6
+        j=1;
+        while(isInBoard(new Coords(x,y-j,0))){
+            j=j+1;
+        }
+        if(j!=1){
+            Coords c = new Coords(coords.getX(),coords.getY()-j,0);
             possibleGaps.add(c);
         }
         return possibleGaps;
@@ -836,35 +834,35 @@ public final class Hive {
         int zc=coords.getZ();
 
 
-        if(xc==xt-2 && yc==yt){
+        if(xc==xt+1 && yc==yt-1){
+            if(!isInBoard(new Coords(xc,yc,zc))){
+                if(isInBoard(new Coords(xc-1,yc,zc))) n=n+1;
+                if(isInBoard(new Coords(xc,yc+1,zc))) n=n+1;
+            }
+        }else if(xc==xt+1 && yc==yt){
+            if(!isInBoard(new Coords(xc,yc,zc))){
+                if(isInBoard(new Coords(xc,yc-1,zc))) n=n+1;
+                if(isInBoard(new Coords(xc-1,yc+1,zc))) n=n+1;
+            }
+        }else if(xc==xt && yc==yt+1){
             if(!isInBoard(new Coords(xc,yc,zc))){
                 if(isInBoard(new Coords(xc+1,yc-1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc+1,yc+1,zc))) n=n+1;
+                if(isInBoard(new Coords(xc-1,yc,zc))) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt+1){
             if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc-1,yc-1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc+2,yc,zc))) n=n+1;
+                if(isInBoard(new Coords(xc+1,yc,zc))) n=n+1;
+                if(isInBoard(new Coords(xc,yc-1,zc))) n=n+1;
             }
-        }else if(xc==xt+1 && yc==yt+1){
+        }else if(xc==xt-1 && yc==yt){
             if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc-2,yc,zc))) n=n+1;
+                if(isInBoard(new Coords(xc,yc+1,zc))) n=n+1;
                 if(isInBoard(new Coords(xc+1,yc-1,zc))) n=n+1;
             }
-        }else if(xc==xt+2 && yc==yt){
+        }else if(xc==xt && yc==yt-1){
             if(!isInBoard(new Coords(xc,yc,zc))){
                 if(isInBoard(new Coords(xc-1,yc+1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc-1,yc-1,zc))) n=n+1;
-            }
-        }else if(xc==xt+1 && yc==yt-1){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc+1,yc+1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc-2,yc,zc))) n=n+1;
-            }
-        }else if(xc==xt-1 && yc==yt-1){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc+2,yc,zc))) n=n+1;
-                if(isInBoard(new Coords(xc-1,yc+1,zc))) n=n+1;
+                if(isInBoard(new Coords(xc+1,yc,zc))) n=n+1;
             }
         }
 

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import lucgilr.inf.uva.hivev2.GameModel.Coords;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
+import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.ModelUI.Cube;
 import lucgilr.inf.uva.hivev2.ModelUI.Grid;
 import lucgilr.inf.uva.hivev2.ModelUI.Hex;
@@ -62,12 +64,8 @@ public class MainActivity extends ActionBarActivity {
 
     private void initGridView(int radius, Grid.Shape shape) {
         int scale = setGridDimensions(radius, shape);
-
-        //Init node elements
         Grid grid = setGridNodes(radius, scale, shape);
 
-        //Init zoom buttons
-        //setGridButtons(grid);
     }
 
     private int setGridDimensions(int radius, Grid.Shape shape) {
@@ -107,6 +105,10 @@ public class MainActivity extends ActionBarActivity {
             player = game.playerTurn();
             ArrayList<Coords> gaps = new ArrayList<>();
             gaps = game.getHive().getPlayerGapsAvailable(player);
+            Log.d("Round",String.valueOf(game.getRound()));
+            Log.d("Color",String.valueOf(player.getColor()));
+            Log.d("Round",String.valueOf(player.getTurn()));
+            Log.d("Available Gaps",String.valueOf(gaps.size()));
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
@@ -241,7 +243,12 @@ public class MainActivity extends ActionBarActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     Prueba prueba = new Prueba(which, hex);
                     solucion.add(prueba);
-                    //Quitar gap de available!!!!!
+                    Token token = new Token();
+                    player.takeTokenFromTheBox(which);
+                    Coords coords = new Coords(hex.getR(),hex.getQ(),0);
+                    game.getHive().addToken(token,coords);
+                    player.oneMoreTurn();
+                    game.oneMoreRound();
                     initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });
