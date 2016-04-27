@@ -24,6 +24,7 @@ public class Player {
     public Player(String color){
         this.color=color;
         this.turn=1;
+        //this.turn=0;
         this.tokensInTheBox = new ArrayList<>();
         this.tokensInTheBox = setBoxTokens();
         this.tokensInGame = new ArrayList<>();

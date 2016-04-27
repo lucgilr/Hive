@@ -7,10 +7,12 @@ public class Prueba {
 
     private int insect;
     private Hex hex;
+    private String color;
 
-    public Prueba(int insect, Hex hex){
+    public Prueba(int insect, Hex hex, String color){
         this.insect=insect;
         this.hex=hex;
+        this.color=color;
     }
 
     public int getInsect() {
@@ -27,6 +29,14 @@ public class Prueba {
 
     public void setHex(Hex hex) {
         this.hex = hex;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
 

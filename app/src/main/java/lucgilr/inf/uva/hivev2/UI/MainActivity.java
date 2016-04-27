@@ -103,11 +103,13 @@ public class MainActivity extends ActionBarActivity {
 
             //My stuff
             player = game.playerTurn();
+            /*game.oneMoreRound();
+            player.oneMoreTurn();*/
             ArrayList<Coords> gaps = new ArrayList<>();
             gaps = game.getHive().getPlayerGapsAvailable(player);
             Log.d("Round",String.valueOf(game.getRound()));
             Log.d("Color",String.valueOf(player.getColor()));
-            Log.d("Round",String.valueOf(player.getTurn()));
+            Log.d("Turn",String.valueOf(player.getTurn()));
             Log.d("Available Gaps",String.valueOf(gaps.size()));
 
             //Gird node listener restricted to the node's circular area.
@@ -143,9 +145,6 @@ public class MainActivity extends ActionBarActivity {
                 }
             };
 
-
-
-
             for(Cube cube : grid.nodes) {
                 Hex hex = null;
                 switch (shape) {
@@ -169,19 +168,45 @@ public class MainActivity extends ActionBarActivity {
 
                         String hexView = view.getHex().toString();
                         String sol = solucion.get(size-1).getHex().toString();
+                        String color = solucion.get(size-1).getColor();
 
                         if (hexView.equals(sol)) {
-                            switch(solucion.get(size-1).getInsect()){
-                                case 0: view.setBackgroundResource(R.drawable.whitebee);
-                                    break;
-                                case 1: view.setBackgroundResource(R.drawable.whitegrass);
-                                    break;
-                                case 2: view.setBackgroundResource(R.drawable.whitespider);
-                                    break;
-                                case 3: view.setBackgroundResource(R.drawable.whitebeetle);
-                                    break;
-                                case 4: view.setBackgroundResource(R.drawable.whiteant);
-                                    break;
+                            if(color.equals("white")) {
+                                switch (solucion.get(size - 1).getInsect()) {
+                                    case 0:
+                                        view.setBackgroundResource(R.drawable.whitebee);
+                                        break;
+                                    case 1:
+                                        view.setBackgroundResource(R.drawable.whitegrass);
+                                        break;
+                                    case 2:
+                                        view.setBackgroundResource(R.drawable.whitespider);
+                                        break;
+                                    case 3:
+                                        view.setBackgroundResource(R.drawable.whitebeetle);
+                                        break;
+                                    case 4:
+                                        view.setBackgroundResource(R.drawable.whiteant);
+                                        break;
+                                }
+                            }else{
+                                switch (solucion.get(size - 1).getInsect()) {
+                                    case 0:
+                                        view.setBackgroundResource(R.drawable.blackbee);
+                                        break;
+                                    case 1:
+                                        view.setBackgroundResource(R.drawable.blackgrass);
+                                        break;
+                                    case 2:
+                                        view.setBackgroundResource(R.drawable.blackspider);
+                                        break;
+                                    case 3:
+                                        view.setBackgroundResource(R.drawable.blackbeetle);
+                                        break;
+                                    case 4:
+                                        view.setBackgroundResource(R.drawable.blackant);
+                                        break;
+                                }
                             }
                         }
                     }else{
@@ -197,7 +222,6 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(MainActivity.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -241,14 +265,12 @@ public class MainActivity extends ActionBarActivity {
             alert.setItems(R.array.prueba, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Prueba prueba = new Prueba(which, hex);
+                    Prueba prueba = new Prueba(which, hex, player.getColor());
                     solucion.add(prueba);
                     Token token = new Token();
                     player.takeTokenFromTheBox(which);
-                    Coords coords = new Coords(hex.getR(),hex.getQ(),0);
-                    game.getHive().addToken(token,coords);
-                    player.oneMoreTurn();
-                    game.oneMoreRound();
+                    Coords coords = new Coords(hex.getR(), hex.getQ(), 0);
+                    game.getHive().addToken(token, coords);
                     initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });

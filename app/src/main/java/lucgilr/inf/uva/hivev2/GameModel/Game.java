@@ -18,6 +18,7 @@ public class Game {
         player2 = new Player("Black");
         hive = new Hive();
         round = 1;
+        //round=0;
         end = false;
     }
 

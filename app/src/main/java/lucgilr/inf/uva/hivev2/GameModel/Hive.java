@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.jgrapht.UndirectedGraph;
@@ -309,6 +311,8 @@ public final class Hive {
      * @return
      */
     public ArrayList<Coords> getPlayerGapsAvailable(Player player){
+        Log.d("Turn inside",String.valueOf(player.getTurn()));
+        Log.d("Player color",player.getColor());
         ArrayList<Coords> gaps = new ArrayList<>();
         for(int i=0;i<this.availableGaps.size();i++)
             //A token can only be placed in the lower level of the hive
