@@ -32,6 +32,8 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<Prueba> solucion;
     private Game game;
     private Player player;
+    private boolean movingToken;
+    private ArrayList<Coords> possibleGaps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class MainActivity extends ActionBarActivity {
 
         //Create new Game
         game = new Game();
+        this.movingToken =false;
+        possibleGaps = new ArrayList<>();
 
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
         this.solucion = new ArrayList<>();
@@ -158,13 +162,24 @@ public class MainActivity extends ActionBarActivity {
                 int size = solucion.size();
 
                 //First check if is an available gap
-                if(checkIfGapAvailable(view.getHex(), gaps)){
-                    Log.d("Grey hex",view.getHex().toString());
-                    view.setBackgroundResource(R.drawable.greyhex);
+                if(movingToken){
+                    if(checkIfGapAvailable(view.getHex(), possibleGaps)){
+                        Log.d("Grey hex",view.getHex().toString());
+                        view.setBackgroundResource(R.drawable.greyhex);
+                    }else{
+                        Log.d("orange hex",view.getHex().toString());
+                        view.setBackgroundResource(R.drawable.orangehex);
+                    }
                 }else{
-                    Log.d("orange hex",view.getHex().toString());
-                    view.setBackgroundResource(R.drawable.orangehex);
+                    if(checkIfGapAvailable(view.getHex(), gaps)){
+                        Log.d("Grey hex",view.getHex().toString());
+                        view.setBackgroundResource(R.drawable.greyhex);
+                    }else{
+                        Log.d("orange hex",view.getHex().toString());
+                        view.setBackgroundResource(R.drawable.orangehex);
+                    }
                 }
+
 
                 if(size!=0) {
 
@@ -306,10 +321,11 @@ public class MainActivity extends ActionBarActivity {
             alert.setItems(R.array.prueba, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Prueba prueba = new Prueba(which, hex, player.getColor());
-                    solucion.add(prueba);
+
                     Token token = new Token();
                     token = player.takeTokenFromTheBox(which);
+                    Prueba prueba = new Prueba(which, hex, player.getColor(),token);
+                    solucion.add(prueba);
                     Coords coords = new Coords(hex.getR(), hex.getQ(), 0);
                     game.getHive().addToken(token, coords);
                     game.oneMoreRound();
@@ -319,8 +335,49 @@ public class MainActivity extends ActionBarActivity {
             });
             alert.create();
             alert.show();
+        }else if(tokenTouched(solucion,game.playerTurn(),hex)){
+            Log.d("Rigth player",game.playerTurn().getColor());
+            Token token = new Token();
+            token = getTokenFromSolucion(solucion, hex);
+            possibleGaps = game.getHive().getPossibleGaps(token);
+            if(!possibleGaps.isEmpty()){
+                movingToken = true;
+                initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+            }
         }
 
+    }
+
+    /**
+     *
+     * @param solucion
+     * @param player
+     * @param hex
+     * @return
+     */
+    private boolean tokenTouched(ArrayList<Prueba> solucion, Player player, Hex hex){
+        for(int i=0;i<solucion.size();i++){
+            if(solucion.get(i).getHex().getR()==hex.getR()
+                    && solucion.get(i).getHex().getQ()==hex.getQ()
+                    && solucion.get(i).getColor().equals(player.getColor()))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param solucion
+     * @param hex
+     * @return
+     */
+    private Token getTokenFromSolucion(ArrayList<Prueba> solucion,Hex hex){
+        for(int i=0;i<solucion.size();i++){
+            if(solucion.get(i).getHex().getR()==hex.getR()
+                    && solucion.get(i).getHex().getQ()==hex.getQ())
+                return solucion.get(i).getToken();
+        }
+        return null;
     }
 
     /*@Override

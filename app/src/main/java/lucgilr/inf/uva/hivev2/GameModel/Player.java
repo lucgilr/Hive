@@ -281,7 +281,7 @@ public class Player {
      * @param id
      * @return
      */
-    private Token getTokenById(int id){
+    public Token getTokenById(int id){
         for(int i=0;i<this.tokensInTheBox.size();i++){
             if(this.tokensInTheBox.get(i).getId()==id)
                 return this.tokensInTheBox.get(i);
