@@ -103,13 +103,9 @@ public class MainActivity extends ActionBarActivity {
 
             //My stuff
             player = game.playerTurn();
-            /*game.oneMoreRound();
-            player.oneMoreTurn();*/
+            /**/
             ArrayList<Coords> gaps = new ArrayList<>();
             gaps = game.getHive().getPlayerGapsAvailable(player);
-            Log.d("Round",String.valueOf(game.getRound()));
-            Log.d("Color",String.valueOf(player.getColor()));
-            Log.d("Turn",String.valueOf(player.getTurn()));
             Log.d("Available Gaps",String.valueOf(gaps.size()));
 
             //Gird node listener restricted to the node's circular area.
@@ -159,20 +155,28 @@ public class MainActivity extends ActionBarActivity {
                 CircleImageView view = new CircleImageView(this);
                 view.setHex(hex);
 
-                //First check if is an empry gap
+                int size = solucion.size();
+
+                //First check if is an available gap
                 if(checkIfGapAvailable(view.getHex(), gaps)){
+                    Log.d("Grey hex",view.getHex().toString());
                     view.setBackgroundResource(R.drawable.greyhex);
                 }else{
-                    int size = solucion.size();
-                    if(size!=0) {
+                    Log.d("orange hex",view.getHex().toString());
+                    view.setBackgroundResource(R.drawable.orangehex);
+                }
+
+                if(size!=0) {
+
+                    for(int i=0;i<solucion.size();i++){
 
                         String hexView = view.getHex().toString();
-                        String sol = solucion.get(size-1).getHex().toString();
-                        String color = solucion.get(size-1).getColor();
+                        String sol = solucion.get(i).getHex().toString();
+                        String color = solucion.get(i).getColor();
 
                         if (hexView.equals(sol)) {
-                            if(color.equals("white")) {
-                                switch (solucion.get(size - 1).getInsect()) {
+                            if(color.equals("White")) {
+                                switch (solucion.get(i).getInsect()) {
                                     case 0:
                                         view.setBackgroundResource(R.drawable.whitebee);
                                         break;
@@ -180,17 +184,35 @@ public class MainActivity extends ActionBarActivity {
                                         view.setBackgroundResource(R.drawable.whitegrass);
                                         break;
                                     case 2:
-                                        view.setBackgroundResource(R.drawable.whitespider);
+                                        view.setBackgroundResource(R.drawable.whitegrass);
                                         break;
                                     case 3:
-                                        view.setBackgroundResource(R.drawable.whitebeetle);
+                                        view.setBackgroundResource(R.drawable.whitegrass);
                                         break;
                                     case 4:
+                                        view.setBackgroundResource(R.drawable.whitespider);
+                                        break;
+                                    case 5:
+                                        view.setBackgroundResource(R.drawable.whitespider);
+                                        break;
+                                    case 6:
+                                        view.setBackgroundResource(R.drawable.whitebeetle);
+                                        break;
+                                    case 7:
+                                        view.setBackgroundResource(R.drawable.whitebeetle);
+                                        break;
+                                    case 8:
+                                        view.setBackgroundResource(R.drawable.whiteant);
+                                        break;
+                                    case 9:
+                                        view.setBackgroundResource(R.drawable.whiteant);
+                                        break;
+                                    case 10:
                                         view.setBackgroundResource(R.drawable.whiteant);
                                         break;
                                 }
                             }else{
-                                switch (solucion.get(size - 1).getInsect()) {
+                                switch (solucion.get(i).getInsect()) {
                                     case 0:
                                         view.setBackgroundResource(R.drawable.blackbee);
                                         break;
@@ -198,26 +220,45 @@ public class MainActivity extends ActionBarActivity {
                                         view.setBackgroundResource(R.drawable.blackgrass);
                                         break;
                                     case 2:
-                                        view.setBackgroundResource(R.drawable.blackspider);
+                                        view.setBackgroundResource(R.drawable.blackgrass);
                                         break;
                                     case 3:
-                                        view.setBackgroundResource(R.drawable.blackbeetle);
+                                        view.setBackgroundResource(R.drawable.blackgrass);
                                         break;
                                     case 4:
+                                        view.setBackgroundResource(R.drawable.blackspider);
+                                        break;
+                                    case 5:
+                                        view.setBackgroundResource(R.drawable.blackspider);
+                                        break;
+                                    case 6:
+                                        view.setBackgroundResource(R.drawable.blackbeetle);
+                                        break;
+                                    case 7:
+                                        view.setBackgroundResource(R.drawable.blackbeetle);
+                                        break;
+                                    case 8:
+                                        view.setBackgroundResource(R.drawable.blackant);
+                                        break;
+                                    case 9:
+                                        view.setBackgroundResource(R.drawable.blackant);
+                                        break;
+                                    case 10:
                                         view.setBackgroundResource(R.drawable.blackant);
                                         break;
                                 }
                             }
                         }
-                    }else{
-                        view.setBackgroundResource(R.drawable.hexagonwhite);
                     }
+
                 }
                 view.setOnTouchListener(gridNodeTouchListener);
                 addViewToLayout(view, hex, grid);
-            }
 
+            }
             return grid;
+
+
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -254,7 +295,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void OnGridHexClick(final Hex hex) {
-        Toast.makeText(MainActivity.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
         ArrayList<Coords> gaps = new ArrayList<>();
         gaps = game.getHive().getPlayerGapsAvailable(player);
@@ -268,9 +309,11 @@ public class MainActivity extends ActionBarActivity {
                     Prueba prueba = new Prueba(which, hex, player.getColor());
                     solucion.add(prueba);
                     Token token = new Token();
-                    player.takeTokenFromTheBox(which);
+                    token = player.takeTokenFromTheBox(which);
                     Coords coords = new Coords(hex.getR(), hex.getQ(), 0);
                     game.getHive().addToken(token, coords);
+                    game.oneMoreRound();
+                    player.oneMoreTurn();
                     initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });
