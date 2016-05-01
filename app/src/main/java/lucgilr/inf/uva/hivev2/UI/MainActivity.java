@@ -322,6 +322,9 @@ public class MainActivity extends ActionBarActivity {
             t.add(new String(tokens.get(i).getType().toString()));
         }
 
+        Log.d("this.movingToken",String.valueOf(this.movingToken));
+        Log.d("checkIfGapAvailable",String.valueOf(checkIfGapAvailable(hex, gaps)));
+
         if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
             //Alert Dialog
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -351,10 +354,12 @@ public class MainActivity extends ActionBarActivity {
                 this.gaps = new ArrayList<>(possibleGaps);
                 initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
             }
+        }else if(!checkIfGapAvailable(hex, gaps)) {
+            this.gaps = game.getHive().getPlayerGapsAvailable(player);
+            this.movingToken=false;
+            initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
         }else if(this.movingToken){
-            Log.d("First hex",hex.toString());
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
-            Log.d("Coords",coords.toString());
             game.getHive().movetoken(token, coords);
             game.oneMoreRound();
             player.oneMoreTurn();
