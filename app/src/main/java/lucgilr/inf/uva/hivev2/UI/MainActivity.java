@@ -343,6 +343,7 @@ public class MainActivity extends ActionBarActivity {
             Token token = new Token();
             token = getTokenFromBoard(hex);
             possibleGaps = game.getHive().getPossibleGaps(token);
+            Log.d("possiblegaps",String.valueOf(possibleGaps.size()));
             if(!possibleGaps.isEmpty()){
                 movingToken = true;
                 initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);

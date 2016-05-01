@@ -116,8 +116,6 @@ public final class Hive {
      * CHANGES --> Hex to Hex
      */
     public void addToken(Token token, Hex hex){
-        Log.d("Adding...",token.tokenInfo());
-        Log.d("Into...",hex.toString());
         //If is a bee --> beeInGame
         if(token.getType()==TokenType.BEE) token.getPlayer().setBeeInGame(true);
         //Add Hex to token
@@ -127,23 +125,14 @@ public final class Hive {
         //Get neighbours
         Token[] neighbours = new Token[6];
         neighbours = tokenNeighbours(token.getCoordinates());
-        //Mostrar vecinos --> BORRAR!
-        for(int i=0;i<neighbours.length;i++){
-            if(neighbours[i]!=null){
-                Log.d("Vecino ",neighbours[i].tokenInfo());
-            }
-        }
         //Set token a graph id
         token.setGraphId(this.vertex);
-        Log.d("With GraphId",String.valueOf(token.getGraphId()));
         this.vertex=this.vertex+1;
         //Add token to graph
         this.graph.addVertex(token.getGraphId());
         //Add edges (neighbours) to the vertex
         for (Token neighbour : neighbours)
             if (neighbour != null){
-                Log.d("neighb",String.valueOf(neighbour.getGraphId()));
-                Log.d("token",String.valueOf(token.getGraphId()));
                 this.graph.addEdge(token.getGraphId(), neighbour.getGraphId());
             }
         //addEdges(neighbours,token);
@@ -154,15 +143,6 @@ public final class Hive {
         //add new neighbours if they are not already there and have no token
         refreshGapsAvailable(token.getCoordinates());
     }
-
-    /*public void addEdges(Token[] neighbours,Token token){
-        if(neighbours[0]!=null) this.graph.addEdge(token.getGraphId(),neighbours[0].getGraphId());
-        if(neighbours[1]!=null) this.graph.addEdge(token.getGraphId(),neighbours[1].getGraphId());
-        if(neighbours[2]!=null) this.graph.addEdge(token.getGraphId(),neighbours[2].getGraphId());
-        if(neighbours[3]!=null) this.graph.addEdge(token.getGraphId(),neighbours[3].getGraphId());
-        if(neighbours[4]!=null) this.graph.addEdge(token.getGraphId(),neighbours[4].getGraphId());
-        if(neighbours[5]!=null) this.graph.addEdge(token.getGraphId(),neighbours[5].getGraphId());
-    }*/
 
     /**
      * Prints board situation.
@@ -288,8 +268,6 @@ public final class Hive {
     private Token[] tokenNeighbours(Hex hex){
         //int x = Hex.getR();
         //int y = Hex.getQ();
-        Log.d("Inside neighb","0");
-        Log.d("Hex ",hex.toString());
         int x = hex.getQ();
         int y = hex.getR();
         int z = 0;
@@ -299,49 +277,31 @@ public final class Hive {
         if(z==0) n[0]=searchToken(new Hex(x+1,y-1,z));
         else n[0]=searchToken(new Hex(x+1,y-1,z-1));
         z=0;
-        if(n[0]!=null){
-            Log.d("n[0]",n[0].tokenInfo());
-        }
         //
         while(isInBoard(new Hex(x+1,y,z))) z=z+1;
         if(z==0) n[1]=searchToken(new Hex(x+1,y,z));
         else n[1]=searchToken(new Hex(x+1,y,z-1));
         z=0;
-        if(n[1]!=null){
-            Log.d("n[1]",n[1].tokenInfo());
-        }
         //
         while(isInBoard(new Hex(x,y+1,z))) z=z+1;
         if(z==0) n[2]=searchToken(new Hex(x,y+1,z));
         else n[2]=searchToken(new Hex(x,y+1,z-1));
         z=0;
-        if(n[2]!=null){
-            Log.d("n[2]",n[2].tokenInfo());
-        }
         //
         while(isInBoard(new Hex(x-1,y+1,z))) z=z+1;
         if(z==0) n[3]=searchToken(new Hex(x-1,y+1,z));
         else n[3]=searchToken(new Hex(x-1,y+1,z-1));
         z=0;
-        if(n[3]!=null){
-            Log.d("n[3]",n[3].tokenInfo());
-        }
         //
         while(isInBoard(new Hex(x-1,y,z))) z=z+1;
         if(z==0) n[4]=searchToken(new Hex(x-1,y,z));
         else n[4]=searchToken(new Hex(x-1,y,z-1));
         z=0;
-        if(n[4]!=null){
-            Log.d("n[4]",n[4].tokenInfo());
-        }
         //
         while(isInBoard(new Hex(x,y-1,z))) z=z+1;
         if(z==0) n[5]=searchToken(new Hex(x,y-1,z));
         else n[5]=searchToken(new Hex(x,y-1,z-1));
         z=0;
-        if(n[5]!=null){
-            Log.d("n[5]",n[5].tokenInfo());
-        }
         //
         return n;
     }
