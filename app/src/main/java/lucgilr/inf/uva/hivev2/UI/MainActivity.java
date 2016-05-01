@@ -343,7 +343,6 @@ public class MainActivity extends ActionBarActivity {
             Token token = new Token();
             token = getTokenFromBoard(hex);
             possibleGaps = game.getHive().getPossibleGaps(token);
-            Log.d("possiblegaps",String.valueOf(possibleGaps.size()));
             if(!possibleGaps.isEmpty()){
                 movingToken = true;
                 initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
@@ -386,10 +385,17 @@ public class MainActivity extends ActionBarActivity {
      * @return
      */
     private boolean tokenTouched(Hex hex){
+        Log.d("Token touched","0");
+        Log.d("Board size",String.valueOf(game.getHive().getBoard().size()));
         for(int i=0;i<game.getHive().getBoard().size();i++){
+            Log.d("Player",player.getColor());
+            Log.d("Coordinates().getR(): ", String.valueOf(game.getHive().getBoard().get(i).getCoordinates().getR()));
+            Log.d("Coordinates().getG(): ", String.valueOf(game.getHive().getBoard().get(i).getCoordinates().getQ()));
+            Log.d("hex.getR()",String.valueOf(hex.getR()));
+            Log.d("hex.getQ()",String.valueOf(hex.getQ()));
             if(game.getHive().getBoard().get(i).getCoordinates().getR()==hex.getR()
                     && game.getHive().getBoard().get(i).getCoordinates().getQ()==hex.getQ()
-                    && game.getHive().getBoard().get(i).getCoordinates().equals(player.getColor()))
+                    && game.getHive().getBoard().get(i).getPlayer().getColor().equals(player.getColor()))
                 return true;
         }
         return false;
