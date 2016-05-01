@@ -114,11 +114,6 @@ public class MainActivity extends ActionBarActivity {
             /**/
             if(!this.movingToken) gaps = game.getHive().getPlayerGapsAvailable(player);
 
-            //PRUEBA --> IMPRIMIR GAPS
-            for(int i=0;i<gaps.size();i++){
-                Log.d("Gap ",gaps.get(i).toString());
-            }
-
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 
@@ -321,9 +316,6 @@ public class MainActivity extends ActionBarActivity {
         for(int i=0; i<tokens.size();i++){
             t.add(new String(tokens.get(i).getType().toString()));
         }
-
-        Log.d("this.movingToken",String.valueOf(this.movingToken));
-        Log.d("checkIfGapAvailable",String.valueOf(checkIfGapAvailable(hex, gaps)));
 
         if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
             //Alert Dialog
