@@ -704,36 +704,37 @@ public final class Hive {
         int i=1;
         int j=1;
         while(isInBoard(new Hex(x+i,y-j,0))){
-            Log.d("HEX GRASS",hex.toString());
+
             i=i+1;
             j=j+1;
         }
         if(i!=1 && j!=1){
-            //Hex c = new Hex(hex.getR()+i,hex.getQ()-j,0);
-            Hex c = new Hex(hex.getR(),hex.getQ(),0);
-            Log.d("i",String.valueOf(i));
-            Log.d("j",String.valueOf(j));
-            Log.d("GRASS R",String.valueOf(hex.getR()+i));
-            Log.d("GRASS Q",String.valueOf(hex.getQ()-j));
-            Log.d("GRASS ADDED",c.toString());
+            Hex c = new Hex(hex.getQ()+i,hex.getR()-j,0);
+            //Hex c = new Hex(hex.getR(),hex.getQ(),0);
+
             possibleGaps.add(c);
         }
         //Face 2
         i=1;
         while(isInBoard(new Hex(x+i,y, 0))){
+
             i=i+1;
         }
         if(i!=1){
-            Hex c = new Hex(hex.getR()+i,hex.getQ(),0);
+            //Hex c = new Hex(hex.getR()+i,hex.getQ(),0);
+            Hex c = new Hex(hex.getQ()+i,hex.getR(),0);
+
             possibleGaps.add(c);
         }
         //Face 3
         j=1;
         while(isInBoard(new Hex(x,y+j, 0))){
+            Log.d("HEX GRASS",hex.toString());
             j=j+1;
         }
         if(j!=1){
-            Hex c = new Hex(hex.getR(),hex.getQ()+j,0);
+            Hex c = new Hex(hex.getQ(),hex.getR()+j,0);
+            //Hex c = new Hex(hex.getR(),hex.getQ(),0);
             possibleGaps.add(c);
         }
         //Face 4
@@ -744,7 +745,7 @@ public final class Hive {
             j= j +1;
         }
         if(i!=1 && j!=1){
-            Hex c = new Hex(hex.getR()-i,hex.getQ()+j,0);
+            Hex c = new Hex(hex.getQ()-i,hex.getR()+j,0);
             possibleGaps.add(c);
         }
         //Face 5
@@ -753,7 +754,7 @@ public final class Hive {
             i=i+1;
         }
         if(i!=1){
-            Hex c = new Hex(hex.getR()-i,hex.getQ(),0);
+            Hex c = new Hex(hex.getQ()-i,hex.getR(),0);
             possibleGaps.add(c);
         }
         //Face 6
@@ -762,7 +763,7 @@ public final class Hive {
             j=j+1;
         }
         if(j!=1){
-            Hex c = new Hex(hex.getR(),hex.getQ()-j,0);
+            Hex c = new Hex(hex.getQ(),hex.getR()-j,0);
             possibleGaps.add(c);
         }
         return possibleGaps;
