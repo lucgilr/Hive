@@ -1,5 +1,7 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 
@@ -178,9 +180,9 @@ public class Player {
             for(int i=0;i<this.getTokensInGame().size();i++){
                 tokens+="\nType: "+getTokensInGame().get(i).getType()
                         +" #"+getTokensInGame().get(i).getId()
-                        +" Position-->: "+getTokensInGame().get(i).getCoordinates().getX()+"-"
-                        +getTokensInGame().get(i).getCoordinates().getY()+"-"
-                        +getTokensInGame().get(i).getCoordinates().getZ();
+                        +" Position-->: "+getTokensInGame().get(i).getCoordinates().getR()+"-"
+                        +getTokensInGame().get(i).getCoordinates().getQ()+"-"
+                        +getTokensInGame().get(i).getCoordinates().getD();
             }
         }else{
             tokens+="There aren't any token in the game";
@@ -301,6 +303,28 @@ public class Player {
     public Token takeTokenFromTheBox(int id){
         //Get token
         Token t = getTokenById(id);
+        //Set atribute inGame as true
+        t.setInGame(true);
+        //Set token in TokensInGame
+        getTokensInGame().add(t);
+        //Take token from TokensInTheBox
+        getTokensInTheBox().remove(t);
+        return t;
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public Token takeToken(String type){
+
+        Token t = new Token();
+        //Get token
+        for(int i=0;i<this.tokensInTheBox.size();i++){
+            if(this.tokensInTheBox.get(i).getType().equals(TokenType.valueOf(type)))
+                t = this.tokensInTheBox.get(i);
+        }
         //Set atribute inGame as true
         t.setInGame(true);
         //Set token in TokensInGame

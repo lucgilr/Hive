@@ -10,13 +10,16 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.alg.BlockCutpointGraph;
 
+import lucgilr.inf.uva.hivev2.ModelUI.Hex;
+
 /**
  *  Representation of the board.
  * @author Lucía Gil Román
  */
 public final class Hive {
 
-    private ArrayList<Coords> availableGaps;
+    //private ArrayList<Hex> availableGaps;
+    private ArrayList<Hex> availableGaps;
     private ArrayList<Token> board;
     UndirectedGraph<Integer,DefaultEdge> graph;
     private int vertex;
@@ -28,7 +31,8 @@ public final class Hive {
     public Hive(){
         this.board=new ArrayList<Token>();
         availableGaps = new ArrayList<>();
-        this.availableGaps.add(new Coords(0,0,0));
+        //this.availableGaps.add(new Hex(0,0,0));
+        this.availableGaps.add(new Hex(0,0,0));
         this.graph = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
         this.vertex=0;
     }
@@ -53,7 +57,10 @@ public final class Hive {
      *
      * @return
      */
-    public ArrayList<Coords> getAvailableGaps() {
+    /*public ArrayList<Hex> getAvailableGaps() {
+        return availableGaps;
+    }*/
+    public ArrayList<Hex> getAvailableGaps() {
         return availableGaps;
     }
 
@@ -61,7 +68,10 @@ public final class Hive {
      *
      * @param availableGaps
      */
-    public void setAvailableGaps(ArrayList<Coords> availableGaps) {
+    /*public void setAvailableGaps(ArrayList<Hex> availableGaps) {
+        this.availableGaps = availableGaps;
+    }*/
+    public void setAvailableGaps(ArrayList<Hex> availableGaps) {
         this.availableGaps = availableGaps;
     }
 
@@ -102,33 +112,57 @@ public final class Hive {
      * Deletes de used gap from the list of gaps available for its use and adds the new ones from
      * the new token.
      * @param token
-     * @param coords
+     * @param hex
+     * CHANGES --> Hex to Hex
      */
-    public void addToken(Token token, Coords coords){
+    public void addToken(Token token, Hex hex){
+        Log.d("Adding...",token.tokenInfo());
+        Log.d("Into...",hex.toString());
         //If is a bee --> beeInGame
         if(token.getType()==TokenType.BEE) token.getPlayer().setBeeInGame(true);
-        //Add coords to token
-        token.setCoordinates(coords);
+        //Add Hex to token
+        token.setCoordinates(hex);
         //Place token on the board
         this.board.add(token);
         //Get neighbours
         Token[] neighbours = new Token[6];
         neighbours = tokenNeighbours(token.getCoordinates());
+        //Mostrar vecinos --> BORRAR!
+        for(int i=0;i<neighbours.length;i++){
+            if(neighbours[i]!=null){
+                Log.d("Vecino ",neighbours[i].tokenInfo());
+            }
+        }
         //Set token a graph id
         token.setGraphId(this.vertex);
+        Log.d("With GraphId",String.valueOf(token.getGraphId()));
         this.vertex=this.vertex+1;
         //Add token to graph
         this.graph.addVertex(token.getGraphId());
         //Add edges (neighbours) to the vertex
         for (Token neighbour : neighbours)
-            if (neighbour != null) this.graph.addEdge(token.getGraphId(), neighbour.getGraphId());
+            if (neighbour != null){
+                Log.d("neighb",String.valueOf(neighbour.getGraphId()));
+                Log.d("token",String.valueOf(token.getGraphId()));
+                this.graph.addEdge(token.getGraphId(), neighbour.getGraphId());
+            }
+        //addEdges(neighbours,token);
         //Set token to inGame
         token.setInGame(true);
         //Delete gap from ArrayList of gaps avaliable
-        removeCoordsFromAvaliable(token.getCoordinates());
+        removeHexFromAvaliable(token.getCoordinates());
         //add new neighbours if they are not already there and have no token
         refreshGapsAvailable(token.getCoordinates());
     }
+
+    /*public void addEdges(Token[] neighbours,Token token){
+        if(neighbours[0]!=null) this.graph.addEdge(token.getGraphId(),neighbours[0].getGraphId());
+        if(neighbours[1]!=null) this.graph.addEdge(token.getGraphId(),neighbours[1].getGraphId());
+        if(neighbours[2]!=null) this.graph.addEdge(token.getGraphId(),neighbours[2].getGraphId());
+        if(neighbours[3]!=null) this.graph.addEdge(token.getGraphId(),neighbours[3].getGraphId());
+        if(neighbours[4]!=null) this.graph.addEdge(token.getGraphId(),neighbours[4].getGraphId());
+        if(neighbours[5]!=null) this.graph.addEdge(token.getGraphId(),neighbours[5].getGraphId());
+    }*/
 
     /**
      * Prints board situation.
@@ -139,21 +173,31 @@ public final class Hive {
         for(int i=0;i<this.board.size();i++){
             board+="Type: "+this.board.get(i).getType()
                     +" Player: "+this.board.get(i).getPlayer().getColor()
-                    +" Coordinates: "+this.board.get(i).getCoordinates().printCoords()+"\n";
+                    +" Coordinates: "+this.board.get(i).getCoordinates().toString()+"\n";
         }
         return board;
     }
 
     /**
      * Checks if a token is in the board
-     * @param coords of the token to look for
+     * @param Hex of the token to look for
      * @return true if found in the board
      */
-    private boolean isInBoard(Coords coords){
+    /*private boolean isInBoard(Hex Hex){
         for(int i=0;i<this.board.size();i++){
-            if(this.board.get(i).getCoordinates().getX()==coords.getX()
-                    && this.board.get(i).getCoordinates().getY()==coords.getY()
-                    && this.board.get(i).getCoordinates().getZ()==coords.getZ())
+            if(this.board.get(i).getCoordinates().getR()==Hex.getR()
+                    && this.board.get(i).getCoordinates().getQ()==Hex.getQ()
+                    && this.board.get(i).getCoordinates().getD()==Hex.getD())
+                return true;
+        }
+        return false;
+    }*/
+    //CHANGES --> Hex to Hex
+    private boolean isInBoard(Hex Hex){
+        for(int i=0;i<this.board.size();i++){
+            if(this.board.get(i).getCoordinates().getR()==Hex.getR()
+                    && this.board.get(i).getCoordinates().getQ()==Hex.getQ()
+                    && this.board.get(i).getCoordinates().getD()==Hex.getD())
                 return true;
         }
         return false;
@@ -161,14 +205,25 @@ public final class Hive {
 
     /**
      * Search a token in the board given its coordinates
-     * @param coords of the token to look for
+     * @param Hex of the token to look for
      * @return token if found
      */
-    private Token searchToken(Coords coords){
+    /*private Token searchToken(Hex Hex){
         for (Token board1 : this.board) {
-            if (board1.getCoordinates().getX() == coords.getX()
-                    && board1.getCoordinates().getY() == coords.getY()
-                    && board1.getCoordinates().getZ() == coords.getZ()) {
+            if (board1.getCoordinates().getR() == Hex.getR()
+                    && board1.getCoordinates().getQ() == Hex.getQ()
+                    && board1.getCoordinates().getD() == Hex.getD()) {
+                return board1;
+            }
+        }
+        return null;
+    }*/
+    //CHANGES --> Hex to Hex
+    private Token searchToken(Hex Hex){
+        for (Token board1 : this.board) {
+            if (board1.getCoordinates().getR() == Hex.getR()
+                    && board1.getCoordinates().getQ() == Hex.getQ()
+                    && board1.getCoordinates().getD() == Hex.getD()) {
                 return board1;
             }
         }
@@ -178,14 +233,24 @@ public final class Hive {
     /**
      * Updates token coordinates
      * @param token to update
-     * @param coords new coordinates
+     * @param Hex new coordinates
      */
-    private void updateCoordinates(Token token, Coords coords) {
+    /*private void updateCoordinates(Token token, Hex Hex) {
         for (Token board1 : this.board) {
-            if (board1.getCoordinates().getX() == token.getCoordinates().getX()
-                    && board1.getCoordinates().getY() == token.getCoordinates().getY()
-                    && board1.getCoordinates().getZ() == token.getCoordinates().getZ()) {
-                board1.setCoordinates(coords);
+            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
+                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
+                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
+                board1.setCoordinates(Hex);
+            }
+        }
+    }*/
+    //CHANGES --> Hex to Hex
+    private void updateCoordinates(Token token, Hex Hex) {
+        for (Token board1 : this.board) {
+            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
+                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
+                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
+                board1.setCoordinates(Hex);
             }
         }
     }
@@ -195,69 +260,102 @@ public final class Hive {
      * Updates it to an impossible position in the board: -100,-100,-100
      * @param token
      */
-    private void deleteCoords(Token token){
+    /*private void deleteHex(Token token){
         for (Token board1 : this.board) {
-            if (board1.getCoordinates().getX() == token.getCoordinates().getX()
-                    && board1.getCoordinates().getY() == token.getCoordinates().getY()
-                    && board1.getCoordinates().getZ() == token.getCoordinates().getZ()) {
-                board1.setCoordinates(new Coords(-100,-100,-100));
+            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
+                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
+                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
+                board1.setCoordinates(new Hex(-100,-100,-100));
+            }
+        }
+    }*/
+    private void deleteHex(Token token){
+        for (Token board1 : this.board) {
+            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
+                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
+                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
+                board1.setCoordinates(new Hex(-100,-100,-100));
             }
         }
     }
 
     /**
      * returns the neighbours Tokens from a given gap.
-     * @param coords
+     * @param hex
      * @return
      */
-    private Token[] tokenNeighbours(Coords coords){
-        int x = coords.getX();
-        int y = coords.getY();
+    //CHANGES --> Hex to Hex
+    private Token[] tokenNeighbours(Hex hex){
+        //int x = Hex.getR();
+        //int y = Hex.getQ();
+        Log.d("Inside neighb","0");
+        Log.d("Hex ",hex.toString());
+        int x = hex.getQ();
+        int y = hex.getR();
         int z = 0;
         Token[] n = new Token[6];
         //
-        while(isInBoard(new Coords(x+1,y-1,z))) z=z+1;
-        if(z==0) n[0]=searchToken(new Coords(x+1,y-1,z));
-        else n[0]=searchToken(new Coords(x+1,y-1,z-1));
+        while(isInBoard(new Hex(x+1,y-1,z))) z=z+1;
+        if(z==0) n[0]=searchToken(new Hex(x+1,y-1,z));
+        else n[0]=searchToken(new Hex(x+1,y-1,z-1));
         z=0;
+        if(n[0]!=null){
+            Log.d("n[0]",n[0].tokenInfo());
+        }
         //
-        while(isInBoard(new Coords(x+1,y,z))) z=z+1;
-        if(z==0) n[1]=searchToken(new Coords(x+1,y,z));
-        else n[1]=searchToken(new Coords(x+1,y,z-1));
+        while(isInBoard(new Hex(x+1,y,z))) z=z+1;
+        if(z==0) n[1]=searchToken(new Hex(x+1,y,z));
+        else n[1]=searchToken(new Hex(x+1,y,z-1));
         z=0;
+        if(n[1]!=null){
+            Log.d("n[1]",n[1].tokenInfo());
+        }
         //
-        while(isInBoard(new Coords(x,y+1,z))) z=z+1;
-        if(z==0) n[2]=searchToken(new Coords(x,y+1,z));
-        else n[2]=searchToken(new Coords(x,y+1,z-1));
+        while(isInBoard(new Hex(x,y+1,z))) z=z+1;
+        if(z==0) n[2]=searchToken(new Hex(x,y+1,z));
+        else n[2]=searchToken(new Hex(x,y+1,z-1));
         z=0;
+        if(n[2]!=null){
+            Log.d("n[2]",n[2].tokenInfo());
+        }
         //
-        while(isInBoard(new Coords(x-1,y+1,z))) z=z+1;
-        if(z==0) n[3]=searchToken(new Coords(x-1,y+1,z));
-        else n[3]=searchToken(new Coords(x-1,y+1,z-1));
+        while(isInBoard(new Hex(x-1,y+1,z))) z=z+1;
+        if(z==0) n[3]=searchToken(new Hex(x-1,y+1,z));
+        else n[3]=searchToken(new Hex(x-1,y+1,z-1));
         z=0;
+        if(n[3]!=null){
+            Log.d("n[3]",n[3].tokenInfo());
+        }
         //
-        while(isInBoard(new Coords(x-1,y,z))) z=z+1;
-        if(z==0) n[4]=searchToken(new Coords(x-1,y,z));
-        else n[4]=searchToken(new Coords(x-1,y,z-1));
+        while(isInBoard(new Hex(x-1,y,z))) z=z+1;
+        if(z==0) n[4]=searchToken(new Hex(x-1,y,z));
+        else n[4]=searchToken(new Hex(x-1,y,z-1));
         z=0;
+        if(n[4]!=null){
+            Log.d("n[4]",n[4].tokenInfo());
+        }
         //
-        while(isInBoard(new Coords(x,y-1,z))) z=z+1;
-        if(z==0) n[5]=searchToken(new Coords(x,y-1,z));
-        else n[5]=searchToken(new Coords(x,y-1,z-1));
+        while(isInBoard(new Hex(x,y-1,z))) z=z+1;
+        if(z==0) n[5]=searchToken(new Hex(x,y-1,z));
+        else n[5]=searchToken(new Hex(x,y-1,z-1));
         z=0;
+        if(n[5]!=null){
+            Log.d("n[5]",n[5].tokenInfo());
+        }
         //
         return n;
     }
 
     /**
      * counts how many neighbors has a given position.
-     * @param coords
+     * @param Hex
      * @return
      */
-    private int numberOfNeighbours(Coords coords){
+    //CHANGES --> Hex to Hex
+    private int numberOfNeighbours(Hex Hex){
         int n = 0;
         Token[] nb = new Token[6];
-        nb = tokenNeighbours(coords);
+        nb = tokenNeighbours(Hex);
         for (int i=0;i<nb.length;i++){
             if(nb[i]!=null) n = n+1;
         }
@@ -267,12 +365,13 @@ public final class Hive {
     /**
      * checks if all the neighbors tokens for a given gap are from a specific player.
      * @param player
-     * @param coords
+     * @param Hex
      * @return
      */
-    public boolean checkNeighboursTokenSamePlayer(Player player, Coords coords){
+    //CHANGES --> Hex to Hex
+    public boolean checkNeighboursTokenSamePlayer(Player player, Hex Hex){
         Token[] n = new Token[6];
-        n = tokenNeighbours(coords);
+        n = tokenNeighbours(Hex);
         for (Token n1 : n) {
             if (n1 != null) {
                 if (!n1.getPlayer().getColor().equals(player.getColor())) {
@@ -294,12 +393,12 @@ public final class Hive {
         String gaps="\nGaps avaliable: \n";
         for(int i=0;i<this.availableGaps.size();i++)
             //A token can only be placed in the lower level of the hive
-            if(this.availableGaps.get(i).getZ()==0){
+            if(this.availableGaps.get(i).getD()==0){
                 if(player.getTurn()!=1){
                     if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
-                        gaps+=this.availableGaps.get(i).printCoords()+"\n";
+                        gaps+=this.availableGaps.get(i).toString()+"\n";
                 }else{
-                    gaps+=this.availableGaps.get(i).printCoords()+"\n";
+                    gaps+=this.availableGaps.get(i).toString()+"\n";
                 }
             }
         return gaps;
@@ -310,11 +409,12 @@ public final class Hive {
      * @param player
      * @return
      */
-    public ArrayList<Coords> getPlayerGapsAvailable(Player player){
-        ArrayList<Coords> gaps = new ArrayList<>();
+    //CHANGES --> Hex to Hex
+    public ArrayList<Hex> getPlayerGapsAvailable(Player player){
+        ArrayList<Hex> gaps = new ArrayList<>();
         for(int i=0;i<this.availableGaps.size();i++)
             //A token can only be placed in the lower level of the hive
-            if(this.availableGaps.get(i).getZ()==0){
+            if(this.availableGaps.get(i).getD()==0){
                 if(player.getTurn()!=1){
                     if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
                         gaps.add(this.availableGaps.get(i));
@@ -330,10 +430,11 @@ public final class Hive {
      * @param player
      * @return
      */
+    //CHANGES --> Hex to Hex
     public boolean checkIfGapsAvailable(Player player){
-        ArrayList<Coords> gaps = new ArrayList<Coords>();
+        ArrayList<Hex> gaps = new ArrayList<Hex>();
         for(int i=0; i<this.getAvailableGaps().size();i++){
-            if(this.availableGaps.get(i).getZ()==0){
+            if(this.availableGaps.get(i).getD()==0){
                 if(player.getTurn()!=1){
                     if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
                         gaps.add(this.availableGaps.get(i));
@@ -358,63 +459,65 @@ public final class Hive {
         String ns="Neighbours: \n";
         for(int i=0;i<n.length;i++){
             if(n[i]!=null)
-                ns+="At ("+n[i].getCoordinates().getX()+","+n[i].getCoordinates().getY()+") Type: "+n[i].getType()+" Player: "+n[i].getPlayer().getColor();
+                ns+="At ("+n[i].getCoordinates().getR()+","+n[i].getCoordinates().getD()+") Type: "+n[i].getType()+" Player: "+n[i].getPlayer().getColor();
         }
         return ns;
     }
 
     /**
      * Returns the list of positions surrounding a gap.
-     * @param coords
+     * @param Hex
      * @return
      */
-    public ArrayList<Coords> getNeighbourCoords(Coords coords){
-        int x = coords.getX();
-        int y = coords.getY();
+    public ArrayList<Hex> getNeighbourHex(Hex Hex){
+        /*int x = Hex.getR();
+        int y = Hex.getQ();*/
+        int x = Hex.getQ();
+        int y = Hex.getR();
         int z = 0;
-        ArrayList<Coords> neighbours = new ArrayList<Coords>();
+        ArrayList<Hex> neighbours = new ArrayList<Hex>();
 
-        while(isInBoard(new Coords(x+1,y-1,z)))
+        while(isInBoard(new Hex(x+1,y-1,z)))
             z=z+1;
-        neighbours.add(new Coords(x+1,y-1,z));
+        neighbours.add(new Hex(x+1,y-1,z));
         z=0;
 
-        while(isInBoard(new Coords(x+1,y,z)))
+        while(isInBoard(new Hex(x+1,y,z)))
             z=z+1;
-        neighbours.add(new Coords(x+1,y,z));
+        neighbours.add(new Hex(x+1,y,z));
         z=0;
 
-        while(isInBoard(new Coords(x,y+1,z)))
+        while(isInBoard(new Hex(x,y+1,z)))
             z=z+1;
-        neighbours.add(new Coords(x,y+1,z));
+        neighbours.add(new Hex(x,y+1,z));
         z=0;
 
-        while(isInBoard(new Coords(x-1,y+1,z)))
+        while(isInBoard(new Hex(x-1,y+1,z)))
             z=z+1;
-        neighbours.add(new Coords(x-1,y+1,z));
+        neighbours.add(new Hex(x-1,y+1,z));
         z=0;
 
-        while(isInBoard(new Coords(x-1,y,z)))
+        while(isInBoard(new Hex(x-1,y,z)))
             z=z+1;
-        neighbours.add(new Coords(x-1,y,z));
+        neighbours.add(new Hex(x-1,y,z));
         z=0;
 
-        while(isInBoard(new Coords(x,y-1,z)))
+        while(isInBoard(new Hex(x,y-1,z)))
             z=z+1;
-        neighbours.add(new Coords(x,y-1,z));
+        neighbours.add(new Hex(x,y-1,z));
 
         return neighbours;
     }
 
     /**
      * Deletes a coordinate from the list of available gaps.
-     * @param coords
+     * @param Hex
      */
-    public void removeCoordsFromAvaliable(Coords coords){
-        Iterator<Coords> it = this.availableGaps.iterator();
+    public void removeHexFromAvaliable(Hex Hex){
+        Iterator<Hex> it = this.availableGaps.iterator();
         while (it.hasNext()) {
-            Coords c = it.next();
-            if (c.getX()==coords.getX() && c.getY()==coords.getY() && c.getZ()==coords.getZ()) {
+            Hex c = it.next();
+            if (c.getR()==Hex.getR() && c.getQ()==Hex.getQ() && c.getD()==Hex.getD()) {
                 it.remove();
             }
         }
@@ -422,14 +525,14 @@ public final class Hive {
 
     /**
      * Checks if a positions is already in the list of available gaps.
-     * @param coords
+     * @param Hex
      * @return
      */
-    private boolean checkIfDuplicate(Coords coords){
-        for(int i=0;i<this.availableGaps.size();i++){
-            if(this.availableGaps.get(i).getX()==coords.getX()
-                    && this.availableGaps.get(i).getY()==coords.getY()
-                    && this.availableGaps.get(i).getZ()==coords.getZ())
+    private boolean checkIfDuplicate(Hex Hex){
+        for(int i=0;i < this.availableGaps.size();i++){
+            if(this.availableGaps.get(i).getR()==Hex.getR()
+                    && this.availableGaps.get(i).getQ()==Hex.getQ()
+                    && this.availableGaps.get(i).getD()==Hex.getD())
                 return false;
         }
         return true;
@@ -438,11 +541,11 @@ public final class Hive {
     /**
      * Add new positions to the list of available gaps.
      * Checks if the new position is not already in the list.
-     * @param coords
+     * @param Hex
      */
-    private void refreshGapsAvailable(Coords coords) {
-        ArrayList<Coords> newNeighbours = new ArrayList<>();
-        newNeighbours = getNeighbourCoords(coords);
+    private void refreshGapsAvailable(Hex Hex) {
+        ArrayList<Hex> newNeighbours = new ArrayList<>();
+        newNeighbours = getNeighbourHex(Hex);
         for(int i=0;i<newNeighbours.size();i++){
             if(!isInBoard(newNeighbours.get(i)))
                 if(checkIfDuplicate(newNeighbours.get(i)))
@@ -453,14 +556,14 @@ public final class Hive {
 
     /**
      * Deletes gaps from available if they haven't any neighbour.
-     * @param coords
+     * @param Hex
      */
-    private void deleteGapsAvailable(Coords coords) {
-        ArrayList<Coords> oldNeighbours = new ArrayList<>();
-        oldNeighbours = getNeighbourCoords(coords);
+    private void deleteGapsAvailable(Hex Hex) {
+        ArrayList<Hex> oldNeighbours = new ArrayList<>();
+        oldNeighbours = getNeighbourHex(Hex);
         for(int i=0; i<oldNeighbours.size();i++){
             //If this neighbours gap has no neighbours --> delete from gapsAvailable
-            if(numberOfNeighbours(oldNeighbours.get(i))==0) removeCoordsFromAvaliable(oldNeighbours.get(i));
+            if(numberOfNeighbours(oldNeighbours.get(i))==0) removeHexFromAvaliable(oldNeighbours.get(i));
         }
     }
 
@@ -470,8 +573,8 @@ public final class Hive {
      * @param token
      * @return
      */
-    public ArrayList<Coords> getPossibleGaps(Token token){
-        ArrayList<Coords> possibleGaps = new ArrayList<>();
+    public ArrayList<Hex> getPossibleGaps(Token token){
+        ArrayList<Hex> possibleGaps = new ArrayList<>();
         // And if it has a beetle on top
         if(!token.isBeetle() && token.getPlayer().isBeeInGame()){
             switch(token.getType()){
@@ -498,10 +601,10 @@ public final class Hive {
      */
     public String printPossibleGaps(Token token){
         String gaps ="\nPossible gaps for "+token.getType()+":\n";
-        ArrayList<Coords> possibleGaps = new ArrayList<>();
+        ArrayList<Hex> possibleGaps = new ArrayList<>();
         possibleGaps = getPossibleGaps(token);
-        for(int i=0;i<possibleGaps.size();i++){
-            gaps+=" X: "+possibleGaps.get(i).getX()+" Y: "+possibleGaps.get(i).getY()+" Z: "+possibleGaps.get(i).getZ()+"\n";
+        for(int i=0;i<possibleGaps.size(); i++){
+            gaps+=" X: "+possibleGaps.get(i).getR()+" Y: "+possibleGaps.get(i).getQ()+" Z: "+possibleGaps.get(i).getD()+"\n";
         }
         return gaps;
     }
@@ -509,34 +612,34 @@ public final class Hive {
     /**
      * Moves a token from its currently position to a new one.
      * @param token to move
-     * @param coords new position
+     * @param Hex new position
      */
-    public void movetoken(Token token, Coords coords){
-        Coords c = new Coords(token.getCoordinates().getX(),token.getCoordinates().getY(),token.getCoordinates().getZ());
+    public void movetoken(Token token, Hex Hex){
+        Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
         //Check if players bee in game
         if(token.getPlayer().isBeeInGame() && !token.isBeetle()){
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
-            if(token.getType()==TokenType.BEETLE && token.getCoordinates().getZ()!=0){
-                Token t = searchToken(new Coords(token.getCoordinates().getX(),token.getCoordinates().getY(),token.getCoordinates().getZ()-1));
+            if(token.getType()==TokenType.BEETLE && token.getCoordinates().getD()!=0){
+                Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
-            if(token.getType()==TokenType.BEETLE && coords.getZ()!=0){
-                Token t = searchToken(new Coords(coords.getX(),coords.getY(),coords.getZ()-1));
+            if(token.getType()== TokenType.BEETLE && Hex.getD()!=0){
+                Token t = searchToken(new Hex(Hex.getR(),Hex.getQ(),Hex.getD()-1));
                 t.setBeetle(true);
             }
             //Add gap to available gaps
             this.availableGaps.add(c);
             //Free gap in the board
-            deleteCoords(token);
+            deleteHex(token);
             //Delete gap neighbours if they haven't any neighbour
             deleteGapsAvailable(c);
             //Update coordinates of the token of the board
-            updateCoordinates(token,coords);
+            updateCoordinates(token,Hex);
             //Add neighbours null coordinates to gapsAvailable
-            refreshGapsAvailable(coords);
+            refreshGapsAvailable(Hex);
             //Remove gap from available
-            removeCoordsFromAvaliable(coords);
+            removeHexFromAvaliable(Hex);
             //Update graph:
             //Delete vertex from the graph
             this.graph.removeVertex(token.getGraphId());
@@ -552,48 +655,52 @@ public final class Hive {
 
     /**
      * Checks if a given position is blocked.
-     * @param coords
+     * @param Hex
      * @return
      */
-    public boolean checkIfGapBlocked(Coords coords){
+    public boolean checkIfGapBlocked(Hex Hex){
         //First: If number of neighbours more than 4;
-        if(numberOfNeighbours(coords)>4) return true;
+        if(numberOfNeighbours(Hex)>4) return true;
         //Second: If it has at less 2 consecutive neighbours free --> Not blocked
-        if(numberOfNeighbours(coords)==4)
-            if(checkIfBlockedByFourNeighbours(coords)) return true;
+        if(numberOfNeighbours(Hex)==4)
+            if(checkIfBlockedByFourNeighbours(Hex)) return true;
         //Third: If there is only 3 neighbours check that they don't block the gap
-        if(numberOfNeighbours(coords)==3)
-            if(checkIfBlockedByThreeNeighbours(coords)) return true;
+        if(numberOfNeighbours(Hex)==3)
+            if(checkIfBlockedByThreeNeighbours(Hex)) return true;
         return false;
     }
 
     /**
      * Checks if a position surrounded by 4 tokens is blocked.
-     * @param coords
+     * @param Hex
      * @return
      */
-    private boolean checkIfBlockedByFourNeighbours(Coords coords){
-        int x = coords.getX();
-        int y = coords.getY();
-        if(!isInBoard(new Coords(x+1,y-1,0)) && !isInBoard(new Coords(x+1,y,0))) return false;
-        else if(!isInBoard(new Coords(x+1,y,0)) && !isInBoard(new Coords(x,y+1,0))) return false;
-        else if(!isInBoard(new Coords(x,y+1,0)) && !isInBoard(new Coords(x-1,y+1,0))) return false;
-        else if(!isInBoard(new Coords(x-1,y+1,0)) && !isInBoard(new Coords(x-1,y,0))) return false;
-        else if(!isInBoard(new Coords(x-1,y,0)) && !isInBoard(new Coords(x,y-1,0))) return false;
-        else if(!isInBoard(new Coords(x,y-1,0)) && !isInBoard(new Coords(x+1,y-1,0))) return false;
+    private boolean checkIfBlockedByFourNeighbours(Hex Hex){
+        /*int x = Hex.getR();
+        int y = Hex.getQ();*/
+        int x = Hex.getQ();
+        int y = Hex.getR();
+        if(!isInBoard(new Hex(x+1,y-1,0)) && !isInBoard(new Hex(x+1,y,0))) return false;
+        else if(!isInBoard(new Hex(x+1,y,0)) && !isInBoard(new Hex(x,y+1,0))) return false;
+        else if(!isInBoard(new Hex(x,y+1,0)) && !isInBoard(new Hex(x-1,y+1,0))) return false;
+        else if(!isInBoard(new Hex(x-1,y+1,0)) && !isInBoard(new Hex(x-1,y,0))) return false;
+        else if(!isInBoard(new Hex(x-1,y,0)) && !isInBoard(new Hex(x,y-1,0))) return false;
+        else if(!isInBoard(new Hex(x,y-1,0)) && !isInBoard(new Hex(x+1,y-1,0))) return false;
         else return true;
     }
 
     /**
      * If a position is surrounded by 3 separated tokens is blocked.
-     * @param coords
+     * @param Hex
      * @return
      */
-    private boolean checkIfBlockedByThreeNeighbours(Coords coords){
-        int x = coords.getX();
-        int y = coords.getY();
-        if(!isInBoard(new Coords(x,y-1,0)) && !isInBoard(new Coords(x+1,y,0)) && !isInBoard(new Coords(x-1,y+1,0))) return true;
-        else if(!isInBoard(new Coords(x+1,y-1,0)) && !isInBoard(new Coords(x,y+1,0)) && !isInBoard(new Coords(x-1,y,0))) return true;
+    private boolean checkIfBlockedByThreeNeighbours(Hex Hex){
+        /*int x = Hex.getR();
+        int y = Hex.getQ();*/
+        int x = Hex.getQ();
+        int y = Hex.getR();
+        if(!isInBoard(new Hex(x,y-1,0)) && !isInBoard(new Hex(x+1,y,0)) && !isInBoard(new Hex(x-1,y+1,0))) return true;
+        else if(!isInBoard(new Hex(x+1,y-1,0)) && !isInBoard(new Hex(x,y+1,0)) && !isInBoard(new Hex(x-1,y,0))) return true;
         else return false;
     }
 
@@ -602,17 +709,17 @@ public final class Hive {
      * @param token
      * @return
      */
-    private ArrayList<Coords> beeMoves(Token token) {
-        ArrayList<Coords> possibleGaps = new ArrayList<>();
-        ArrayList<Coords> realGaps = new ArrayList<>();
-        ArrayList<Coords> nToken = new ArrayList<>();
+    private ArrayList<Hex> beeMoves(Token token) {
+        ArrayList<Hex> possibleGaps = new ArrayList<>();
+        ArrayList<Hex> realGaps = new ArrayList<>();
+        ArrayList<Hex> nToken = new ArrayList<>();
         //First: Check if blocked
         if(!checkIfGapBlocked(token.getCoordinates())){
             //Second: Get neighbours
-            possibleGaps = getNeighbourCoords(token.getCoordinates());
+            possibleGaps = getNeighbourHex(token.getCoordinates());
             //Third : For each coordinate --> check if its a gap and that the token can slide to it
             for(int i=0; i<possibleGaps.size(); i++){
-                if(possibleGaps.get(i).getZ()==0){
+                if(possibleGaps.get(i).getD()==0){
                     if(checkGap(token.getCoordinates(),possibleGaps.get(i))==1)
                         realGaps.add(possibleGaps.get(i));
                 }
@@ -623,70 +730,72 @@ public final class Hive {
 
     /**
      * The grasshopper can jump over other insects.
-     * @param coords
+     * @param Hex
      * @return
      */
-    private ArrayList<Coords> grasshopperMoves(Coords coords) {
-        ArrayList<Coords> possibleGaps = new ArrayList<>();
-        int x = coords.getX();
-        int y = coords.getY();
+    private ArrayList<Hex> grasshopperMoves(Hex Hex) {
+        ArrayList<Hex> possibleGaps = new ArrayList<>();
+        /*int x = Hex.getR();
+        int y = Hex.getQ();*/
+        int x = Hex.getQ();
+        int y = Hex.getR();
         //Check 6 sides: While there is a neighbour -> keep jumping
         //Face 1
         int i=1;
         int j=1;
-        while(isInBoard(new Coords(x+i,y-j,0))){
+        while(isInBoard(new Hex(x+i,y-j,0))){
             i=i+1;
-            j=j+1;
+            j= j +1;
         }
         if(i!=1 && j!=1){
-            Coords c = new Coords(coords.getX()+i,coords.getY()-j,0);
+            Hex c = new Hex(Hex.getR()+i,Hex.getQ()-j,0);
             possibleGaps.add(c);
         }
         //Face 2
         i=1;
-        while(isInBoard(new Coords(x+i,y,0))){
+        while(isInBoard(new Hex(x+i,y, 0))){
             i=i+1;
         }
         if(i!=1){
-            Coords c = new Coords(coords.getX()+i,coords.getY(),0);
+            Hex c = new Hex(Hex.getR()+i,Hex.getQ(),0);
             possibleGaps.add(c);
         }
         //Face 3
         j=1;
-        while(isInBoard(new Coords(x,y+j,0))){
+        while(isInBoard(new Hex(x,y+j, 0))){
             j=j+1;
         }
         if(j!=1){
-            Coords c = new Coords(coords.getX(),coords.getY()+j,0);
+            Hex c = new Hex(Hex.getR(),Hex.getQ()+j,0);
             possibleGaps.add(c);
         }
         //Face 4
         i=1;
         j=1;
-        while(isInBoard(new Coords(x-i,y+j,0))){
+        while(isInBoard(new Hex(x-i,y+j,0))){
             i=i+1;
-            j=j+1;
+            j= j +1;
         }
         if(i!=1 && j!=1){
-            Coords c = new Coords(coords.getX()-i,coords.getY()+j,0);
+            Hex c = new Hex(Hex.getR()-i,Hex.getQ()+j,0);
             possibleGaps.add(c);
         }
         //Face 5
         i=1;
-        while(isInBoard(new Coords(x-i,y,0))){
+        while(isInBoard(new Hex(x-i,y, 0))){
             i=i+1;
         }
         if(i!=1){
-            Coords c = new Coords(coords.getX()-i,coords.getY(),0);
+            Hex c = new Hex(Hex.getR()-i,Hex.getQ(),0);
             possibleGaps.add(c);
         }
         //Face 6
         j=1;
-        while(isInBoard(new Coords(x,y-j,0))){
+        while(isInBoard(new Hex(x,y-j, 0))){
             j=j+1;
         }
         if(j!=1){
-            Coords c = new Coords(coords.getX(),coords.getY()-j,0);
+            Hex c = new Hex(Hex.getR(),Hex.getQ()-j,0);
             possibleGaps.add(c);
         }
         return possibleGaps;
@@ -697,20 +806,20 @@ public final class Hive {
      * @param token
      * @return
      */
-    private ArrayList<Coords> beetleMoves(Token token) {
-        ArrayList<Coords> possibleGaps = new ArrayList<>();
-        ArrayList<Coords> realGaps = new ArrayList<>();
+    private ArrayList<Hex> beetleMoves(Token token) {
+        ArrayList<Hex> possibleGaps = new ArrayList<>();
+        ArrayList<Hex> realGaps = new ArrayList<>();
         int x,y,z;
-        possibleGaps = getNeighbourCoords(token.getCoordinates());
+        possibleGaps = getNeighbourHex(token.getCoordinates());
         for(int i=0; i<possibleGaps.size(); i++){
-            x=possibleGaps.get(i).getX();
-            y=possibleGaps.get(i).getY();
-            z=possibleGaps.get(i).getZ();
+            x=possibleGaps.get(i).getR();
+            y=possibleGaps.get(i).getQ();
+            z=possibleGaps.get(i).getD();
             if(z!=0){
                 int n = checkGap(token.getCoordinates(),possibleGaps.get(i));
                 if(n==1 || n==0) realGaps.add(possibleGaps.get(i));
             }else{
-                if(token.getCoordinates().getZ()>z){
+                if(token.getCoordinates().getD()>z){
                     realGaps.add(possibleGaps.get(i));
                 }else{
                     if(checkGap(token.getCoordinates(),possibleGaps.get(i))==1) realGaps.add(possibleGaps.get(i));
@@ -726,48 +835,45 @@ public final class Hive {
      * @param token
      * @return
      */
-    private ArrayList<Coords> spiderMoves(Token token) {
-        ArrayList<Coords> realGaps = new ArrayList<>();
-        ArrayList<Coords> l1Token = new ArrayList<>();
-        ArrayList<Coords> l2Token = new ArrayList<>();
-        ArrayList<Coords> l3Token = new ArrayList<>();
+    private ArrayList<Hex> spiderMoves(Token token) {
+        ArrayList<Hex> realGaps = new ArrayList<>();
+        ArrayList<Hex> l1Token = new ArrayList<>();
+        ArrayList<Hex> l2Token = new ArrayList<>();
+        ArrayList<Hex> l3Token = new ArrayList<>();
 
-        //Save original coords
-        Coords c1 = new Coords(token.getCoordinates().getX(),token.getCoordinates().getY(),0);
+        //Save original Hex
+        Hex c1 = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),0);
 
         //Level 1
-        l1Token=getNeighbourCoords(token.getCoordinates());
+        l1Token=getNeighbourHex(token.getCoordinates());
         for(int i=0;i<l1Token.size();i++){
-            if(l1Token.get(i).getZ()==0){
-                if(checkGap(c1,l1Token.get(i))==1){
-                    Coords c2 = new Coords(l1Token.get(i).getX(),l1Token.get(i).getY(),0);
+            if(l1Token.get(i).getD()==0){
+                if (checkGap(c1,l1Token.get(i))==1){
+                    Hex c2 = new Hex(l1Token.get(i).getR(),l1Token.get(i).getQ(), 0);
                     //Move Spider to that gap
                     updateCoordinates(token,l1Token.get(i));
-                    System.out.println("First move: "+l1Token.get(i).printCoords());
                     //Take neighbours
-                    l2Token=getNeighbourCoords(l1Token.get(i));
+                    l2Token=getNeighbourHex(l1Token.get(i));
                     //Level 2
                     for(int j=0;j<l2Token.size();j++){
-                        //if is not coords from previous spider position
-                        if(!(l2Token.get(j).getX()== c2.getX() && l2Token.get(j).getY()==c2.getY())
-                                && !(l2Token.get(j).getX()== c1.getX() && l2Token.get(j).getY()==c1.getY())){
-                            if(l2Token.get(j).getZ()==0){
+                        //if is not Hex from previous spider position
+                        if(!(l2Token.get(j).getR()== c2.getR() && l2Token.get(j).getQ()==c2.getQ())
+                                && !(l2Token.get(j).getR()== c1.getR() && l2Token.get(j).getQ()==c1.getQ())){
+                            if(l2Token.get(j).getD()==0){
                                 if(checkGap(l1Token.get(i),l2Token.get(j))==1){
-                                    //Save original coords
-                                    Coords c3 = new Coords(l2Token.get(j).getX(),l2Token.get(j).getY(),0);
+                                    //Save original Hex
+                                    Hex c3 = new Hex(l2Token.get(j).getR(),l2Token.get(j).getQ(),0);
                                     //Move Spider to that gap
                                     updateCoordinates(token,l2Token.get(j));
-                                    System.out.println("Second move: "+l2Token.get(j).printCoords());
                                     //Take neighbours
-                                    l3Token=getNeighbourCoords(l2Token.get(j));
+                                    l3Token=getNeighbourHex(l2Token.get(j));
                                     //Level 3
-                                    for(int k=0;k<l3Token.size();k++){
-                                        if(!(l3Token.get(k).getX()== c3.getX() && l3Token.get(k).getY()==c3.getY())
-                                                && !(l3Token.get(k).getX()== c2.getX() && l3Token.get(k).getY()==c2.getY())
-                                                && !(l3Token.get(k).getX()== c1.getX() && l3Token.get(k).getY()==c1.getY())){
-                                            if(l3Token.get(k).getZ()==0){
+                                    for(int k = 0;k<l3Token.size();k++){
+                                        if(!(l3Token.get(k).getR()== c3.getR() && l3Token.get(k).getQ()==c3.getQ())
+                                                && !(l3Token.get(k).getR()== c2.getR() && l3Token.get(k).getQ()==c2.getQ())
+                                                && !(l3Token.get(k).getR()== c1.getR() && l3Token.get(k).getQ()==c1.getQ())){
+                                            if(l3Token.get(k).getD()==0){
                                                 if(checkGap(l2Token.get(j),l3Token.get(k))==1){
-                                                    System.out.println("Third move: "+l3Token.get(k).printCoords());
                                                     realGaps.add(l3Token.get(k));
                                                 }
                                             }
@@ -786,7 +892,7 @@ public final class Hive {
 
         }
         //leave spider in its original position
-        updateCoordinates(token,c1);
+        updateCoordinates(token, c1);
         return realGaps;
     }
 
@@ -795,19 +901,19 @@ public final class Hive {
      * @param token
      * @return
      */
-    private ArrayList<Coords> antMoves(Token token) {
-        Coords c = new Coords(token.getCoordinates().getX(),token.getCoordinates().getY(),token.getCoordinates().getZ());
-        ArrayList<Coords> possibleGaps = new ArrayList<>();
+    private ArrayList<Hex> antMoves(Token token) {
+        Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
+        ArrayList<Hex> possibleGaps = new ArrayList<>();
         //First: Check if blocked
         if(!checkIfGapBlocked(token.getCoordinates())){
             //Second: take ant from the board
             //Free gap in the board
-            deleteCoords(token);
+            deleteHex(token);
             //Delete gap neighbours if they haven't any neighbour
             deleteGapsAvailable(c);
             //Third: Get all available gaps and check if z==0 and then if they are not blocked
             for(int i=0; i<this.availableGaps.size(); i++){
-                if(this.availableGaps.get(i).getZ()==0)
+                if(this.availableGaps.get(i).getD()==0)
                     if(!checkIfGapBlocked(this.availableGaps.get(i))) possibleGaps.add(this.availableGaps.get(i));
             }
         }
@@ -822,49 +928,54 @@ public final class Hive {
      * 1st checks that the gap is empty
      * 2nd checks if it has neighbours. If it has 2 the token can't slide to it.
      * @param token
-     * @param coords
+     * @param Hex
      * @return
      */
-    private int checkGap(Coords token, Coords coords){
+    private int checkGap(Hex token, Hex Hex){
 
         int n=0;
 
-        int xt=token.getX();
-        int yt=token.getY();
-        int xc=coords.getX();
-        int yc=coords.getY();
-        int zc=coords.getZ();
+        /*int xt=token.getR();
+        int yt=token.getQ();
+        int xc=Hex.getR();
+        int yc=Hex.getQ();
+        int zc=Hex.getD();*/
+        int xt=token.getQ();
+        int yt=token.getR();
+        int xc=Hex.getQ();
+        int yc=Hex.getR();
+        int zc=Hex.getD();
 
 
         if(xc==xt+1 && yc==yt-1){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc-1,yc,zc))) n=n+1;
-                if(isInBoard(new Coords(xc,yc+1,zc))) n=n+1;
+            if(!isInBoard(new Hex(xc,yc,zc))){
+                if(isInBoard(new Hex(xc-1,yc,zc))) n=n+1;
+                if(isInBoard(new Hex(xc,yc+1,zc))) n=n+1;
             }
         }else if(xc==xt+1 && yc==yt){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc,yc-1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc-1,yc+1,zc))) n=n+1;
+            if(!isInBoard(new Hex(xc,yc,zc))){
+                if(isInBoard(new Hex(xc,yc-1,zc))) n=n+1;
+                if(isInBoard(new Hex(xc-1,yc+1,zc))) n=n+1;
             }
         }else if(xc==xt && yc==yt+1){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc+1,yc-1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc-1,yc,zc))) n=n+1;
+            if(!isInBoard(new Hex(xc,yc,zc))){
+                if(isInBoard(new Hex(xc+1,yc-1,zc))) n=n+1;
+                if(isInBoard(new Hex(xc-1,yc,zc))) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt+1){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc+1,yc,zc))) n=n+1;
-                if(isInBoard(new Coords(xc,yc-1,zc))) n=n+1;
+            if(!isInBoard(new Hex(xc,yc,zc))){
+                if(isInBoard(new Hex(xc+1,yc,zc))) n=n+1;
+                if(isInBoard(new Hex(xc,yc-1,zc))) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc,yc+1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc+1,yc-1,zc))) n=n+1;
+            if(!isInBoard(new Hex(xc,yc,zc))){
+                if(isInBoard(new Hex(xc,yc+1,zc))) n=n+1;
+                if(isInBoard(new Hex(xc+1,yc-1,zc))) n=n+1;
             }
         }else if(xc==xt && yc==yt-1){
-            if(!isInBoard(new Coords(xc,yc,zc))){
-                if(isInBoard(new Coords(xc-1,yc+1,zc))) n=n+1;
-                if(isInBoard(new Coords(xc+1,yc,zc))) n=n+1;
+            if(!isInBoard(new Hex(xc,yc,zc))){
+                if(isInBoard(new Hex(xc-1,yc+1,zc))) n=n+1;
+                if(isInBoard(new Hex(xc+1,yc,zc))) n=n+1;
             }
         }
 
@@ -892,9 +1003,9 @@ public final class Hive {
             for(int i=0;i<playeableTokens.size();i++){
                 tok += "\nType: "+playeableTokens.get(i).getType()
                         +" #"+playeableTokens.get(i).getId()
-                        +" Position-->: "+playeableTokens.get(i).getCoordinates().getX()+"-"
-                        +playeableTokens.get(i).getCoordinates().getY()+"-"
-                        +playeableTokens.get(i).getCoordinates().getZ();
+                        +" Position-->: "+playeableTokens.get(i).getCoordinates().getR()+"-"
+                        +playeableTokens.get(i).getCoordinates().getQ()+"-"
+                        +playeableTokens.get(i).getCoordinates().getD();
             }
         }else{
             for(int i=0;i<tokens.size();i++){

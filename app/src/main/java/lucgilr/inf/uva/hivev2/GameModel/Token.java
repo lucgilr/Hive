@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
+import lucgilr.inf.uva.hivev2.ModelUI.Hex;
+
 /**
  * A token represents an insect of the hive. 
  * @author Lucía Gil Román
@@ -12,7 +14,8 @@ public class Token {
     private int value;
     private Player player;
     private boolean inGame;
-    private Coords coordinates;
+    //private Coords coordinates;
+    private Hex coordinates;
     private boolean blocked;
     private boolean beetle;
     private int graphId;
@@ -23,7 +26,8 @@ public class Token {
     public Token(){
         this.value=0;
         this.inGame=false;
-        this.coordinates=new Coords(100,100,100);
+        //this.coordinates=new Coords(100,100,100);
+        this.coordinates=new Hex(100,100,100);
         this.blocked=false;
         this.beetle=false;
     }
@@ -38,7 +42,8 @@ public class Token {
         this.type=tipo;
         this.value=0;
         this.inGame=false;
-        this.coordinates=new Coords(100,100,100);
+        //this.coordinates=new Coords(100,100,100);
+        this.coordinates=new Hex(100,100,100);
         this.blocked=false;
         this.id=id;
         this.player=player;
@@ -149,7 +154,7 @@ public class Token {
      * Sets coordinates to the token so it can now its position on the board.
      * @param coordinates
      */
-    public void setCoordinates(Coords coordinates) {
+    public void setCoordinates(Hex coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -157,7 +162,7 @@ public class Token {
      * Gives the coordinates of the token.
      * @return
      */
-    public Coords getCoordinates() {
+    public Hex getCoordinates() {
         return coordinates;
     }
 
@@ -198,7 +203,7 @@ public class Token {
      *
      * @return
      */
-    public String tokenInfo(){
+    /*public String tokenInfo(){
         return " id #"+this.id+" "
                 + " Type: "+this.type+" "
                 + " Value: "+this.value+" "
@@ -206,6 +211,23 @@ public class Token {
                 + " In Game: "+this.inGame+" "
                 + " X: "+this.coordinates.getX()+" "
                 + " Y: "+this.coordinates.getY()+" "
+                + " Blocked: "+this.blocked+" "
+                + " Beetle: "+this.beetle+"\n";
+    }*/
+
+    /**
+     *
+     * @return
+     */
+    public String tokenInfo(){
+        return " id #"+this.id+" "
+                + " Type: "+this.type+" "
+                + " Value: "+this.value+" "
+                + " Player: "+this.player.getColor()+" "
+                + " In Game: "+this.inGame+" "
+                + " X: "+this.coordinates.getQ()+" "
+                + " Y: "+this.coordinates.getR()+" "
+                + " Z: "+this.coordinates.getD()+" "
                 + " Blocked: "+this.blocked+" "
                 + " Beetle: "+this.beetle+"\n";
     }

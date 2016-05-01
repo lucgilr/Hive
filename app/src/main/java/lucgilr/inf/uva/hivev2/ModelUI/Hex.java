@@ -2,14 +2,23 @@ package lucgilr.inf.uva.hivev2.ModelUI;
 
 /**
  * Non-cube hex coordinates (q, r)
+ * Lucía Gil Román - Adding d
  */
 public class Hex {
     private int q; //column
     private int r; //row
+    private int d; //dimension
 
     public Hex (int q, int r) {
         this.q = q;
         this.r = r;
+        this.d = 0;
+    }
+
+    public Hex (int q, int r, int d){
+        this.q=q;
+        this.r=r;
+        this.d=d;
     }
 
     public Hex (float q, float r) {
@@ -32,6 +41,7 @@ public class Hex {
 
         this.q = rx;
         this.r = ry;
+        this.d = 0;
     }
 
     public Cube toCube() {
@@ -47,7 +57,7 @@ public class Hex {
     }
 
     public String toString() {
-        return q + ":" + r;
+        return q + ":" + r + ":" + d;
     }
 
     public int getQ() {
@@ -64,5 +74,13 @@ public class Hex {
 
     public void setR(int r) {
         this.r = r;
+    }
+
+    public int getD() {
+        return d;
+    }
+
+    public void setD(int d) {
+        this.d = d;
     }
 }
