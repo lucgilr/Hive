@@ -538,7 +538,7 @@ public final class Hive {
     public ArrayList<Hex> getPossibleGaps(Token token){
         ArrayList<Hex> possibleGaps = new ArrayList<>();
         // And if it has a beetle on top
-        if(!token.isBeetle() && token.getPlayer().isBeeInGame()){
+        if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive(token)){
             switch(token.getType()){
                 case BEE: possibleGaps = beeMoves(token);
                     break;
@@ -579,7 +579,7 @@ public final class Hive {
     public void movetoken(Token token, Hex hex){
         Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
         //Check if players bee in game
-        if(token.getPlayer().isBeeInGame() && !token.isBeetle()){
+        if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
             if(token.getType()==TokenType.BEETLE && token.getCoordinates().getD()!=0){
                 Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
@@ -810,7 +810,7 @@ public final class Hive {
         l1Token=getNeighbourHex(token.getCoordinates());
         for(int i=0;i<l1Token.size();i++){
             if(l1Token.get(i).getD()==0){
-                if (checkGap(c1,l1Token.get(i))==1){
+                if (checkGap(c1, l1Token.get(i))==1){
                     Hex c2 = new Hex(l1Token.get(i).getR(),l1Token.get(i).getQ(), 0);
                     //Move Spider to that gap
                     updateCoordinates(token,l1Token.get(i));
@@ -975,6 +975,11 @@ public final class Hive {
             }
         }
         return tok;
+    }
+
+    public boolean brokenHive(Token token){
+        BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
+        return bcg.isCutpoint(token.getGraphId());
     }
 
 }
