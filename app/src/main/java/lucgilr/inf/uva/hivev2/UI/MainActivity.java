@@ -28,12 +28,14 @@ import lucgilr.inf.uva.hivev2.R;
 
 public class MainActivity extends ActionBarActivity {
 
+    ArrayList<Hex> gaps;
     private RelativeLayout mRelativeLayout;
     //private ArrayList<Prueba> solucion;
     private Game game;
     private Player player;
     private boolean movingToken;
     private ArrayList<Hex> possibleGaps;
+    private Token token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,8 @@ public class MainActivity extends ActionBarActivity {
         game = new Game();
         this.movingToken =false;
         possibleGaps = new ArrayList<>();
+        gaps = new ArrayList<>();
+        token = new Token();
 
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
         //this.solucion = new ArrayList<>();
@@ -108,8 +112,12 @@ public class MainActivity extends ActionBarActivity {
             //My stuff
             player = game.playerTurn();
             /**/
-            ArrayList<Hex> gaps = new ArrayList<>();
-            gaps = game.getHive().getPlayerGapsAvailable(player);
+            if(!this.movingToken) gaps = game.getHive().getPlayerGapsAvailable(player);
+
+            //PRUEBA --> IMPRIMIR GAPS
+            for(int i=0;i<gaps.size();i++){
+                Log.d("Gap ",gaps.get(i).toString());
+            }
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
@@ -162,18 +170,10 @@ public class MainActivity extends ActionBarActivity {
                 int size = game.getHive().getBoard().size();
 
                 //First check if is an available gap
-                if(movingToken){
-                    if(checkIfGapAvailable(view.getHex(), possibleGaps)){
-                        view.setBackgroundResource(R.drawable.greyhex);
-                    }else{
-                        view.setBackgroundResource(R.drawable.orangehex);
-                    }
+                if(checkIfGapAvailable(view.getHex(), gaps)){
+                    view.setBackgroundResource(R.drawable.greyhex);
                 }else{
-                    if(checkIfGapAvailable(view.getHex(), gaps)){
-                        view.setBackgroundResource(R.drawable.greyhex);
-                    }else{
-                        view.setBackgroundResource(R.drawable.orangehex);
-                    }
+                    view.setBackgroundResource(R.drawable.orangehex);
                 }
 
 
@@ -281,7 +281,9 @@ public class MainActivity extends ActionBarActivity {
 
     private boolean checkIfGapAvailable(Hex hex, ArrayList<Hex> gaps) {
         for(int i=0;i<gaps.size();i++){
-            if(hex.getQ()==gaps.get(i).getQ() && hex.getR()==gaps.get(i).getR()) return true;
+            if(hex.getQ()==gaps.get(i).getQ() && hex.getR()==gaps.get(i).getR()){
+                return true;
+            }
         }
         return false;
     }
@@ -310,8 +312,8 @@ public class MainActivity extends ActionBarActivity {
     private void OnGridHexClick(final Hex hex) {
         //Toast.makeText(MainActivity.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
-        ArrayList<Hex> gaps = new ArrayList<>();
-        gaps = game.getHive().getPlayerGapsAvailable(player);
+        //ArrayList<Hex> gaps = new ArrayList<>();
+        //gaps = game.getHive().getPlayerGapsAvailable(player);
         ArrayList<Token> tokens = player.getTokensInTheBox();
 
         //PRUEBA --> PASAR TOKEN A ARRAYLIST DE STRINGS
@@ -320,14 +322,14 @@ public class MainActivity extends ActionBarActivity {
             t.add(new String(tokens.get(i).getType().toString()));
         }
 
-        if(checkIfGapAvailable(hex, gaps)) {
+        if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
             //Alert Dialog
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setItems(t.toArray(new String[t.size()]), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //Toast.makeText(MainActivity.this, t.get(which),Toast.LENGTH_SHORT).show();
-                    Token token = new Token();
+                    token = new Token();
                     //token = player.takeTokenFromTheBox(which);
                     token = player.takeToken(t.get(which));
                     Hex coords = getRealCoords(hex.getR(),hex.getQ());
@@ -340,13 +342,24 @@ public class MainActivity extends ActionBarActivity {
             alert.create();
             alert.show();
         }else if(tokenTouched(hex)){
-            Token token = new Token();
+            token = new Token();
             token = getTokenFromBoard(hex);
             possibleGaps = game.getHive().getPossibleGaps(token);
             if(!possibleGaps.isEmpty()){
                 movingToken = true;
+                //GapsAvailable = possibleGaps
+                this.gaps = new ArrayList<>(possibleGaps);
                 initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
             }
+        }else if(this.movingToken){
+            Log.d("First hex",hex.toString());
+            Hex coords = getRealCoords(hex.getR(),hex.getQ());
+            Log.d("Coords",coords.toString());
+            game.getHive().movetoken(token, coords);
+            game.oneMoreRound();
+            player.oneMoreTurn();
+            this.movingToken=false;
+            initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
         }
 
     }
@@ -372,9 +385,9 @@ public class MainActivity extends ActionBarActivity {
      * @return
      */
     private Hex getRealCoords(int r, int q){
-        ArrayList<Hex> gapsAvailable = game.getHive().getPlayerGapsAvailable(player);
-        for(int i=0;i<gapsAvailable.size();i++){
-            if(gapsAvailable.get(i).getQ()==q && gapsAvailable.get(i).getR()==r) return gapsAvailable.get(i);
+        //ArrayList<Hex> gapsAvailable = game.getHive().getPlayerGapsAvailable(player);
+        for(int i=0;i<gaps.size();i++){
+            if(gaps.get(i).getQ()==q && gaps.get(i).getR()==r) return gaps.get(i);
         }
         return null;
     }
@@ -385,14 +398,7 @@ public class MainActivity extends ActionBarActivity {
      * @return
      */
     private boolean tokenTouched(Hex hex){
-        Log.d("Token touched","0");
-        Log.d("Board size",String.valueOf(game.getHive().getBoard().size()));
         for(int i=0;i<game.getHive().getBoard().size();i++){
-            Log.d("Player",player.getColor());
-            Log.d("Coordinates().getR(): ", String.valueOf(game.getHive().getBoard().get(i).getCoordinates().getR()));
-            Log.d("Coordinates().getG(): ", String.valueOf(game.getHive().getBoard().get(i).getCoordinates().getQ()));
-            Log.d("hex.getR()",String.valueOf(hex.getR()));
-            Log.d("hex.getQ()",String.valueOf(hex.getQ()));
             if(game.getHive().getBoard().get(i).getCoordinates().getR()==hex.getR()
                     && game.getHive().getBoard().get(i).getCoordinates().getQ()==hex.getQ()
                     && game.getHive().getBoard().get(i).getPlayer().getColor().equals(player.getColor()))

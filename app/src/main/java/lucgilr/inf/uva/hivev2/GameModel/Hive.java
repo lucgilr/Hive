@@ -225,12 +225,14 @@ public final class Hive {
         }
     }*/
     //CHANGES --> Hex to Hex
-    private void updateCoordinates(Token token, Hex Hex) {
+    private void updateCoordinates(Token token, Hex hex) {
+        Log.d("board size",String.valueOf(this.board.size()));
+        Log.d("hex",hex.toString());
         for (Token board1 : this.board) {
             if (board1.getCoordinates().getR() == token.getCoordinates().getR()
                     && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
                     && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
-                board1.setCoordinates(Hex);
+                board1.setCoordinates(hex);
             }
         }
     }
@@ -572,9 +574,9 @@ public final class Hive {
     /**
      * Moves a token from its currently position to a new one.
      * @param token to move
-     * @param Hex new position
+     * @param hex new position
      */
-    public void movetoken(Token token, Hex Hex){
+    public void movetoken(Token token, Hex hex){
         Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
         //Check if players bee in game
         if(token.getPlayer().isBeeInGame() && !token.isBeetle()){
@@ -584,8 +586,8 @@ public final class Hive {
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
-            if(token.getType()== TokenType.BEETLE && Hex.getD()!=0){
-                Token t = searchToken(new Hex(Hex.getR(),Hex.getQ(),Hex.getD()-1));
+            if(token.getType()== TokenType.BEETLE && hex.getD()!=0){
+                Token t = searchToken(new Hex(hex.getR(),hex.getQ(),hex.getD()-1));
                 t.setBeetle(true);
             }
             //Add gap to available gaps
@@ -595,11 +597,11 @@ public final class Hive {
             //Delete gap neighbours if they haven't any neighbour
             deleteGapsAvailable(c);
             //Update coordinates of the token of the board
-            updateCoordinates(token,Hex);
+            updateCoordinates(token,hex);
             //Add neighbours null coordinates to gapsAvailable
-            refreshGapsAvailable(Hex);
+            refreshGapsAvailable(hex);
             //Remove gap from available
-            removeHexFromAvaliable(Hex);
+            removeHexFromAvaliable(hex);
             //Update graph:
             //Delete vertex from the graph
             this.graph.removeVertex(token.getGraphId());
