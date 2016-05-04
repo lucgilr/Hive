@@ -813,14 +813,16 @@ public final class Hive {
         ArrayList<Hex> l3Token = new ArrayList<>();
 
         //Save original Hex
-        Hex c1 = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),0);
+        //Hex c1 = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),0);
+        Hex c1 = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),0);
 
         //Level 1
         l1Token=getNeighbourHex(token.getCoordinates());
         for(int i=0;i<l1Token.size();i++){
             if(l1Token.get(i).getD()==0){
                 if (checkGap(c1, l1Token.get(i))==1){
-                    Hex c2 = new Hex(l1Token.get(i).getR(),l1Token.get(i).getQ(), 0);
+                    //Hex c2 = new Hex(l1Token.get(i).getR(),l1Token.get(i).getQ(), 0);
+                    Hex c2 = new Hex(l1Token.get(i).getQ(),l1Token.get(i).getR(), 0);
                     //Move Spider to that gap
                     updateCoordinates(token,l1Token.get(i));
                     //Take neighbours
@@ -833,7 +835,8 @@ public final class Hive {
                             if(l2Token.get(j).getD()==0){
                                 if(checkGap(l1Token.get(i),l2Token.get(j))==1){
                                     //Save original Hex
-                                    Hex c3 = new Hex(l2Token.get(j).getR(),l2Token.get(j).getQ(),0);
+                                    //Hex c3 = new Hex(l2Token.get(j).getR(),l2Token.get(j).getQ(),0);
+                                    Hex c3 = new Hex(l2Token.get(j).getQ(),l2Token.get(j).getR(),0);
                                     //Move Spider to that gap
                                     updateCoordinates(token,l2Token.get(j));
                                     //Take neighbours

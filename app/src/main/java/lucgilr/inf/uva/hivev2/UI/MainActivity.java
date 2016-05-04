@@ -283,7 +283,6 @@ public class MainActivity extends ActionBarActivity {
         if(this.movingToken){
             Log.d("moviendo token",token.tokenInfo());
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
-            Log.d("a",coords.toString());
             game.getHive().movetoken(token, coords);
             game.oneMoreRound();
             player.oneMoreTurn();
