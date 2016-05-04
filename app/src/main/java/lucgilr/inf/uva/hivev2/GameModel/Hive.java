@@ -990,6 +990,11 @@ public final class Hive {
         return tok;
     }*/
 
+    /**
+     *
+     * @param token
+     * @return
+     */
     public boolean brokenHive(Token token){
         BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
         return bcg.isCutpoint(token.getGraphId());

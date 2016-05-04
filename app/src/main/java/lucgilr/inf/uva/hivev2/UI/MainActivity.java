@@ -54,14 +54,17 @@ public class MainActivity extends ActionBarActivity {
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
         //Grid.Shape shape = Grid.Shape.RECTANGLE;
-        int radius = 3;
+        //int radius = 3;
+        int radius = 6;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            radius = extras.getInt("GRID_RADIUS", 3);
+            //radius = extras.getInt("GRID_RADIUS", 3);
+            radius = extras.getInt("GRID_RADIUS", 6);
             shape = Grid.Shape.valueOf(extras.getString("GRID_SHAPE"));
             if (shape == null) {
-                radius = 3;
+                //radius = 3;
+                radius = 6;
                 shape = Grid.Shape.HEXAGON_POINTY_TOP;
                 //shape = Grid.Shape.RECTANGLE;
             }
@@ -95,7 +98,8 @@ public class MainActivity extends ActionBarActivity {
         displayWidth -= 2 * horizontalPadding;
 
         // Calculate the scale: the radius of single node.
-        int scale = (int) (displayWidth / ((2*radius + 1) * (Math.sqrt(1))));
+        //int scale = (int) (displayWidth / ((2*radius + 1) * (Math.sqrt(1))));
+        int scale = (int) (displayWidth / ((1*radius + 1) * (Math.sqrt(1))));
 
         // Changes the height and width of the grid to the specified *pixels*
         params.width = Grid.getGridWidth(radius, scale, shape);
@@ -107,6 +111,7 @@ public class MainActivity extends ActionBarActivity {
     private Grid setGridNodes(int radius, int scale, Grid.Shape shape) {
         try {
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
+            //final Grid grid = new Grid(radius, scale, shape);
             final Grid grid = new Grid(radius, scale, shape);
 
             //My stuff
@@ -281,13 +286,14 @@ public class MainActivity extends ActionBarActivity {
         //Toast.makeText(MainActivity.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
         if(this.movingToken){
-            Log.d("moviendo token",token.tokenInfo());
+            Log.d("moviendo token", token.tokenInfo());
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
             game.getHive().movetoken(token, coords);
             game.oneMoreRound();
             player.oneMoreTurn();
             this.movingToken=false;
-            initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+            //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+            initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
             Log.d("empty gap","0");
@@ -315,7 +321,8 @@ public class MainActivity extends ActionBarActivity {
                     game.getHive().addToken(token, coords);
                     game.oneMoreRound();
                     player.oneMoreTurn();
-                    initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+                    //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+                    initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });
             alert.create();
@@ -329,7 +336,8 @@ public class MainActivity extends ActionBarActivity {
                 movingToken = true;
                 //GapsAvailable = possibleGaps
                 this.gaps = new ArrayList<>(possibleGaps);
-                initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+                //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+                initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
             }else{
                 //windows for not gaps available?
             }
@@ -337,7 +345,8 @@ public class MainActivity extends ActionBarActivity {
             Log.d("quitar seleccion","2");
             this.gaps = game.getHive().getPlayerGapsAvailable(player);
             this.movingToken=false;
-            initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+            //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+            initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
         }/*else if(this.movingToken){
             Log.d("moviendo token","3");
             Hex coords = getRealCoords(hex.getR(),hex.getQ());

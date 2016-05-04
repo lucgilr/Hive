@@ -121,6 +121,7 @@ public class Grid {
         switch (shape) {
             case HEXAGON_POINTY_TOP:
                 return (int) (3 * Math.pow(radius+1, 2) - 3 * (radius +1) + 1);
+                //return 100;
             case RECTANGLE:
                 return (radius * 2 + 1) * (radius * 2 + 1);
         };
