@@ -577,7 +577,7 @@ public final class Hive {
     public void movetoken(Token token, Hex hex){
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
         //Check if players bee in game
-        if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
+        //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
             if(token.getType()==TokenType.BEETLE && token.getCoordinates().getD()!=0){
                 Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
@@ -610,12 +610,12 @@ public final class Hive {
             //Add neighbours to graph
             for (Token newNeighbour : newNeighbours)
                 if (newNeighbour != null)  this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
-        }
+        //}
     }
 
     /**
      * Checks if a given position is blocked.
-     * @param Hex
+     * @param hex
      * @return
      */
     public boolean checkIfGapBlocked(Hex hex){
