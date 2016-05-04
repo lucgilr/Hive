@@ -876,7 +876,8 @@ public final class Hive {
      * @return
      */
     private ArrayList<Hex> antMoves(Token token) {
-        Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
+        //Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
+        Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
         ArrayList<Hex> possibleGaps = new ArrayList<>();
         //First: Check if blocked
         if(!checkIfGapBlocked(token.getCoordinates())){
