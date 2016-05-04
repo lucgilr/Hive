@@ -111,6 +111,16 @@ public class MainActivity extends ActionBarActivity {
 
             //My stuff
             player = game.playerTurn();
+
+            //Print board
+            /*for(int i=0;i<this.game.getHive().getBoard().size();i++){
+                Log.d("type",game.getHive().getBoard().get(i).getType().toString());
+                Log.d("player",game.getHive().getBoard().get(i).getPlayer().getColor());
+                Log.d("coordinates",game.getHive().getBoard().get(i).getCoordinates().toString());
+                Log.d("beetle",String.valueOf(game.getHive().getBoard().get(i).isBeetle()));
+            }
+            Log.d("----------","-------------");*/
+
             /**/
             if(!this.movingToken) gaps = game.getHive().getPlayerGapsAvailable(player);
 
@@ -176,90 +186,53 @@ public class MainActivity extends ActionBarActivity {
 
                     for(int i=0;i<game.getHive().getBoard().size();i++){
 
-                        String hexView = view.getHex().toString();
+                        //String hexView = view.getHex().toString();
+                        String hexView = view.getHex().toString2D();
                         //String sol = solucion.get(i).getHex().toString();
-                        String sol = game.getHive().getBoard().get(i).getCoordinates().toString();
+                        //String sol = game.getHive().getBoard().get(i).getCoordinates().toString();
+                        String sol = game.getHive().getBoard().get(i).getCoordinates().toString2D();
                         //String color = solucion.get(i).getColor();
                         String color = game.getHive().getBoard().get(i).getPlayer().getColor();
+                        int id = game.getHive().getBoard().get(i).getId();
 
                         if (hexView.equals(sol)) {
-                            if(color.equals("White")) {
-                                switch (game.getHive().getBoard().get(i).getId()) {
-                                    case 0:
-                                        view.setBackgroundResource(R.drawable.whitebee);
-                                        break;
-                                    case 1:
+                            Log.d("Type:",game.getHive().getBoard().get(i).getType().toString());
+                            Log.d("coordinates",game.getHive().getBoard().get(i).getCoordinates().toString());
+                            Log.d("beetle",String.valueOf(game.getHive().getBoard().get(i).isBeetle()));
+                        }
+
+                        if(!game.getHive().getBoard().get(i).isBeetle()) {
+                            if (hexView.equals(sol)) {
+                                if (color.equals("White")) {
+                                    if (id == 0) view.setBackgroundResource(R.drawable.whitebee);
+                                    else if (id == 1 || id == 2 || id == 3)
                                         view.setBackgroundResource(R.drawable.whitegrass);
-                                        break;
-                                    case 2:
-                                        view.setBackgroundResource(R.drawable.whitegrass);
-                                        break;
-                                    case 3:
-                                        view.setBackgroundResource(R.drawable.whitegrass);
-                                        break;
-                                    case 4:
+                                    else if (id == 4 || id == 5)
                                         view.setBackgroundResource(R.drawable.whitespider);
-                                        break;
-                                    case 5:
-                                        view.setBackgroundResource(R.drawable.whitespider);
-                                        break;
-                                    case 6:
+                                    else if (id == 6 || id == 7)
                                         view.setBackgroundResource(R.drawable.whitebeetle);
-                                        break;
-                                    case 7:
-                                        view.setBackgroundResource(R.drawable.whitebeetle);
-                                        break;
-                                    case 8:
-                                        view.setBackgroundResource(R.drawable.whiteant);
-                                        break;
-                                    case 9:
-                                        view.setBackgroundResource(R.drawable.whiteant);
-                                        break;
-                                    case 10:
-                                        view.setBackgroundResource(R.drawable.whiteant);
-                                        break;
-                                }
-                            }else{
-                                switch (game.getHive().getBoard().get(i).getId()) {
-                                    case 0:
-                                        view.setBackgroundResource(R.drawable.blackbee);
-                                        break;
-                                    case 1:
+                                    else view.setBackgroundResource(R.drawable.whiteant);
+                                } else {
+                                    if (id == 0) view.setBackgroundResource(R.drawable.blackbee);
+                                    else if (id == 1 || id == 2 || id == 3)
                                         view.setBackgroundResource(R.drawable.blackgrass);
-                                        break;
-                                    case 2:
-                                        view.setBackgroundResource(R.drawable.blackgrass);
-                                        break;
-                                    case 3:
-                                        view.setBackgroundResource(R.drawable.blackgrass);
-                                        break;
-                                    case 4:
+                                    else if (id == 4 || id == 5)
                                         view.setBackgroundResource(R.drawable.blackspider);
-                                        break;
-                                    case 5:
-                                        view.setBackgroundResource(R.drawable.blackspider);
-                                        break;
-                                    case 6:
+                                    else if (id == 6 || id == 7)
                                         view.setBackgroundResource(R.drawable.blackbeetle);
-                                        break;
-                                    case 7:
-                                        view.setBackgroundResource(R.drawable.blackbeetle);
-                                        break;
-                                    case 8:
-                                        view.setBackgroundResource(R.drawable.blackant);
-                                        break;
-                                    case 9:
-                                        view.setBackgroundResource(R.drawable.blackant);
-                                        break;
-                                    case 10:
-                                        view.setBackgroundResource(R.drawable.blackant);
-                                        break;
+                                    else view.setBackgroundResource(R.drawable.blackant);
                                 }
                             }
                         }
+
                     }
 
                 }
+                //Add available gaps
+                if(checkIfGapAvailable(view.getHex(), gaps)){
+                    view.setBackgroundResource(R.drawable.greyhex);
+                }
+
                 view.setOnTouchListener(gridNodeTouchListener);
                 addViewToLayout(view, hex, grid);
 
@@ -307,18 +280,30 @@ public class MainActivity extends ActionBarActivity {
     private void OnGridHexClick(final Hex hex) {
         //Toast.makeText(MainActivity.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
-        //ArrayList<Hex> gaps = new ArrayList<>();
-        //gaps = game.getHive().getPlayerGapsAvailable(player);
-        ArrayList<Token> tokens = player.getTokensInTheBox();
-
-        //PRUEBA --> PASAR TOKEN A ARRAYLIST DE STRINGS
-        final ArrayList<String> t = new ArrayList<>();
-        for(int i=0; i<tokens.size();i++){
-            t.add(new String(tokens.get(i).getType().toString()));
+        if(this.movingToken){
+            Log.d("moviendo token",token.tokenInfo());
+            Hex coords = getRealCoords(hex.getR(),hex.getQ());
+            Log.d("a",coords.toString());
+            game.getHive().movetoken(token, coords);
+            game.oneMoreRound();
+            player.oneMoreTurn();
+            this.movingToken=false;
+            initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
         }
-
-        if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
-            //Alert Dialog
+        else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
+            Log.d("empty gap","0");
+            ArrayList<Token> tokens = player.getTokensInTheBox();
+            final ArrayList<String> t = new ArrayList<>();
+            if(this.game.playerTurn().getTurn()==4 && !this.game.playerTurn().isBeeInGame()){
+                for(int i=0;i<tokens.size();i++){
+                    if(tokens.get(i).getId()==0) t.add(new String(tokens.get(i).getType().toString()));
+                }
+            }else {
+                for (int i = 0; i < tokens.size(); i++) {
+                    t.add(new String(tokens.get(i).getType().toString()));
+                }
+            }
+            //Alert Dialog -> SI T NO ESTA VACÍO, SI NO OTRA VENTANA
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setItems(t.toArray(new String[t.size()]), new DialogInterface.OnClickListener() {
                 @Override
@@ -339,25 +324,30 @@ public class MainActivity extends ActionBarActivity {
         }else if(tokenTouched(hex)){
             token = new Token();
             token = getTokenFromBoard(hex);
+            Log.d("Token touched",token.tokenInfo());
             possibleGaps = game.getHive().getPossibleGaps(token);
             if(!possibleGaps.isEmpty()){
                 movingToken = true;
                 //GapsAvailable = possibleGaps
                 this.gaps = new ArrayList<>(possibleGaps);
                 initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+            }else{
+                //windows for not gaps available?
             }
         }else if(!checkIfGapAvailable(hex, gaps)) {
+            Log.d("quitar seleccion","2");
             this.gaps = game.getHive().getPlayerGapsAvailable(player);
             this.movingToken=false;
             initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
-        }else if(this.movingToken){
+        }/*else if(this.movingToken){
+            Log.d("moviendo token","3");
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
             game.getHive().movetoken(token, coords);
             game.oneMoreRound();
             player.oneMoreTurn();
             this.movingToken=false;
             initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
-        }
+        }*/
 
     }
 
@@ -369,7 +359,8 @@ public class MainActivity extends ActionBarActivity {
     private Token getTokenFromBoard(Hex hex){
         for(int i=0;i<game.getHive().getBoard().size();i++){
             if(game.getHive().getBoard().get(i).getCoordinates().getR()==hex.getR()
-                    && game.getHive().getBoard().get(i).getCoordinates().getQ()==hex.getQ())
+                    && game.getHive().getBoard().get(i).getCoordinates().getQ()==hex.getQ()
+                    && !game.getHive().getBoard().get(i).isBeetle())
                 return game.getHive().getBoard().get(i);
         }
         return null;

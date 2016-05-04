@@ -203,22 +203,6 @@ public class Token {
      *
      * @return
      */
-    /*public String tokenInfo(){
-        return " id #"+this.id+" "
-                + " Type: "+this.type+" "
-                + " Value: "+this.value+" "
-                + " Player: "+this.player.getColor()+" "
-                + " In Game: "+this.inGame+" "
-                + " X: "+this.coordinates.getX()+" "
-                + " Y: "+this.coordinates.getY()+" "
-                + " Blocked: "+this.blocked+" "
-                + " Beetle: "+this.beetle+"\n";
-    }*/
-
-    /**
-     *
-     * @return
-     */
     public String tokenInfo(){
         return " id #"+this.id+" "
                 + " Type: "+this.type+" "

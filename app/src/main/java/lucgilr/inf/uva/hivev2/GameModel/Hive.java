@@ -153,14 +153,15 @@ public final class Hive {
         for(int i=0;i<this.board.size();i++){
             board+="Type: "+this.board.get(i).getType()
                     +" Player: "+this.board.get(i).getPlayer().getColor()
-                    +" Coordinates: "+this.board.get(i).getCoordinates().toString()+"\n";
+                    +" Coordinates: "+this.board.get(i).getCoordinates().toString()
+                    +" Beetle: "+this.board.get(i).isBeetle()+"\n";
         }
         return board;
     }
 
     /**
      * Checks if a token is in the board
-     * @param Hex of the token to look for
+     * @param hex of the token to look for
      * @return true if found in the board
      */
     /*private boolean isInBoard(Hex Hex){
@@ -185,7 +186,7 @@ public final class Hive {
 
     /**
      * Search a token in the board given its coordinates
-     * @param Hex of the token to look for
+     * @param hex of the token to look for
      * @return token if found
      */
     /*private Token searchToken(Hex Hex){
@@ -580,12 +581,14 @@ public final class Hive {
         //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
             if(token.getType()==TokenType.BEETLE && token.getCoordinates().getD()!=0){
-                Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
+                //Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
+                Token t = searchToken(new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD()-1));
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
             if(token.getType()== TokenType.BEETLE && hex.getD()!=0){
-                Token t = searchToken(new Hex(hex.getR(),hex.getQ(),hex.getD()-1));
+                //Token t = searchToken(new Hex(hex.getR(),hex.getQ(),hex.getD()-1));
+                Token t = searchToken(new Hex(hex.getQ(),hex.getR(),hex.getD()-1));
                 t.setBeetle(true);
             }
             //Add gap to available gaps
@@ -956,7 +959,7 @@ public final class Hive {
      * @param n
      * @return
      */
-    public String playerSelection(Player p, String n) {
+    /*public String playerSelection(Player p, String n) {
         String tok = "";
         ArrayList<Token> tokens = p.playerSelectionV2(n);
         if(n.equals("h")){
@@ -981,7 +984,7 @@ public final class Hive {
             }
         }
         return tok;
-    }
+    }*/
 
     public boolean brokenHive(Token token){
         BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);

@@ -60,6 +60,10 @@ public class Hex {
         return q + ":" + r + ":" + d;
     }
 
+    public String toString2D(){
+        return q + ":" + r;
+    }
+
     public int getQ() {
         return q;
     }
