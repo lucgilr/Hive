@@ -313,7 +313,7 @@ public final class Hive {
      * @return
      */
     //CHANGES --> Hex to Hex
-    private int numberOfNeighbours(Hex hex){
+    public int numberOfNeighbours(Hex hex){
         int n = 0;
         Token[] nb = new Token[6];
         nb = tokenNeighbours(hex);
@@ -537,6 +537,9 @@ public final class Hive {
     public ArrayList<Hex> getPossibleGaps(Token token){
         ArrayList<Hex> possibleGaps = new ArrayList<>();
         // And if it has a beetle on top
+        Log.d("isbeetle",String.valueOf(!token.isBeetle()));
+        Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));
+        Log.d("brokenhive",String.valueOf(!brokenHive(token)));
         if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive(token)){
             switch(token.getType()){
                 case BEE: possibleGaps = beeMoves(token);
@@ -999,6 +1002,7 @@ public final class Hive {
         BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
         return bcg.isCutpoint(token.getGraphId());
     }
+
 
 }
 

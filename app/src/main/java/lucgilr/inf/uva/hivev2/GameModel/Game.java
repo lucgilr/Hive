@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
+import lucgilr.inf.uva.hivev2.ModelUI.Hex;
+
 /**
  *
  * @author Lucía Gil Román
@@ -137,6 +139,25 @@ public class Game {
         else{
             return getPlayer1();
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int beeSurrounded(){
+        Hex p1 = this.getPlayer1().getTokenById(0).getCoordinates();
+        Hex p2 = this.getPlayer2().getTokenById(0).getCoordinates();
+        if(this.getHive().numberOfNeighbours(p1)==6 && this.getHive().numberOfNeighbours(p2)==6){
+            return 3;
+        }else if(this.getHive().numberOfNeighbours(p1)==6){
+            return 2;
+        }else if(this.getHive().numberOfNeighbours(p2)==6){
+            return 1;
+        }else{
+            return 0;
+        }
+
     }
 
 
