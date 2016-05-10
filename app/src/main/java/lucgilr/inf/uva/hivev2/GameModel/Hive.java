@@ -10,8 +10,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.alg.BlockCutpointGraph;
 
-import lucgilr.inf.uva.hivev2.ModelUI.Hex;
-
 /**
  *  Representation of the board.
  * @author Lucía Gil Román

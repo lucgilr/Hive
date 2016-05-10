@@ -1,4 +1,4 @@
-package lucgilr.inf.uva.hivev2.ModelUI;
+package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
  * Non-cube hex coordinates (q, r)

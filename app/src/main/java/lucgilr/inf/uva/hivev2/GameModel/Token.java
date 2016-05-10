@@ -1,8 +1,6 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
-import lucgilr.inf.uva.hivev2.ModelUI.Hex;
-
 /**
  * A token represents an insect of the hive. 
  * @author Lucía Gil Román

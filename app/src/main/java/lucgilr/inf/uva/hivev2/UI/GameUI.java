@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,9 +19,9 @@ import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
-import lucgilr.inf.uva.hivev2.ModelUI.Cube;
-import lucgilr.inf.uva.hivev2.ModelUI.Grid;
-import lucgilr.inf.uva.hivev2.ModelUI.Hex;
+import lucgilr.inf.uva.hivev2.GameModel.Cube;
+import lucgilr.inf.uva.hivev2.GameModel.Grid;
+import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.R;
 
 public class GameUI extends ActionBarActivity {

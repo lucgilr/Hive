@@ -6,7 +6,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hive;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
-import lucgilr.inf.uva.hivev2.ModelUI.Hex;
+import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.UI.GameUI;
 
 /**

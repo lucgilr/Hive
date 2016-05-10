@@ -19,7 +19,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import lucgilr.inf.uva.hivev2.ModelUI.Hex;
+import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.R;
 
 public class CircleImageView extends ImageView {
