@@ -1,7 +1,5 @@
 package lucgilr.inf.uva.hivev2.Controller;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import lucgilr.inf.uva.hivev2.GameModel.Game;

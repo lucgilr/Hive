@@ -606,16 +606,22 @@ public final class Hive {
             refreshGapsAvailable(hex);
             //Remove gap from available
             removeHexFromAvaliable(hex);
+
             //Update graph:
             //Delete vertex from the graph
             this.graph.removeVertex(token.getGraphId());
-            //Get new neighbours
-            Token[] newNeighbours = tokenNeighbours(token.getCoordinates());
-            //Add token again
-            this.graph.addVertex(token.getGraphId());
-            //Add neighbours to graph
-            for (Token newNeighbour : newNeighbours)
-                if (newNeighbour != null)  this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
+            //If the destination gap is in level 0
+            //if(token.getCoordinates().getD()==0) {
+                //Get new neighbours
+                Token[] newNeighbours = tokenNeighbours(token.getCoordinates());
+                //Add token again
+                this.graph.addVertex(token.getGraphId());
+                //Add neighbours to graph
+                for (Token newNeighbour : newNeighbours)
+                    if (newNeighbour != null)
+                        this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
+            //}
+
         //}
     }
 
@@ -999,8 +1005,12 @@ public final class Hive {
      * @return
      */
     public boolean brokenHive(Token token){
-        BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
-        return bcg.isCutpoint(token.getGraphId());
+        //If the destination gap is in level 0
+        if(token.getCoordinates().getD()==0) {
+            BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
+            return bcg.isCutpoint(token.getGraphId());
+        }else
+            return false;
     }
 
 

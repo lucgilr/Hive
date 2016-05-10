@@ -206,9 +206,7 @@ public class GameUI extends ActionBarActivity {
 
                 }
 
-                //Add available gaps
                 if(checkIfGapAvailable(view.getHex(), gaps)){
-                    Log.d("gap",view.getHex().toString());
                     view.setBackgroundResource(R.drawable.greyhex);
                 }
 
@@ -363,6 +361,7 @@ public class GameUI extends ActionBarActivity {
                 alert.show();
             }
         }else if(tokenTouched(hex)){
+
             token = new Token();
             token = getTokenFromBoard(hex);
             possibleGaps = controller.getPossibleMoves(token);
@@ -418,7 +417,8 @@ public class GameUI extends ActionBarActivity {
         for(int i=0;i<controller.getBoardSize();i++){
             if(board.get(i).getCoordinates().getR()==hex.getR()
                     && board.get(i).getCoordinates().getQ()==hex.getQ()
-                    && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor()))
+                    && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor())
+                    && !board.get(i).isBeetle())
                 return true;
         }
         return false;
