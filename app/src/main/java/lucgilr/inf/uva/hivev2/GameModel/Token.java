@@ -208,7 +208,7 @@ public class Token {
                 + " Type: "+this.type+" "
                 + " Value: "+this.value+" "
                 + " Player: "+this.player.getColor()+" "
-                + " In Game: "+this.inGame+" "
+                + " In GameUI: "+this.inGame+" "
                 + " X: "+this.coordinates.getQ()+" "
                 + " Y: "+this.coordinates.getR()+" "
                 + " Z: "+this.coordinates.getD()+" "

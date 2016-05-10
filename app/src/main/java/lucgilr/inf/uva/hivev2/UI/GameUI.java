@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import lucgilr.inf.uva.hivev2.Controller.GameController;
+import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.ModelUI.Cube;
@@ -23,12 +25,13 @@ import lucgilr.inf.uva.hivev2.ModelUI.Grid;
 import lucgilr.inf.uva.hivev2.ModelUI.Hex;
 import lucgilr.inf.uva.hivev2.R;
 
-public class Game extends ActionBarActivity {
+public class GameUI extends ActionBarActivity {
+
+    private Game game;
+    private GameController controller;
 
     ArrayList<Hex> gaps;
     private RelativeLayout mRelativeLayout;
-    //private ArrayList<Prueba> solucion;
-    private lucgilr.inf.uva.hivev2.GameModel.Game game;
     private Player player;
     private boolean movingToken;
     private ArrayList<Hex> possibleGaps;
@@ -37,33 +40,29 @@ public class Game extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.game_layout);
 
-        //Create new Game
-        game = new lucgilr.inf.uva.hivev2.GameModel.Game();
+        //Create new GameUI
+        game = new Game();
+        controller = new GameController(game,this);
+
         this.movingToken =false;
         possibleGaps = new ArrayList<>();
         gaps = new ArrayList<>();
         token = new Token();
 
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
-        //this.solucion = new ArrayList<>();
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
-        //Grid.Shape shape = Grid.Shape.RECTANGLE;
-        //int radius = 3;
         int radius = 6;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            //radius = extras.getInt("GRID_RADIUS", 3);
             radius = extras.getInt("GRID_RADIUS", 6);
             shape = Grid.Shape.valueOf(extras.getString("GRID_SHAPE"));
             if (shape == null) {
-                //radius = 3;
                 radius = 6;
                 shape = Grid.Shape.HEXAGON_POINTY_TOP;
-                //shape = Grid.Shape.RECTANGLE;
             }
         }
 
@@ -112,24 +111,13 @@ public class Game extends ActionBarActivity {
             final Grid grid = new Grid(radius, scale, shape);
 
             //My stuff
-            player = game.playerTurn();
+            player = controller.getPlayer();
 
-            //Print board
-            /*for(int i=0;i<this.game.getHive().getBoard().size();i++){
-                Log.d("type",game.getHive().getBoard().get(i).getType().toString());
-                Log.d("player",game.getHive().getBoard().get(i).getPlayer().getColor());
-                Log.d("coordinates",game.getHive().getBoard().get(i).getCoordinates().toString());
-                Log.d("beetle",String.valueOf(game.getHive().getBoard().get(i).isBeetle()));
-            }
-            Log.d("----------","-------------");*/
-
-            /**/
             if(!this.movingToken){
-                gaps = game.getHive().getPlayerGapsAvailable(player);
+                gaps = controller.getPlayerGaps(player);
                 //If there are not gaps and the bee is not in game
-                if(gaps.isEmpty() && !player.isBeeInGame()) nextPlayer();
+                if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
-            Log.d("gaps size",String.valueOf(gaps.size()));
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
@@ -178,38 +166,20 @@ public class Game extends ActionBarActivity {
                 CircleImageView view = new CircleImageView(this);
                 view.setHex(hex);
 
-
-                //First check if is an available gap
-                /*if(checkIfGapAvailable(view.getHex(), gaps)){
-                    view.setBackgroundResource(R.drawable.greyhex);
-                }else{
-                    */view.setBackgroundResource(R.drawable.orangehex);
-                /*}*/
-
-                //int size = solucion.size();
-                int size = game.getHive().getBoard().size();
+                view.setBackgroundResource(R.drawable.orangehex);
+                int size = controller.getBoardSize();
 
                 if(size!=0) {
 
-                    for(int i=0;i<game.getHive().getBoard().size();i++){
+                    for(int i=0;i<size;i++){
 
-                        //String hexView = view.getHex().toString();
                         String hexView = view.getHex().toString2D();
-                        //String sol = solucion.get(i).getHex().toString();
-                        //String sol = game.getHive().getBoard().get(i).getCoordinates().toString();
-                        String sol = game.getHive().getBoard().get(i).getCoordinates().toString2D();
-                        //String color = solucion.get(i).getColor();
-                        String color = game.getHive().getBoard().get(i).getPlayer().getColor();
-                        int id = game.getHive().getBoard().get(i).getId();
-
-                        if (hexView.equals(sol)) {
-                            Log.d("Type:",game.getHive().getBoard().get(i).getType().toString());
-                            Log.d("coordinates",game.getHive().getBoard().get(i).getCoordinates().toString());
-                            Log.d("beetle",String.valueOf(game.getHive().getBoard().get(i).isBeetle()));
-                        }
+                        String sol = controller.getBoard().get(i).getCoordinates().toString2D();
+                        String color = controller.getBoard().get(i).getPlayer().getColor();
+                        int id = controller.getBoard().get(i).getId();
 
                         if(hexView.equals(sol)) {
-                            if (!game.getHive().getBoard().get(i).isBeetle()) {
+                            if(!controller.getBoard().get(i).isBeetle()){
                                 if (color.equals("White")) {
                                     if (id == 0) view.setBackgroundResource(R.drawable.whitebee);
                                     else if (id == 1 || id == 2 || id == 3)
@@ -235,7 +205,7 @@ public class Game extends ActionBarActivity {
                     }
 
                 }
-                //PRUEBA --> CARGAR SOLO GAPSAVAILABLE --> MEJORAR RENDIMIENTO?
+
                 //Add available gaps
                 if(checkIfGapAvailable(view.getHex(), gaps)){
                     Log.d("gap",view.getHex().toString());
@@ -246,7 +216,7 @@ public class Game extends ActionBarActivity {
                 addViewToLayout(view, hex, grid);
 
                 //Check if bee fully surrounded
-                int endgame = game.beeSurrounded();
+                int endgame = controller.endGame();
                 if(endgame!=0){
                     //GAME OVER
                     gameOver(endgame);
@@ -257,7 +227,7 @@ public class Game extends ActionBarActivity {
 
 
         } catch (Exception e) {
-            Toast.makeText(Game.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
+            Toast.makeText(GameUI.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
         return null;
@@ -350,24 +320,23 @@ public class Game extends ActionBarActivity {
     }
 
     private void OnGridHexClick(final Hex hex) {
-        //Toast.makeText(Game.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(GameUI.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
-        if(this.movingToken){
-            Log.d("moviendo token", token.tokenInfo());
+        if(this.movingToken && checkIfGapAvailable(hex, gaps)){
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
-            game.getHive().movetoken(token, coords);
-            game.oneMoreRound();
-            player.oneMoreTurn();
+            controller.movetoken(token, coords);
+            controller.oneMoreTurn();
+            controller.oneMoreRound();
             this.movingToken=false;
-            //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
             initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
-            Log.d("empty gap","0");
-            ArrayList<Token> tokens = player.getTokensInTheBox();
+            ArrayList<Token> tokens = controller.getTokensFromBox();
             if(!tokens.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
-                if (this.game.playerTurn().getTurn() == 4 && !this.game.playerTurn().isBeeInGame()) {
+                int turn = controller.getPlayerTurn();
+                boolean bee = controller.playerBeeInGame();
+                if(turn == 4 && !bee){
                     for (int i = 0; i < tokens.size(); i++) {
                         if (tokens.get(i).getId() == 0)
                             t.add(new String(tokens.get(i).getType().toString()));
@@ -377,20 +346,16 @@ public class Game extends ActionBarActivity {
                         t.add(new String(tokens.get(i).getType().toString()));
                     }
                 }
-                //Alert Dialog -> SI T NO ESTA VACÍO, SI NO OTRA VENTANA
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setItems(t.toArray(new String[t.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Toast.makeText(Game.this, t.get(which),Toast.LENGTH_SHORT).show();
                         token = new Token();
-                        //token = player.takeTokenFromTheBox(which);
-                        token = player.takeToken(t.get(which));
+                        token = controller.takeTokenByType(t.get(which));
                         Hex coords = getRealCoords(hex.getR(), hex.getQ());
-                        game.getHive().addToken(token, coords);
-                        game.oneMoreRound();
-                        player.oneMoreTurn();
-                        //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
+                        controller.playToken(token,coords);
+                        controller.oneMoreTurn();
+                        controller.oneMoreRound();
                         initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
                     }
                 });
@@ -400,33 +365,17 @@ public class Game extends ActionBarActivity {
         }else if(tokenTouched(hex)){
             token = new Token();
             token = getTokenFromBoard(hex);
-            Log.d("Token touched",token.tokenInfo());
-            possibleGaps = game.getHive().getPossibleGaps(token);
-            //Log.d("possiblegaps size",String.valueOf(possibleGaps.size()));
+            possibleGaps = controller.getPossibleMoves(token);
             if(!possibleGaps.isEmpty()){
                 movingToken = true;
-                //GapsAvailable = possibleGaps
                 this.gaps = new ArrayList<>(possibleGaps);
-                //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
                 initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
-            }/*else{
-                //windows for not gaps available?
-            }*/
+            }
         }else if(!checkIfGapAvailable(hex, gaps)) {
-            Log.d("quitar seleccion","2");
-            this.gaps = game.getHive().getPlayerGapsAvailable(player);
+            this.gaps = controller.getPlayerGaps(player);
             this.movingToken=false;
-            //initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
             initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
-        }/*else if(this.movingToken){
-            Log.d("moviendo token","3");
-            Hex coords = getRealCoords(hex.getR(),hex.getQ());
-            game.getHive().movetoken(token, coords);
-            game.oneMoreRound();
-            player.oneMoreTurn();
-            this.movingToken=false;
-            initGridView(3, Grid.Shape.HEXAGON_POINTY_TOP);
-        }*/
+        }
 
     }
 
@@ -436,11 +385,12 @@ public class Game extends ActionBarActivity {
      * @return
      */
     private Token getTokenFromBoard(Hex hex){
-        for(int i=0;i<game.getHive().getBoard().size();i++){
-            if(game.getHive().getBoard().get(i).getCoordinates().getR()==hex.getR()
-                    && game.getHive().getBoard().get(i).getCoordinates().getQ()==hex.getQ()
-                    && !game.getHive().getBoard().get(i).isBeetle())
-                return game.getHive().getBoard().get(i);
+        ArrayList<Token> board = controller.getBoard();
+        for(int i=0;i<controller.getBoardSize();i++){
+            if(board.get(i).getCoordinates().getR()==hex.getR()
+                    && board.get(i).getCoordinates().getQ()==hex.getQ()
+                    && !board.get(i).isBeetle())
+            return board.get(i);
         }
         return null;
     }
@@ -452,7 +402,6 @@ public class Game extends ActionBarActivity {
      * @return
      */
     private Hex getRealCoords(int r, int q){
-        //ArrayList<Hex> gapsAvailable = game.getHive().getPlayerGapsAvailable(player);
         for(int i=0;i<gaps.size();i++){
             if(gaps.get(i).getQ()==q && gaps.get(i).getR()==r) return gaps.get(i);
         }
@@ -465,35 +414,14 @@ public class Game extends ActionBarActivity {
      * @return
      */
     private boolean tokenTouched(Hex hex){
-        for(int i=0;i<game.getHive().getBoard().size();i++){
-            if(game.getHive().getBoard().get(i).getCoordinates().getR()==hex.getR()
-                    && game.getHive().getBoard().get(i).getCoordinates().getQ()==hex.getQ()
-                    && game.getHive().getBoard().get(i).getPlayer().getColor().equals(player.getColor()))
+        ArrayList<Token> board = controller.getBoard();
+        for(int i=0;i<controller.getBoardSize();i++){
+            if(board.get(i).getCoordinates().getR()==hex.getR()
+                    && board.get(i).getCoordinates().getQ()==hex.getQ()
+                    && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor()))
                 return true;
         }
         return false;
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 }
 

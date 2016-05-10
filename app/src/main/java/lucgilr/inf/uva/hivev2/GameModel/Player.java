@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 /**
- * A player is the person/AI who plays the Game.  
+ * A player is the person/AI who plays the GameUI.
  * @author Lucía Gil Román
  */
 public class Player {

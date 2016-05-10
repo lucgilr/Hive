@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".UI.Game"
+        <activity android:name=".UI.GameUI"
             android:uiOptions="splitActionBarWhenNarrow"
             android:parentActivityName=".UI.MainActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
