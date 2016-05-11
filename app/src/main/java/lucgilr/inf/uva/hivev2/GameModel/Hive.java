@@ -1011,6 +1011,40 @@ public final class Hive {
             return false;
     }
 
+    /**
+     *
+     * @param hex
+     * @return
+     */
+    public Hex[] vPosition(Hex hex){
+        Hex[] gaps = new Hex[2];
+
+        int x = hex.getQ();
+        int y = hex.getR();
+
+        if(isInBoard(new Hex(x+1,y-1,0))){
+            gaps[0] = new Hex(x-1,y,0);
+            gaps[1] = new Hex(x,y+1,0);
+        }else if(isInBoard(new Hex(x+1,y,0))){
+            gaps[0] = new Hex(x,y-1,0);
+            gaps[1] = new Hex(x-1,y+1,0);
+        }else if(isInBoard(new Hex(x,y+1,0))){
+            gaps[0] = new Hex(x-1,y,0);
+            gaps[1] = new Hex(x+1,y-1,0);
+        }else if(isInBoard(new Hex(x-1,y+1,0))){
+            gaps[0] = new Hex(x,y-1,0);
+            gaps[1] = new Hex(x+1,y,0);
+        }else if(isInBoard(new Hex(x-1,y,0))){
+            gaps[0] = new Hex(x+1,y-1,0);
+            gaps[1] = new Hex(x,y+1,0);
+        }else{
+            gaps[0] = new Hex(x-1,y+1,0);
+            gaps[1] = new Hex(x+1,y,0);
+        }
+
+        return gaps;
+    }
+
 
 }
 
