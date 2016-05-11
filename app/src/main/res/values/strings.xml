@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">HiveV2</string>
     <string name="game">Game</string>
+    <string name="aigame">AI Game</string>
 </resources>
