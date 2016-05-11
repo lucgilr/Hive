@@ -2,11 +2,13 @@ package lucgilr.inf.uva.hivev2.Controller;
 
 import java.util.ArrayList;
 
+import lucgilr.inf.uva.hivev2.AI.AI;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hive;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.GameModel.Hex;
+import lucgilr.inf.uva.hivev2.UI.AIGameUI;
 import lucgilr.inf.uva.hivev2.UI.GameUI;
 
 /**
@@ -16,6 +18,8 @@ public class GameController {
 
     private Game model;
     private GameUI view;
+    private AIGameUI aiView;
+    private AI ai;
 
     /**
      *
@@ -25,6 +29,16 @@ public class GameController {
     public GameController(Game model, GameUI view){
         this.model=model;
         this.view=view;
+    }
+
+    /**
+     *
+     * @param model
+     * @param view
+     */
+    public GameController(Game model, AIGameUI view){
+        this.model=model;
+        this.aiView=view;
     }
 
     /**
@@ -90,7 +104,7 @@ public class GameController {
      * @param hex
      */
     public void movetoken(Token token, Hex hex){
-        model.getHive().movetoken(token,hex);
+        model.getHive().movetoken(token, hex);
     }
 
     /**
@@ -148,6 +162,22 @@ public class GameController {
      */
     public ArrayList<Hex> getPossibleMoves(Token token){
         return model.getHive().getPossibleGaps(token);
+    }
+
+    /**
+     *
+     * @param game
+     */
+    public void makeAChoice(Game game){
+        ai.makeAChoice(game);
+    }
+
+    /**
+     *
+     * @param player
+     */
+    public void initIA(Player player){
+        this.ai = new AI(player);
     }
 
 }

@@ -108,13 +108,21 @@ public class AIGameUI extends ActionBarActivity {
             //final Grid grid = new Grid(radius, scale, shape);
             final Grid grid = new Grid(radius, scale, shape);
 
-            //My stuff
+            //If the player is black --> AI turn
             player = controller.getPlayer();
+
 
             if(!this.movingToken){
                 gaps = controller.getPlayerGaps(player);
                 //If there are not gaps and the bee is not in game
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
+                if(player.getColor().equals("Black")){
+                    if(player.getTurn()==1) controller.initIA(player);
+                    controller.makeAChoice(game);
+                    controller.oneMoreTurn();
+                    controller.oneMoreRound();
+                    initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
             }
 
             //Gird node listener restricted to the node's circular area.

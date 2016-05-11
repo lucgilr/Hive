@@ -9,6 +9,15 @@ public class Hex {
     private int r; //row
     private int d; //dimension
 
+    /**
+     * Explain why -100
+     */
+    public Hex(){
+        this.q=-100;
+        this.r=-100;
+        this.d=-100;
+    }
+
     public Hex (int q, int r) {
         this.q = q;
         this.r = r;
