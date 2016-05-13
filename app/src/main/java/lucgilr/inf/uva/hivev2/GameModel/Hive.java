@@ -264,7 +264,7 @@ public final class Hive {
      * @return
      */
     //CHANGES --> Hex to Hex
-    private Token[] tokenNeighbours(Hex hex){
+    public Token[] tokenNeighbours(Hex hex){
         //int x = Hex.getR();
         //int y = Hex.getQ();
         int x = hex.getQ();
@@ -963,39 +963,6 @@ public final class Hive {
 
         return n;
     }
-
-    /**
-     *
-     * @param p
-     * @param n
-     * @return
-     */
-    /*public String playerSelection(Player p, String n) {
-        String tok = "";
-        ArrayList<Token> tokens = p.playerSelectionV2(n);
-        if(n.equals("h")){
-            ArrayList<Token> playeableTokens = new ArrayList<Token>();
-            BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
-            //Check if moving that token will break the hive
-            for(int i=0; i<tokens.size(); i++){
-                if(!bcg.isCutpoint(tokens.get(i).getGraphId()))
-                    playeableTokens.add(tokens.get(i));
-            }
-            //Copy solution in a String
-            for(int i=0;i<playeableTokens.size();i++){
-                tok += "\nType: "+playeableTokens.get(i).getType()
-                        +" #"+playeableTokens.get(i).getId()
-                        +" Position-->: "+playeableTokens.get(i).getCoordinates().getR()+"-"
-                        +playeableTokens.get(i).getCoordinates().getQ()+"-"
-                        +playeableTokens.get(i).getCoordinates().getD();
-            }
-        }else{
-            for(int i=0;i<tokens.size();i++){
-                tok+="\nType: "+tokens.get(i).getType()+" #"+tokens.get(i).getId();
-            }
-        }
-        return tok;
-    }*/
 
     /**
      *

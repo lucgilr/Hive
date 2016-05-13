@@ -224,4 +224,19 @@ public class Player {
         return t;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public Token inspectTokenInGame(int id){
+        Token token = new Token();
+        for(int i=0;i<this.tokensInGame.size();i++){
+            if(this.tokensInGame.get(i).getId()==id){
+                token = this.tokensInGame.get(i);
+            }
+        }
+        return token;
+    }
+
 }
