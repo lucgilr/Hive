@@ -12,7 +12,10 @@ import lucgilr.inf.uva.hivev2.UI.AIGameUI;
 import lucgilr.inf.uva.hivev2.UI.GameUI;
 
 /**
- * Created by gil on 09/05/16.
+ * A Controller is used as middleman between the UI and the Game Model.
+ * The user interacts with the UI and will trigger actions that will
+ * return information from the Game Model through the Controller.
+ * Created by Lucía Gil Román on 09/05/16.
  */
 public class GameController {
 

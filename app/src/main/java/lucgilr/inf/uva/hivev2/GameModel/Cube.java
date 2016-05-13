@@ -1,8 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
-import lucgilr.inf.uva.hivev2.GameModel.Hex;
-
 /**
+ * Original source for this file:
+ * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Cube.java
  * Cube using 3-vector for the coordinates (x, y, z)
  */
 public class Cube {

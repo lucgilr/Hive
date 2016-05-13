@@ -1,7 +1,5 @@
 package lucgilr.inf.uva.hivev2.AI;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -12,7 +10,11 @@ import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.GameModel.TokenType;
 
 /**
- * Created by gil on 11/05/16.
+ * The AI will have two parts: Rules and Decision Tree.
+ * It will start checking if one of the rules can be applied for the current move,
+ * if it can't apply any rule then it will decide the next move using a decision tree.
+ * TALK ABOUT MINIMAX ALPHA BETA PRUNNING!!!!!!!!
+ * Created by Lucía Gil Román on 11/05/16.
  */
 public class AI {
 
@@ -38,7 +40,7 @@ public class AI {
     }
 
     /**
-     *
+     * Using this method the AI will decide which will be it next move.
      * @param game
      */
     public void makeAChoice(Game game){
@@ -56,8 +58,11 @@ public class AI {
         }else {
             //Rule #2: Check Bee --> move it if its in danger
             if(game.getPlayer2().isBeeInGame()) {
-                beestate();
-                //if(!this.beeSaved)
+                beeState();
+                //If the AI bee is saved --> check the other player's bee
+                if(this.beeSaved){
+                    player1Bee();
+                }//else --> heurística?
             }
         }
     }
@@ -142,7 +147,7 @@ public class AI {
      * 2nd. Is not blocked, then it can be moved to a new position or stays where it is.
      * 3rd. It's blocked but one of its neighbours can be moved to a new position.
      */
-    private void beestate() {
+    private void beeState() {
 
         Token bee = new Token();
         Hex nextMove = new Hex();
@@ -210,5 +215,10 @@ public class AI {
         }
     }
 
+    /**
+     * Attacks the enemy's bee.
+     */
+    private void player1Bee() {
+    }
 
 }

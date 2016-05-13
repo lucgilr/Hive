@@ -24,6 +24,12 @@ import lucgilr.inf.uva.hivev2.GameModel.Grid;
 import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.R;
 
+/**
+ * The original code has been modified but it can be found in:
+ * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/ui/MainActivity.java
+ * When a player choose to play a game against other real player
+ * in the same device it will load this Activity.
+ */
 public class GameUI extends ActionBarActivity {
 
     private Game game;

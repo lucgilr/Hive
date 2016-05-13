@@ -1,29 +1,42 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
+ * The original file can be found in:
+ * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Hex.java
  * Non-cube hex coordinates (q, r)
- * Lucía Gil Román - Adding d
+ * Lucía Gil Román - Adding d for a 3 dimension coordinate system.
  */
 public class Hex {
     private int q; //column
     private int r; //row
-    private int d; //dimension
+    private int d; //3rd dimension
 
     /**
-     * Explain why -100
+     * The initial values of the coordinates are (0,0,0)
      */
     public Hex(){
-        this.q=-100;
-        this.r=-100;
-        this.d=-100;
+        this.q=0;
+        this.r=0;
+        this.d=0;
     }
 
+    /**
+     * Constructor for a 2 dimension coordinate.
+     * @param q //Column
+     * @param r //Row
+     */
     public Hex (int q, int r) {
         this.q = q;
         this.r = r;
         this.d = 0;
     }
 
+    /**
+     * Constructor for a 3 dimension coordinate,
+     * @param q //Column
+     * @param r //Row
+     * @param d //3rd dimension
+     */
     public Hex (int q, int r, int d){
         this.q=q;
         this.r=r;

@@ -11,7 +11,9 @@ import android.widget.ListView;
 import lucgilr.inf.uva.hivev2.R;
 
 /**
- * Created by gil on 05/05/16.
+ * The first screen is a menu in which the user can choose
+ * between a player vs player game or player vs AI game.
+ * Created by Lucía Gil Román on 05/05/16.
  */
 public class MainActivity extends ListActivity {
 
