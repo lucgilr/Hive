@@ -42,6 +42,7 @@ public class GameUI extends AppCompatActivity {
 
     private Game game;
     private GameController controller;
+    private Language language;
 
     ArrayList<Hex> gaps;
     private RelativeLayout mRelativeLayout;
@@ -75,6 +76,7 @@ public class GameUI extends AppCompatActivity {
         //Create new GameUI
         game = new Game();
         controller = new GameController(game,this);
+        language = new Language();
 
         this.movingToken =false;
         possibleGaps = new ArrayList<>();
@@ -365,7 +367,6 @@ public class GameUI extends AppCompatActivity {
                 int turn = controller.getPlayerTurn();
                 boolean bee = controller.playerBeeInGame();
                 final String displayLanguage = Locale.getDefault().getDisplayLanguage();
-                Language language = new Language();
                 String bug ="";
                 if(turn == 4 && !bee){
                     for (int i = 0; i < tokens.size(); i++) {
@@ -393,7 +394,8 @@ public class GameUI extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         token = new Token();
-                        token = controller.takeTokenByType(t.get(which));
+                        String bug = language.StringToTokenString(t.get(which));
+                        token = controller.takeTokenByType(bug);
                         Hex coords = getRealCoords(hex.getR(), hex.getQ());
                         controller.playToken(token,coords);
                         controller.oneMoreTurn();

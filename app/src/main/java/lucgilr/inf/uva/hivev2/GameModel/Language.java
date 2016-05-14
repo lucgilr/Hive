@@ -5,6 +5,11 @@ package lucgilr.inf.uva.hivev2.GameModel;
  */
 public class Language {
 
+    /**
+     *
+     * @param bug
+     * @return
+     */
     public String getEnglish(String bug){
         if(bug.equals(TokenType.BEE.toString())){
             return "Bee";
@@ -19,6 +24,11 @@ public class Language {
         }
     }
 
+    /**
+     *
+     * @param bug
+     * @return
+     */
     public String getSpanish(String bug){
         if(bug.equals(TokenType.BEE.toString())){
             return "Abeja";
@@ -30,6 +40,25 @@ public class Language {
             return "Saltamontes";
         }else{
             return "Araña";
+        }
+    }
+
+    /**
+     *
+     * @param bug
+     * @return
+     */
+    public String StringToTokenString(String bug){
+        if(bug.equals("Bee") || bug.equals("abeja")){
+            return TokenType.BEE.toString();
+        }else if(bug.equals("Ant") || bug.equals("Hormiga")){
+            return TokenType.ANT.toString();
+        }else if(bug.equals("Beetle") || bug.equals("Escarabajo")){
+            return TokenType.BEETLE.toString();
+        }else if(bug.equals("Grasshopper") || bug.equals("Saltamontes")){
+            return TokenType.GRASSHOPPER.toString();
+        }else{
+            return TokenType.SPIDER.toString();
         }
     }
 
