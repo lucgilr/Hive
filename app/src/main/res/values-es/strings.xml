@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HiveV2</string>
+    <string name="aigame">Partida IA</string>
+    <string name="ant">Hormiga</string>
+    <string name="bee">Abeja</string>
+    <string name="beetle">Escarabajo</string>
+    <string name="game">Partida</string>
+    <string name="grasshopper">Saltamontes</string>
+    <string name="spider">Araña</string>
+</resources>

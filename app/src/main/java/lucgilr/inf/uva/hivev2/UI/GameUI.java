@@ -20,9 +20,11 @@ import android.widget.Toast;
 
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
+import lucgilr.inf.uva.hivev2.GameModel.Language;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
@@ -362,14 +364,28 @@ public class GameUI extends AppCompatActivity {
                 final ArrayList<String> t = new ArrayList<>();
                 int turn = controller.getPlayerTurn();
                 boolean bee = controller.playerBeeInGame();
+                final String displayLanguage = Locale.getDefault().getDisplayLanguage();
+                Language language = new Language();
+                String bug ="";
                 if(turn == 4 && !bee){
                     for (int i = 0; i < tokens.size(); i++) {
-                        if (tokens.get(i).getId() == 0)
-                            t.add(new String(tokens.get(i).getType().toString()));
+                        if (tokens.get(i).getId() == 0) {
+                            if (displayLanguage.equals("English")) {
+                                bug = language.getEnglish(new String(tokens.get(i).getType().toString()));
+                            } else {
+                                bug = language.getSpanish(new String(tokens.get(i).getType().toString()));
+                            }
+                            t.add(bug);
+                        }
                     }
                 } else {
                     for (int i = 0; i < tokens.size(); i++) {
-                        t.add(new String(tokens.get(i).getType().toString()));
+                        if (displayLanguage.equals("English")) {
+                            bug = language.getEnglish(new String(tokens.get(i).getType().toString()));
+                        } else {
+                            bug = language.getSpanish(new String(tokens.get(i).getType().toString()));
+                        }
+                        t.add(bug);
                     }
                 }
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);

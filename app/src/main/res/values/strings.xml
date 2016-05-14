@@ -2,4 +2,9 @@
     <string name="app_name">HiveV2</string>
     <string name="game">Game</string>
     <string name="aigame">AI Game</string>
+    <string name="bee">Bee</string>
+    <string name="beetle">Beetle</string>
+    <string name="ant">Ant</string>
+    <string name="spider">Spider</string>
+    <string name="grasshopper">Grasshopper</string>
 </resources>
