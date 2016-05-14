@@ -4,12 +4,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 
@@ -37,6 +41,8 @@ public class GameUI extends ActionBarActivity {
 
     ArrayList<Hex> gaps;
     private RelativeLayout mRelativeLayout;
+    private ScrollView vScrollView;
+    private HorizontalScrollView hScrollView;
     private Player player;
     private boolean movingToken;
     private ArrayList<Hex> possibleGaps;
@@ -46,6 +52,21 @@ public class GameUI extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        //Center scrolls
+        vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
+        hScrollView = (HorizontalScrollView)findViewById(R.id.horizontal_scroll);
+
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                vScrollView.scrollTo(0,600);
+                hScrollView.scrollTo(1150,0);
+            }
+        }, 100);
 
         //Create new GameUI
         game = new Game();
