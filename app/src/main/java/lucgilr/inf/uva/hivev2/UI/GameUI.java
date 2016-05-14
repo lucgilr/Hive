@@ -6,11 +6,13 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -34,7 +36,7 @@ import lucgilr.inf.uva.hivev2.R;
  * When a player choose to play a game against other real player
  * in the same device it will load this Activity.
  */
-public class GameUI extends ActionBarActivity {
+public class GameUI extends AppCompatActivity {
 
     private Game game;
     private GameController controller;
@@ -63,7 +65,7 @@ public class GameUI extends ActionBarActivity {
 
             @Override
             public void run() {
-                vScrollView.scrollTo(0,600);
+                vScrollView.scrollTo(0,530);
                 hScrollView.scrollTo(1150,0);
             }
         }, 100);

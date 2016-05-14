@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,7 +27,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.R;
 
-public class AIGameUI extends ActionBarActivity {
+public class AIGameUI extends AppCompatActivity {
 
     private Game game;
     private GameController controller;
@@ -55,7 +56,7 @@ public class AIGameUI extends ActionBarActivity {
 
             @Override
             public void run() {
-                vScrollView.scrollTo(0, 600);
+                vScrollView.scrollTo(0, 530);
                 hScrollView.scrollTo(1150, 0);
             }
         }, 100);
