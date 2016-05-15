@@ -1032,7 +1032,7 @@ public final class Hive {
     public boolean checkIfGapTaken(Hex hex){
         for(int i=0;i<this.getBoard().size();i++) {
             if (this.getBoard().get(i).getCoordinates().getQ() == hex.getQ()
-                    && this.getBoard().get(i).getCoordinates().getD() == hex.getD()
+                    && this.getBoard().get(i).getCoordinates().getR() == hex.getR()
                     && this.getBoard().get(i).getCoordinates().getD() == hex.getD())
                 return true;
         }

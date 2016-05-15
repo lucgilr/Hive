@@ -152,9 +152,10 @@ public class AI {
                 hex = opening[0];
             }
             //first: check if there is already a token in that gap
-            if(!game.getHive().checkIfGapTaken(this.hex))
-                game.getHive().addToken(t,this.hex);
-            else{
+            if(!game.getHive().checkIfGapTaken(this.hex)) {
+                Log.d("gap not taken!","...");
+                game.getHive().addToken(t, this.hex);
+            }else{
                 beeState();
                 if(!this.beeSaved)
                     attackOpponent();
@@ -174,6 +175,7 @@ public class AI {
         Hex nextMove = new Hex();
         bee = game.getPlayer2().getTokenById(0);
         boolean hasBee = false;
+        ArrayList<TokenMove> moves = new ArrayList<>();
 
         //If bee is blocked --> Check if one of the surrounding pieces can be move
         if(game.getHive().checkIfGapBlocked(bee.getCoordinates())){
@@ -194,14 +196,15 @@ public class AI {
                                 newN = game.getHive().tokenNeighbours(pos.get(j));
                                 for (int k = 0; k < newN.length; k++) {
                                     //If the neighbour found has the AI bee
-                                    if(newN[i]!=null) {
+                                    if(newN[k]!=null) {
                                         if (newN[k].getType() == TokenType.BEE && newN[k].getPlayer().getColor().equals(this.player.getColor())) {
                                             //Don't move to this position
                                             hasBee = true;
                                         }
                                     }
                                 }
-                                if (!hasBee) {
+                                if(!hasBee) {
+                                    //moves.add(new TokenMove(neighbours[i],pos.get(j)));
                                     toMove = neighbours[i];
                                     //If the new position doesn't touch the AI bee --> move to that position
                                     game.getHive().movetoken(toMove, pos.get(j));
