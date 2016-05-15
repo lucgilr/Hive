@@ -154,8 +154,11 @@ public class AI {
             //first: check if there is already a token in that gap
             if(!game.getHive().checkIfGapTaken(this.hex))
                 game.getHive().addToken(t,this.hex);
-            else
-                attackOpponent();
+            else{
+                beeState();
+                if(!this.beeSaved)
+                    attackOpponent();
+            }
         }
     }
 
@@ -174,31 +177,37 @@ public class AI {
 
         //If bee is blocked --> Check if one of the surrounding pieces can be move
         if(game.getHive().checkIfGapBlocked(bee.getCoordinates())){
+            Token toMove = new Token();
             Token[] neighbours = new Token[6];
             neighbours = game.getHive().tokenNeighbours(bee.getCoordinates());
             for(int i=0;i<neighbours.length;i++){
                 //If the token is from the AI player --> check if it can me moved
-                if(neighbours[i].getPlayer().getColor().equals(this.player.getColor())){
-                    ArrayList<Hex> pos = new ArrayList<>();
-                    pos = game.getHive().getPossibleGaps(neighbours[i]);
-                    //Check if it has a position not touching the bee
-                    int size = pos.size();
-                    if(size!=0) {
-                        for (int j = 0; j < pos.size(); j++) {
-                            Token[] newN = new Token[6];
-                            newN = game.getHive().tokenNeighbours(pos.get(i));
-                            for (int k = 0; k < newN.length; k++) {
-                                //If the neighbour found has the AI bee
-                                if(newN[k].getType()== TokenType.BEE && newN[k].getPlayer().getColor().equals(this.player.getColor())){
-                                    //Don't move to this position
-                                    hasBee=true;
+                if(neighbours[i]!=null) {
+                    if (neighbours[i].getPlayer().getColor().equals(this.player.getColor())) {
+                        ArrayList<Hex> pos = new ArrayList<>();
+                        pos = game.getHive().getPossibleGaps(neighbours[i]);
+                        //Check if it has a position not touching the bee
+                        int size = pos.size();
+                        if (size != 0) {
+                            for (int j = 0; j < pos.size(); j++) {
+                                Token[] newN = new Token[6];
+                                newN = game.getHive().tokenNeighbours(pos.get(j));
+                                for (int k = 0; k < newN.length; k++) {
+                                    //If the neighbour found has the AI bee
+                                    if(newN[i]!=null) {
+                                        if (newN[k].getType() == TokenType.BEE && newN[k].getPlayer().getColor().equals(this.player.getColor())) {
+                                            //Don't move to this position
+                                            hasBee = true;
+                                        }
+                                    }
                                 }
-                            }
-                            if(!hasBee){
-                                //If the new position doesn't touch the AI bee --> move to that position
-                                game.getHive().movetoken(bee,pos.get(j));
-                                this.beeSaved=true;
-                                break;
+                                if (!hasBee) {
+                                    toMove = neighbours[i];
+                                    //If the new position doesn't touch the AI bee --> move to that position
+                                    game.getHive().movetoken(toMove, pos.get(j));
+                                    this.beeSaved = true;
+                                    break;
+                                }
                             }
                         }
                     }
