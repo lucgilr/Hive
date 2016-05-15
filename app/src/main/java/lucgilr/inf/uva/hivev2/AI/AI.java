@@ -9,6 +9,10 @@ import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.GameModel.TokenMove;
 import lucgilr.inf.uva.hivev2.GameModel.TokenType;
+/**
+ * NOTAS:
+ * Si un tenemos un escarabajo en juego y puede bloquear por orden: abeja, otro escarabajo o un saltamontes --> HACEDLO!
+ */
 
 /**
  * The AI will have two parts: Rules and Decision Tree.
@@ -62,7 +66,7 @@ public class AI {
                 beeState();
                 //If the AI bee is saved --> try to attack the other player's bee
                 if(this.beeSaved){
-                    player1Bee();
+                    attackOpponent();
                 }//else --> heurística?
             }
         }
@@ -217,75 +221,35 @@ public class AI {
     }
 
     /**
-     * Attacks enemy.
+     * Attacks enemy following some rules order by priority of good moves.
      */
-    private void player1Bee() {
-        //First: check if the opponents bee can be attacked with one of the current tokens in the game
-        //note: It's better to use the tokens in the game than place new ones.
-        //1.1 Checks if the opponent bee is in game
-        Token bee1 = game.getPlayer1().inspectTokenInGame(0);
-        if(game.getHive().searchToken(bee1.getCoordinates())!=null) {
-            //1.2 Checks if a bee neighbour can attack the other bee
-            ArrayList<TokenMove> possibleMoves = new ArrayList<>();
-            Token[] neighbours = new Token[6];
-            neighbours = game.getHive().tokenNeighbours(this.player.inspectTokenInGame(0).getCoordinates());
-            ArrayList<Hex> beeN = new ArrayList<>();
-            beeN = game.getHive().getNeighbourHex(bee1.getCoordinates());
-            for (int i = 0; i < neighbours.length; i++) {
-                //If the tokens is ours and is not blocked
-                if (neighbours[i].getPlayer().getColor().equals("Black")
-                        && game.getHive().checkIfGapBlocked(neighbours[i].getCoordinates())
-                        && neighbours[i]!=null) {
-                    //See if it can attack the opponents bee
-                    ArrayList<Hex> moves = new ArrayList<>();
-                    moves = game.getHive().getPossibleGaps(neighbours[i]);
-                    for(int j=0;j<moves.size();j++){
-                        if(checksIfCoordinateInGivenList(moves.get(i),beeN)) possibleMoves.add(new TokenMove(neighbours[i],moves.get(j)));
+    private void attackOpponent() {
+        //To check if the AI has already move
+        boolean move = false;
+        //First: If the AI has a beetle in game --> Check if it can attack the opponents bee by placing that token on top
+        move = beetleAttackBee();
+        if(!move){
+            //Second:
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean beetleAttackBee(){
+        for(int i=0;i<this.player.getTokensInGame().size();i++){
+                if (this.player.getTokensInGame().get(i).getType().equals(TokenType.BEETLE)) {
+                    ArrayList<Hex> moves = this.game.getHive().getPossibleGaps(this.player.getTokensInGame().get(i));
+                    Hex bee1 = this.game.getPlayer1().inspectTokenInGame(0).getCoordinates();
+                    if (checksIfCoordinateInGivenList(bee1, moves)) {
+                        //Place beetle on top of the bee
+                        game.getHive().addToken(player.getTokensInGame().get(i),bee1);
+                        return true;
                     }
-                }
-            }
-            if(!possibleMoves.isEmpty()){
-                //Select a random move (Token+Move)
-                Random r = new Random();
-                int chosen = r.nextInt((possibleMoves.size() - 1) + 1);
-                TokenMove winner = new TokenMove();
-                winner = possibleMoves.get(chosen);
-                //Make the move
-                game.getHive().addToken(winner.getToken(),winner.getHex());
-            }else{
-                //1.3 If we didn't found a bee neighbour who could attack the opponents bee --> check other tokens
-                ArrayList<Token> tokensPlayer = new ArrayList<>();
-                tokensPlayer = game.getPlayer2().getTokensInGame();
-                for(int i=0;i<tokensPlayer.size();i++){
-                    //See if it can attack the opponents bee
-                    ArrayList<Hex> moves = new ArrayList<>();
-                    moves = game.getHive().getPossibleGaps(tokensPlayer.get(i));
-                    for(int j=0;j<moves.size();j++){
-                        if(checksIfCoordinateInGivenList(moves.get(i),beeN)) possibleMoves.add(new TokenMove(neighbours[i],moves.get(j)));
-                    }
-                }
-                if(!possibleMoves.isEmpty()){
-                    //Select a random move (Token+Move)
-                    Random r = new Random();
-                    int chosen = r.nextInt((possibleMoves.size() - 1) + 1);
-                    TokenMove winner = new TokenMove();
-                    winner = possibleMoves.get(chosen);
-                    //Make the move
-                    game.getHive().addToken(winner.getToken(),winner.getHex());
-                }else {
-                    //Second: If the opponents bee can't be attacked --> move token to block an opponents token that can attack
-                    //Our bee in the next move.
-                }
-            }
-        }else {
-            //Third: If the bee can't be attacked with the current tokens or is not in the game--> Place new one thinking in the next move
-            Token token = new Token();
-            token = getToken();
-            //What to do --> It depends on the type of the token retrieved
-            switch (token.getType()) {
-                case SPIDER:
             }
         }
+        return false;
     }
 
     /**
@@ -372,6 +336,22 @@ public class AI {
     public boolean checksIfCoordinateInGivenList(Hex hex, ArrayList<Hex> list){
         for(int i=0;i<list.size();i++){
             if(list.get(i).toString().equals(hex.toString())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if two given lists has at least one element in common.
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public boolean getCommonFromLists(ArrayList<Hex> list1,ArrayList<Hex> list2){
+        ArrayList<Hex> common = new ArrayList<>();
+        for(int i=0;i<list1.size();i++){
+            for(int j=0;j<list2.size();j++){
+                if(list1.get(i).toString().equals(list2.toString())) return true;
+            }
         }
         return false;
     }
