@@ -110,7 +110,11 @@ public class AI {
             }else{
                 hex = opening[0];
             }
-            game.getHive().addToken(t,this.hex);
+            //first: check if there is already a token in that gap
+            if(!game.getHive().checkIfGapTaken(this.hex))
+                game.getHive().addToken(t,this.hex);
+            else
+                attackOpponent();
         }
     }
 
@@ -147,7 +151,11 @@ public class AI {
             }else{
                 hex = opening[0];
             }
-            game.getHive().addToken(t,this.hex);
+            //first: check if there is already a token in that gap
+            if(!game.getHive().checkIfGapTaken(this.hex))
+                game.getHive().addToken(t,this.hex);
+            else
+                attackOpponent();
         }
     }
 
