@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -407,13 +408,21 @@ public class AIGameUI extends AppCompatActivity {
                 alert.show();
             }
         }else if(tokenTouched(hex)){
-
             token = new Token();
             token = getTokenFromBoard(hex);
-            possibleGaps = controller.getPossibleMoves(token);
-            if(!possibleGaps.isEmpty()){
-                movingToken = true;
-                this.gaps = new ArrayList<>(possibleGaps);
+            //If the token touched is one of yours
+            if(token.getPlayer().getColor().equals(this.player.getColor())) {
+                possibleGaps = controller.getPossibleMoves(token);
+                if (!possibleGaps.isEmpty()) {
+                    movingToken = true;
+                    this.gaps = new ArrayList<>(possibleGaps);
+                    initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
+                //If its not --> deselect
+            }else{
+                Log.d("4. deselect", "...");
+                this.gaps = controller.getPlayerGaps(player);
+                this.movingToken=false;
                 initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         }else if(!checkIfGapAvailable(hex, gaps)) {

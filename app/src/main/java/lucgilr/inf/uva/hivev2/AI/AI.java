@@ -1,5 +1,7 @@
 package lucgilr.inf.uva.hivev2.AI;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -31,6 +33,8 @@ public class AI {
     private int randomOp;
     Hex[] opening;
     Hex hex;
+    //To check if the AI has already move
+    boolean move;
 
     private boolean beeSaved;
 
@@ -42,6 +46,7 @@ public class AI {
         this.opening = new Hex[2];
         this.hex=new Hex();
         this.beeSaved=false;
+        this.move=false;
     }
 
     /**
@@ -60,7 +65,7 @@ public class AI {
             //Random opening
             if(this.randomOp==0) openingOne();
             else openingTwo();
-        }else {
+        }else{
             //Rule #2: Check Bee --> move it if its in danger
             if(game.getPlayer2().isBeeInGame()) {
                 beeState();
@@ -224,13 +229,13 @@ public class AI {
      * Attacks enemy following some rules order by priority of good moves.
      */
     private void attackOpponent() {
-        //To check if the AI has already move
-        boolean move = false;
         //First: If the AI has a beetle in game --> Check if it can attack the opponents bee by placing that token on top
         move = beetleAttackBee();
         if(!move){
-            //Second:
+            //Second:attack opponents bee with a token already on the board
+
         }
+
     }
 
     /**

@@ -353,6 +353,7 @@ public class GameUI extends AppCompatActivity {
         //Toast.makeText(GameUI.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
         if(this.movingToken && checkIfGapAvailable(hex, gaps)){
+            Log.d("1.moving token","...");
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
             controller.movetoken(token, coords);
             controller.oneMoreTurn();
@@ -361,6 +362,7 @@ public class GameUI extends AppCompatActivity {
             initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
+            Log.d("2.select token","...");
             ArrayList<Token> tokens = controller.getTokensFromBox();
             if(!tokens.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
@@ -407,16 +409,26 @@ public class GameUI extends AppCompatActivity {
                 alert.show();
             }
         }else if(tokenTouched(hex)){
-
+            Log.d("3.Token touched","...");
             token = new Token();
             token = getTokenFromBoard(hex);
-            possibleGaps = controller.getPossibleMoves(token);
-            if(!possibleGaps.isEmpty()){
-                movingToken = true;
-                this.gaps = new ArrayList<>(possibleGaps);
+            //If the token touched is one of yours
+            if(token.getPlayer().getColor().equals(this.player.getColor())) {
+                possibleGaps = controller.getPossibleMoves(token);
+                if (!possibleGaps.isEmpty()) {
+                    movingToken = true;
+                    this.gaps = new ArrayList<>(possibleGaps);
+                    initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
+                //If its not --> deselect
+            }else{
+                Log.d("4. deselect","...");
+                this.gaps = controller.getPlayerGaps(player);
+                this.movingToken=false;
                 initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         }else if(!checkIfGapAvailable(hex, gaps)) {
+            Log.d("4. deselect","...");
             this.gaps = controller.getPlayerGaps(player);
             this.movingToken=false;
             initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
