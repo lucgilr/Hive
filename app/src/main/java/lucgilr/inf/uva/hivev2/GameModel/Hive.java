@@ -198,7 +198,7 @@ public final class Hive {
         return null;
     }*/
     //CHANGES --> Hex to Hex
-    private Token searchToken(Hex hex){
+    public Token searchToken(Hex hex){
         for (Token board1 : this.board) {
             if (board1.getCoordinates().getR() == hex.getR()
                     && board1.getCoordinates().getQ() == hex.getQ()
@@ -534,7 +534,6 @@ public final class Hive {
      */
     public ArrayList<Hex> getPossibleGaps(Token token){
         ArrayList<Hex> possibleGaps = new ArrayList<>();
-        // And if it has a beetle on top
         Log.d("isbeetle",String.valueOf(!token.isBeetle()));
         Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));
         Log.d("brokenhive",String.valueOf(!brokenHive(token)));
@@ -1012,6 +1011,33 @@ public final class Hive {
         return gaps;
     }
 
+    /**
+     * Deletes a token from the board game.
+     * A token can be remove if it was placed to test strategics for the AI.
+     */
+    public void deteleToken(Token token){
+        for(int i=0;i<this.getBoard().size();i++){
+            if(this.getBoard().get(i).getCoordinates().getQ()==token.getCoordinates().getQ()
+                    && this.getBoard().get(i).getCoordinates().getD()==token.getCoordinates().getD()
+                    && this.getBoard().get(i).getCoordinates().getD()==token.getCoordinates().getD())
+                this.getBoard().remove(this.getBoard().get(i));
+        }
+    }
+
+    /**
+     * Checks if a given position has a token.
+     * @param hex
+     * @return
+     */
+    public boolean checkIfGapTaken(Hex hex){
+        for(int i=0;i<this.getBoard().size();i++) {
+            if (this.getBoard().get(i).getCoordinates().getQ() == hex.getQ()
+                    && this.getBoard().get(i).getCoordinates().getD() == hex.getD()
+                    && this.getBoard().get(i).getCoordinates().getD() == hex.getD())
+                return true;
+        }
+        return false;
+    }
 
 }
 

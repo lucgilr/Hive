@@ -7,13 +7,14 @@ import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Token;
+import lucgilr.inf.uva.hivev2.GameModel.TokenMove;
 import lucgilr.inf.uva.hivev2.GameModel.TokenType;
 
 /**
  * The AI will have two parts: Rules and Decision Tree.
  * It will start checking if one of the rules can be applied for the current move,
  * if it can't apply any rule then it will decide the next move using a decision tree.
- * TALK ABOUT MINIMAX ALPHA BETA PRUNNING!!!!!!!!
+ * TALK ABOUT MINIMAX ALPHA BETA PRUNNING!!!!!!!! --> MAYBE I DON'T IMPLEMENT IT...
  * Created by Lucía Gil Román on 11/05/16.
  */
 public class AI {
@@ -59,7 +60,7 @@ public class AI {
             //Rule #2: Check Bee --> move it if its in danger
             if(game.getPlayer2().isBeeInGame()) {
                 beeState();
-                //If the AI bee is saved --> check the other player's bee
+                //If the AI bee is saved --> try to attack the other player's bee
                 if(this.beeSaved){
                     player1Bee();
                 }//else --> heurística?
@@ -216,9 +217,163 @@ public class AI {
     }
 
     /**
-     * Attacks the enemy's bee.
+     * Attacks enemy.
      */
     private void player1Bee() {
+        //First: check if the opponents bee can be attacked with one of the current tokens in the game
+        //note: It's better to use the tokens in the game than place new ones.
+        //1.1 Checks if the opponent bee is in game
+        Token bee1 = game.getPlayer1().inspectTokenInGame(0);
+        if(game.getHive().searchToken(bee1.getCoordinates())!=null) {
+            //1.2 Checks if a bee neighbour can attack the other bee
+            ArrayList<TokenMove> possibleMoves = new ArrayList<>();
+            Token[] neighbours = new Token[6];
+            neighbours = game.getHive().tokenNeighbours(this.player.inspectTokenInGame(0).getCoordinates());
+            ArrayList<Hex> beeN = new ArrayList<>();
+            beeN = game.getHive().getNeighbourHex(bee1.getCoordinates());
+            for (int i = 0; i < neighbours.length; i++) {
+                //If the tokens is ours and is not blocked
+                if (neighbours[i].getPlayer().getColor().equals("Black")
+                        && game.getHive().checkIfGapBlocked(neighbours[i].getCoordinates())
+                        && neighbours[i]!=null) {
+                    //See if it can attack the opponents bee
+                    ArrayList<Hex> moves = new ArrayList<>();
+                    moves = game.getHive().getPossibleGaps(neighbours[i]);
+                    for(int j=0;j<moves.size();j++){
+                        if(checksIfCoordinateInGivenList(moves.get(i),beeN)) possibleMoves.add(new TokenMove(neighbours[i],moves.get(j)));
+                    }
+                }
+            }
+            if(!possibleMoves.isEmpty()){
+                //Select a random move (Token+Move)
+                Random r = new Random();
+                int chosen = r.nextInt((possibleMoves.size() - 1) + 1);
+                TokenMove winner = new TokenMove();
+                winner = possibleMoves.get(chosen);
+                //Make the move
+                game.getHive().addToken(winner.getToken(),winner.getHex());
+            }else{
+                //1.3 If we didn't found a bee neighbour who could attack the opponents bee --> check other tokens
+                ArrayList<Token> tokensPlayer = new ArrayList<>();
+                tokensPlayer = game.getPlayer2().getTokensInGame();
+                for(int i=0;i<tokensPlayer.size();i++){
+                    //See if it can attack the opponents bee
+                    ArrayList<Hex> moves = new ArrayList<>();
+                    moves = game.getHive().getPossibleGaps(tokensPlayer.get(i));
+                    for(int j=0;j<moves.size();j++){
+                        if(checksIfCoordinateInGivenList(moves.get(i),beeN)) possibleMoves.add(new TokenMove(neighbours[i],moves.get(j)));
+                    }
+                }
+                if(!possibleMoves.isEmpty()){
+                    //Select a random move (Token+Move)
+                    Random r = new Random();
+                    int chosen = r.nextInt((possibleMoves.size() - 1) + 1);
+                    TokenMove winner = new TokenMove();
+                    winner = possibleMoves.get(chosen);
+                    //Make the move
+                    game.getHive().addToken(winner.getToken(),winner.getHex());
+                }else {
+                    //Second: If the opponents bee can't be attacked --> move token to block an opponents token that can attack
+                    //Our bee in the next move.
+                }
+            }
+        }else {
+            //Third: If the bee can't be attacked with the current tokens or is not in the game--> Place new one thinking in the next move
+            Token token = new Token();
+            token = getToken();
+            //What to do --> It depends on the type of the token retrieved
+            switch (token.getType()) {
+                case SPIDER:
+            }
+        }
+    }
+
+    /**
+     *
+     * @return Token to place in the game.
+     */
+    public Token getToken(){
+        Token token = new Token();
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens = this.player.getTokensInTheBox();
+        //Bring spiders early in the game: http://gen42.com/images/tipspage1.jpg
+        for(int i=0;i<tokens.size();i++){
+            if(tokens.get(i).getType().equals(TokenType.SPIDER)) return player.takeTokenFromTheBox(tokens.get(i).getId());
+        }
+        return null;
+        //Leave Grasshoppers to the last --> fill gaps http://gen42.com/images/tipspage1.jpg
+
+    }
+
+    /**
+     * Get opponents Tokens in game.
+     * @return
+     */
+    public ArrayList<Token> getOpponentsTokens(){
+        ArrayList<Token> tokens = new ArrayList<>();
+        for(int i=0;i<game.getHive().getBoard().size();i++){
+            if(game.getHive().getBoard().get(i).getPlayer().getColor().equals("White"))
+                tokens.add(game.getHive().getBoard().get(i));
+        }
+        return tokens;
+    }
+
+    /**
+     * Returns a random blocking gap for a token in game.
+     * @param token
+     * @return
+     */
+    public Hex getBlockingGap(Token token){
+        //ArrayList with possible coordinates
+        ArrayList<Hex> gaps = new ArrayList<>();
+        if(game.getHive().checkIfGapBlocked(token.getCoordinates())){
+            return null;
+        }else{
+            //Get neighbours coordinates
+            ArrayList<Hex> neighbours = new ArrayList<>();
+            neighbours = game.getHive().getNeighbourHex(token.getCoordinates());
+            for(int i=0;i<neighbours.size();i++){
+                //If the gap is empty --> checks if placing a token there will block the token
+                if(!game.getHive().checkIfGapTaken(neighbours.get(i))){
+                    if(checkIfBlockingGap(neighbours.get(i), token)) gaps.add(neighbours.get(i));
+                }
+            }
+        }
+        //Select a random gap
+        Random r = new Random();
+        int chosen = r.nextInt((gaps.size() - 1) + 1);
+        return gaps.get(chosen);
+    }
+
+    /**
+     * Checks if placing a token in a gap which is next to a token will block it.
+     * @return
+     */
+    public boolean checkIfBlockingGap(Hex coordinates, Token token){
+        //Blocked?
+        boolean blocked = false;
+        //Fake token to place
+        Token fake = new Token();
+        //Place the fake token in the board with the given coordinates
+        game.getHive().addToken(fake,coordinates);
+        //Check if the token is now blocked
+        if(game.getHive().checkIfGapBlocked(token.getCoordinates())) blocked=true;
+        //Delete fake token from board
+        game.getHive().deteleToken(fake);
+        return blocked;
+    }
+
+    /**
+     *
+     * @param hex
+     * @param list
+     * @return
+     */
+    public boolean checksIfCoordinateInGivenList(Hex hex, ArrayList<Hex> list){
+        for(int i=0;i<list.size();i++){
+            if(list.get(i).toString().equals(hex.toString())) return true;
+        }
+        return false;
     }
 
 }
