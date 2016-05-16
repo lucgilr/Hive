@@ -136,7 +136,7 @@ public final class Hive {
         //addEdges(neighbours,token);
         //Set token to inGame
         token.setInGame(true);
-        //Delete gap from ArrayList of gaps avaliable
+        //Delete gap from ArrayList of gaps available
         removeHexFromAvaliable(token.getCoordinates());
         //add new neighbours if they are not already there and have no token
         refreshGapsAvailable(token.getCoordinates());
@@ -174,9 +174,7 @@ public final class Hive {
     //CHANGES --> Hex to Hex
     private boolean isInBoard(Hex hex){
         for(int i=0;i<this.board.size();i++){
-            if(this.board.get(i).getCoordinates().getR()==hex.getR()
-                    && this.board.get(i).getCoordinates().getQ()==hex.getQ()
-                    && this.board.get(i).getCoordinates().getD()==hex.getD())
+            if(this.board.get(i).getCoordinates().toString().equals(hex.toString()))
                 return true;
         }
         return false;
@@ -511,6 +509,7 @@ public final class Hive {
                     this.getAvailableGaps().add(newNeighbours.get(i));
 
         }
+
     }
 
     /**
@@ -900,8 +899,9 @@ public final class Hive {
         }
         //Fourth: Return ant to its original position
         updateCoordinates(token,c);
-        this.availableGaps.add(c);
+        //this.availableGaps.add(c);
         return possibleGaps;
+        //return this.availableGaps;
     }
 
     /**

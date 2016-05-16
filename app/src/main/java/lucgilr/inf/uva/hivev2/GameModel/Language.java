@@ -49,7 +49,7 @@ public class Language {
      * @return
      */
     public String StringToTokenString(String bug){
-        if(bug.equals("Bee") || bug.equals("abeja")){
+        if(bug.equals("Bee") || bug.equals("Abeja")){
             return TokenType.BEE.toString();
         }else if(bug.equals("Ant") || bug.equals("Hormiga")){
             return TokenType.ANT.toString();

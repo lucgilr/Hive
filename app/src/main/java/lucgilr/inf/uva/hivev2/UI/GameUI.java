@@ -147,6 +147,7 @@ public class GameUI extends AppCompatActivity {
 
             if(!this.movingToken){
                 gaps = controller.getPlayerGaps(player);
+                Log.d("gaps other size",String.valueOf(gaps.size()));
                 //If there are not gaps and the bee is not in game
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
@@ -412,24 +413,17 @@ public class GameUI extends AppCompatActivity {
             Log.d("3.Token touched","...");
             token = new Token();
             token = getTokenFromBoard(hex);
-            //If the token touched is one of yours
-            if(token.getPlayer().getColor().equals(this.player.getColor())) {
-                possibleGaps = controller.getPossibleMoves(token);
-                if (!possibleGaps.isEmpty()) {
-                    movingToken = true;
-                    this.gaps = new ArrayList<>(possibleGaps);
-                    initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
-                }
-                //If its not --> deselect
-            }else{
-                Log.d("4. deselect","...");
-                this.gaps = controller.getPlayerGaps(player);
-                this.movingToken=false;
+            Log.d("token type",token.getType().toString());
+            possibleGaps = controller.getPossibleMoves(token);
+            if (!possibleGaps.isEmpty()) {
+                movingToken = true;
+                this.gaps = new ArrayList<>(possibleGaps);
                 initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         }else if(!checkIfGapAvailable(hex, gaps)) {
             Log.d("4. deselect","...");
             this.gaps = controller.getPlayerGaps(player);
+            //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
             initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
         }
