@@ -533,9 +533,9 @@ public final class Hive {
      */
     public ArrayList<Hex> getPossibleGaps(Token token){
         ArrayList<Hex> possibleGaps = new ArrayList<>();
-        Log.d("isbeetle",String.valueOf(!token.isBeetle()));
+        /*Log.d("isbeetle",String.valueOf(!token.isBeetle()));
         Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));
-        Log.d("brokenhive",String.valueOf(!brokenHive(token)));
+        Log.d("brokenhive",String.valueOf(!brokenHive(token)));*/
         if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive(token)){
             switch(token.getType()){
                 case BEE: possibleGaps = beeMoves(token);
@@ -576,6 +576,9 @@ public final class Hive {
      */
     public void movetoken(Token token, Hex hex){
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
+        Log.d("origin of token",c.toString());
+        Log.d("token to move", token.tokenInfo());
+        Log.d("Destiny",hex.toString());
         //Check if players bee in game
         //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
@@ -1017,9 +1020,7 @@ public final class Hive {
      */
     public void deteleToken(Token token){
         for(int i=0;i<this.getBoard().size();i++){
-            if(this.getBoard().get(i).getCoordinates().getQ()==token.getCoordinates().getQ()
-                    && this.getBoard().get(i).getCoordinates().getD()==token.getCoordinates().getD()
-                    && this.getBoard().get(i).getCoordinates().getD()==token.getCoordinates().getD())
+            if(this.getBoard().get(i).getCoordinates().toString().equals(token.getCoordinates().toString()))
                 this.getBoard().remove(this.getBoard().get(i));
         }
     }

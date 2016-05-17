@@ -152,6 +152,10 @@ public class GameUI extends AppCompatActivity {
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
 
+            //PRINT BOARD
+            for(int i=0;i<game.getHive().getBoard().size();i++)
+                Log.d("token",game.getHive().getBoard().get(i).tokenInfo());
+
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 

@@ -160,8 +160,10 @@ public class AI {
                 game.getHive().addToken(t, this.hex);
             else{
                 saveBeeV2();
-                if(!this.move)
+                if(!this.move) {
+                    Log.d("Attack opponent","...");
                     attackOpponent();
+                }
             }
         }
     }
@@ -257,31 +259,40 @@ public class AI {
     }
 
     private void saveBeeV2(){
+        Log.d("Save bee","...");
         TokenMove bestmove = new TokenMove();
         Token bee = new Token();
         bee = this.player.inspectTokenInGame(0);
         //First: if the bee is blocked --> Try to move one of its friendly neighbours
         if(this.game.getHive().checkIfGapBlocked(bee.getCoordinates())){
+            Log.d("The bee is blocked","...");
             ArrayList<TokenMove> moves = new ArrayList<>();
             //Get friendly tokens
             ArrayList<Token> friends = new ArrayList<>();
             friends = getFriends(bee);
             if(!friends.isEmpty()){
+                Log.d("Bee has friends near","");
                 //Get possible moves for the friendly token
                 for(int i=0;i<friends.size();i++){
                     ArrayList<Hex> gaps = new ArrayList<>();
                     gaps = this.game.getHive().getPossibleGaps(friends.get(i));
+                    Log.d("Friend",friends.get(i).tokenInfo());
                     if(!gaps.isEmpty()){
+                        Log.d("Friend can be move",String.valueOf(i));
                         //If gaps is not empty --> evaluate the move
                         for(int j=0;j<gaps.size();j++){
+                            Log.d("evalued gap",gaps.get(j).toString());
                             int points = evalPosition(gaps.get(j));
-                            moves.add(new TokenMove(friends.get(i),gaps.get(j),points));
+                            Log.d("points",String.valueOf(points));
+                            moves.add(new TokenMove(friends.get(i), gaps.get(j), points));
                         }
                     }
                 }
             }
             if(!moves.isEmpty()){
                 bestmove = getBetterMove(moves);
+                Log.d("Winner gap!",bestmove.getHex().toString());
+                Log.d("Winner token!",bestmove.getToken().tokenInfo());
                 this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex());
                 this.beeSaved = true;
                 this.move = true;
@@ -302,7 +313,8 @@ public class AI {
     /**
      * Points: if the neighbour is an enemy: -1
      * if its a friendly token: +1
-     * also, if the token is an enemy: +5 the move can block it.
+     * If the token is an enemy: +5 the move can block it.
+     * If the enemy is a bee: +10.
      * @param hex
      * @return
      */
@@ -317,6 +329,7 @@ public class AI {
                 }else{
                     points +=-1;
                     if(checkIfBlockingGap(hex,n[j])) points+=5;
+                    if(n[j].getType().equals(TokenType.BEE) && n[j].getPlayer().getColor().equals("White")) points+=10;
                 }
             }
         }
@@ -466,11 +479,22 @@ public class AI {
         //Fake token to place
         Token fake = new Token();
         //Place the fake token in the board with the given coordinates
-        game.getHive().addToken(fake,coordinates);
+        //game.getHive().addToken(fake,coordinates);
+        fake.setCoordinates(coordinates);
+        game.getHive().getBoard().add(fake);
         //Check if the token is now blocked
         if(game.getHive().checkIfGapBlocked(token.getCoordinates())) blocked=true;
+        //PRINT BOARD --> THE BEE DISAPPEARS!
+        for(int k=0;k<this.game.getHive().getBoard().size();k++){
+            Log.d("Not moved jet...", this.game.getHive().getBoard().get(k).getCoordinates().toString());
+        }
         //Delete fake token from board
         game.getHive().deteleToken(fake);
+        //PRINT BOARD --> THE BEE DISAPPEARS!
+        Log.d("deleted fake...","...");
+        for(int k=0;k<this.game.getHive().getBoard().size();k++){
+            Log.d("Not moved jet...", this.game.getHive().getBoard().get(k).getCoordinates().toString());
+        }
         return blocked;
     }
 

@@ -152,6 +152,10 @@ public class AIGameUI extends AppCompatActivity {
                 }
             }
 
+            //PRINT BOARD
+            for(int i=0;i<this.game.getHive().getBoard().size();i++)
+                Log.d("token...",this.game.getHive().getBoard().get(i).tokenInfo());
+
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 
@@ -411,20 +415,12 @@ public class AIGameUI extends AppCompatActivity {
             token = new Token();
             token = getTokenFromBoard(hex);
             //If the token touched is one of yours
-            if(token.getPlayer().getColor().equals(this.player.getColor())) {
                 possibleGaps = controller.getPossibleMoves(token);
                 if (!possibleGaps.isEmpty()) {
                     movingToken = true;
                     this.gaps = new ArrayList<>(possibleGaps);
                     initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
-                //If its not --> deselect
-            }else{
-                Log.d("4. deselect", "...");
-                this.gaps = controller.getPlayerGaps(player);
-                this.movingToken=false;
-                initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
-            }
         }else if(!checkIfGapAvailable(hex, gaps)) {
             this.gaps = controller.getPlayerGaps(player);
             this.movingToken=false;
