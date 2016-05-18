@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
+import java.util.ArrayList;
+
 /**
  * A token represents an insect of the hive. 
  * @author Lucía Gil Román
@@ -17,6 +19,8 @@ public class Token {
     private boolean blocked;
     private boolean beetle;
     private int graphId;
+    //TEST THIS
+    private ArrayList<Token> neighbours;
 
     /**
      *

@@ -13,7 +13,7 @@ import lucgilr.inf.uva.hivev2.GameModel.TokenMove;
 import lucgilr.inf.uva.hivev2.GameModel.TokenType;
 /**
  * NOTAS:
- * Si un tenemos un escarabajo en juego y puede bloquear por orden: abeja, otro escarabajo o un saltamontes --> HACEDLO!
+ * Si un tenemos un escarabajo en juego y puede bloquear por orden: abeja 1º bloquear 2º subirse encima, otro escarabajo o un saltamontes --> HACEDLO!
  */
 
 /**
@@ -54,6 +54,7 @@ public class AI {
      * @param game
      */
     public void makeAChoice(Game game){
+        this.move=false;
         this.game=game;
         //First: Check Rules
         //Rule #1: First 3 moves
@@ -63,9 +64,8 @@ public class AI {
         }
         if(player.getTurn()<4){
             //Random opening
-            //if(this.randomOp==0) openingOne();
-            //else
-            openingTwo();
+            if(this.randomOp==0) openingOne();
+            else openingTwo();
         }else{
             //Rule #2: Check Bee --> move it if its in danger
             if(game.getPlayer2().isBeeInGame()) {
@@ -160,10 +160,7 @@ public class AI {
                 game.getHive().addToken(t, this.hex);
             else{
                 saveBeeV2();
-                if(!this.move) {
-                    Log.d("Attack opponent","...");
-                    attackOpponent();
-                }
+                if(!this.move) attackOpponent();
             }
         }
     }
@@ -281,8 +278,9 @@ public class AI {
                         Log.d("Friend can be move",String.valueOf(i));
                         //If gaps is not empty --> evaluate the move
                         for(int j=0;j<gaps.size();j++){
-                            Log.d("evalued gap",gaps.get(j).toString());
                             int points = evalPosition(gaps.get(j));
+                            Log.d("token",friends.get(i).tokenInfo());
+                            Log.d("move",gaps.get(j).toString());
                             Log.d("points",String.valueOf(points));
                             moves.add(new TokenMove(friends.get(i), gaps.get(j), points));
                         }
@@ -311,8 +309,8 @@ public class AI {
     }
 
     /**
-     * Points: if the neighbour is an enemy: -1
-     * if its a friendly token: +1
+     * Points: if the neighbour is an enemy: +1
+     * if its a friendly token: -1
      * If the token is an enemy: +5 the move can block it.
      * If the enemy is a bee: +10.
      * @param hex
@@ -325,11 +323,19 @@ public class AI {
         for(int j=0;j<n.length;j++){
             if(n[j]!=null){
                 if(n[j].getPlayer().getColor().equals(this.player.getColor())){
-                    points += 1;
+                    points += -1;
+                    if(checkIfBlockingGap(hex,n[j])) {
+                        points += -5;
+                        if (n[j].getType().equals(TokenType.BEE))
+                            points += -10;
+                    }
                 }else{
-                    points +=-1;
-                    if(checkIfBlockingGap(hex,n[j])) points+=5;
-                    if(n[j].getType().equals(TokenType.BEE) && n[j].getPlayer().getColor().equals("White")) points+=10;
+                    points += 1;
+                    if(checkIfBlockingGap(hex,n[j])) {
+                        points += 5;
+                        if (n[j].getType().equals(TokenType.BEE))
+                            points += 10;
+                    }
                 }
             }
         }
@@ -384,13 +390,80 @@ public class AI {
      * Attacks enemy following some rules order by priority of good moves.
      */
     private void attackOpponent() {
-        //First: If the AI has a beetle in game --> Check if it can attack the opponents bee by placing that token on top
-        move = beetleAttackBee();
-        if(!move){
-            //Second:attack opponents bee with a token already on the board
-
+        Log.d("Attack an opponent","...");
+        boolean tokenBlocking = false;
+        //Array to store the possible moves
+        ArrayList<TokenMove> moves = new ArrayList<>();
+        //First: Check if a token already in the game can block the enemy's bee
+        for(int i=0;i<player.getTokensInGame().size();i++){
+            //If the token is already blocking the enemy's bee --> Do nothing
+            Token[] n = new Token[6];
+            n = game.getHive().tokenNeighbours(player.getTokensInGame().get(i).getCoordinates());
+            for(int j=0;j<n.length;j++){
+                if(n[j]!=null) {
+                    if (n[j].getType().equals(TokenType.BEE) && n[j].getPlayer().getColor().equals("White")) {
+                        if (checkIfUnblockingGap(player.getTokensInGame().get(i), n[j]))
+                            tokenBlocking = true;
+                    }
+                }
+            }
+            if(!tokenBlocking) {
+                //Get possible moves for each token
+                ArrayList<Hex> tokenMoves = new ArrayList<>();
+                tokenMoves = this.game.getHive().getPossibleGaps(player.getTokensInGame().get(i));
+                Log.d("Token to get moves",player.getTokensInGame().get(i).tokenInfo());
+                Log.d("Number of moves",String.valueOf(tokenMoves.size()));
+                //Evaluate each move
+                for (int j = 0; j < tokenMoves.size(); j++) {
+                    int points = evalPosition(tokenMoves.get(j));
+                    Log.d("token",player.getTokensInGame().get(i).tokenInfo());
+                    Log.d("move",tokenMoves.get(j).toString());
+                    Log.d("points",String.valueOf(points));
+                    moves.add(new TokenMove(player.getTokensInGame().get(i), tokenMoves.get(j), points));
+                }
+            }
+        }
+        //Evaluate the points of the best move
+        if(!moves.isEmpty()){
+            TokenMove bestmove = getBetterMove(moves);
+            this.game.getHive().movetoken(bestmove.getToken(), bestmove.getHex());
+            this.move = true;
         }
 
+        //Second: Check if a token in game can touch the enemy's bee
+
+        //Third: Check if a token in game can block a dangerous token
+
+        //Fourth: Add a token in game --> THINK PRIORITIES!
+
+    }
+
+    /**
+     * Checks, if the token in the given coordinates gaps is blocked,
+     * if moving the given token would unblock it.
+     * @param coordinates
+     * @param token
+     * @return
+     */
+    private boolean checkIfUnblockingGap(Token token, Token toCheck){
+        //Blocked?
+        boolean unBlocked = false;
+        //If the token in the given gap is already bloked
+        if(game.getHive().checkIfGapBlocked(toCheck.getCoordinates())) {
+            //Delete provisionally the given token from board
+            game.getHive().deteleToken(token);
+            //Check if the token is now blocked
+            if (!game.getHive().checkIfGapBlocked(toCheck.getCoordinates())) unBlocked = true;
+            //Return the token to the board
+            game.getHive().getBoard().add(token);
+            //PRINT BOARD
+            /*for (int i = 0; i < this.game.getHive().getBoard().size(); i++)
+                Log.d("before checking", this.game.getHive().getBoard().get(i).getCoordinates().toString());*/
+        }
+        //PRINT BOARD
+        /*for(int j=0;j<this.game.getHive().getBoard().size();j++)
+            Log.d("after checking",this.game.getHive().getBoard().get(j).tokenInfo());*/
+        return unBlocked;
     }
 
     /**
@@ -474,27 +547,32 @@ public class AI {
      * @return
      */
     public boolean checkIfBlockingGap(Hex coordinates, Token token){
+        Log.d("Placing token in",coordinates.toString());
+        Log.d("To check",token.tokenInfo());
         //Blocked?
         boolean blocked = false;
-        //Fake token to place
-        Token fake = new Token();
-        //Place the fake token in the board with the given coordinates
-        //game.getHive().addToken(fake,coordinates);
-        fake.setCoordinates(coordinates);
-        game.getHive().getBoard().add(fake);
-        //Check if the token is now blocked
-        if(game.getHive().checkIfGapBlocked(token.getCoordinates())) blocked=true;
-        //PRINT BOARD --> THE BEE DISAPPEARS!
-        for(int k=0;k<this.game.getHive().getBoard().size();k++){
-            Log.d("Not moved jet...", this.game.getHive().getBoard().get(k).getCoordinates().toString());
-        }
-        //Delete fake token from board
-        game.getHive().deteleToken(fake);
-        //PRINT BOARD --> THE BEE DISAPPEARS!
-        Log.d("deleted fake...","...");
-        for(int k=0;k<this.game.getHive().getBoard().size();k++){
-            Log.d("Not moved jet...", this.game.getHive().getBoard().get(k).getCoordinates().toString());
-        }
+        //The grasshoppers and the beetles can't be blocked
+        //if(token.getType().equals(TokenType.GRASSHOPPER) || token.getType().equals(TokenType.BEETLE)) blocked=false;
+        //else {
+            //Fake token to place
+            Token fake = new Token();
+            //Place the fake token in the board with the given coordinates
+            fake.setCoordinates(coordinates);
+            game.getHive().getBoard().add(fake);
+            //PRINT BOARD
+            /*for(int i=0;i<this.game.getHive().getBoard().size();i++)
+                Log.d("before checking",this.game.getHive().getBoard().get(i).getCoordinates().toString());*/
+            //Check if the token is now blocked
+            int n = game.getHive().numberOfNeighbours(token.getCoordinates());
+            Log.d("Neighbours of ",token.tokenInfo()+" "+String.valueOf(n));
+            if (game.getHive().checkIfGapBlocked(token.getCoordinates())) blocked = true;
+            //Delete fake token from board
+            game.getHive().deteleToken(fake);
+        //}
+        //PRINT BOARD
+        /*for(int j=0;j<this.game.getHive().getBoard().size();j++)
+            Log.d("after checking",this.game.getHive().getBoard().get(j).tokenInfo());*/
+        Log.d("blocked?",String.valueOf(blocked));
         return blocked;
     }
 

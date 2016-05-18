@@ -153,8 +153,8 @@ public class AIGameUI extends AppCompatActivity {
             }
 
             //PRINT BOARD
-            for(int i=0;i<this.game.getHive().getBoard().size();i++)
-                Log.d("token...",this.game.getHive().getBoard().get(i).tokenInfo());
+            /*for(int i=0;i<this.game.getHive().getBoard().size();i++)
+                Log.d("token...",this.game.getHive().getBoard().get(i).tokenInfo());*/
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
