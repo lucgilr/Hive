@@ -222,7 +222,7 @@ public final class Hive {
         }
     }*/
     //CHANGES --> Hex to Hex
-    private void updateCoordinates(Token token, Hex hex) {
+    public void updateCoordinates(Token token, Hex hex) {
         for (Token board1 : this.board) {
             if (board1.getCoordinates().getR() == token.getCoordinates().getR()
                     && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
@@ -246,7 +246,7 @@ public final class Hive {
             }
         }
     }*/
-    private void deleteHex(Token token){
+    public void deleteHex(Token token){
         for (Token board1 : this.board) {
             if (board1.getCoordinates().getR() == token.getCoordinates().getR()
                     && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
@@ -576,9 +576,6 @@ public final class Hive {
      */
     public void movetoken(Token token, Hex hex){
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
-        Log.d("origin of token",c.toString());
-        Log.d("token to move", token.tokenInfo());
-        Log.d("Destiny",hex.toString());
         //Check if players bee in game
         //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
@@ -629,15 +626,21 @@ public final class Hive {
      * @param hex
      * @return
      */
-    public boolean checkIfGapBlocked(Hex hex){
-        //First: If number of neighbours more than 4;
-        if(numberOfNeighbours(hex)>4) return true;
-        //Second: If it has at less 2 consecutive neighbours free --> Not blocked
-        if(numberOfNeighbours(hex)==4)
-            if(checkIfBlockedByFourNeighbours(hex)) return true;
-        //Third: If there is only 3 neighbours check that they don't block the gap
-        if(numberOfNeighbours(hex)==3)
-            if(checkIfBlockedByThreeNeighbours(hex)) return true;
+    public boolean checkIfGapBlocked(Token token){
+        Log.d("Hive blocked?", token.tokenInfo());
+        Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));
+        if(token.getType().equals(TokenType.BEE) || token.getType().equals(TokenType.SPIDER) || token.getType().equals(TokenType.ANT)) {
+            //First: If number of neighbours more than 4;
+            if (numberOfNeighbours(token.getCoordinates()) > 4) return true;
+            //Second: If it has at less 2 consecutive neighbours free --> Not blocked
+            if (numberOfNeighbours(token.getCoordinates()) == 4)
+                if (checkIfBlockedByFourNeighbours(token.getCoordinates())) return true;
+            //Third: If there is only 3 neighbours check that they don't block the gap
+            if (numberOfNeighbours(token.getCoordinates()) == 3)
+                if (checkIfBlockedByThreeNeighbours(token.getCoordinates())) return true;
+        }
+        //Fourth: If moving the token breaks the hive...
+        if(brokenHive(token)) return true;
         return false;
     }
 
@@ -685,7 +688,7 @@ public final class Hive {
         ArrayList<Hex> realGaps = new ArrayList<>();
         ArrayList<Hex> nToken = new ArrayList<>();
         //First: Check if blocked
-        if(!checkIfGapBlocked(token.getCoordinates())){
+        if(!checkIfGapBlocked(token)){
             //Second: Get neighbours
             possibleGaps = getNeighbourHex(token.getCoordinates());
             //Third : For each coordinate --> check if its a gap and that the token can slide to it
@@ -740,7 +743,6 @@ public final class Hive {
         //Face 3
         j=1;
         while(isInBoard(new Hex(x,y+j, 0))){
-            Log.d("HEX GRASS",hex.toString());
             j=j+1;
         }
         if(j!=1){
@@ -888,7 +890,7 @@ public final class Hive {
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
         ArrayList<Hex> possibleGaps = new ArrayList<>();
         //First: Check if blocked
-        if(!checkIfGapBlocked(token.getCoordinates())){
+        if(!checkIfGapBlocked(token)){
             //Second: take ant from the board
             //Free gap in the board
             deleteHex(token);
@@ -897,7 +899,8 @@ public final class Hive {
             //Third: Get all available gaps and check if z==0 and then if they are not blocked
             for(int i=0; i<this.availableGaps.size(); i++){
                 if(this.availableGaps.get(i).getD()==0)
-                    if(!checkIfGapBlocked(this.availableGaps.get(i))) possibleGaps.add(this.availableGaps.get(i));
+                    //if(!checkIfGapBlocked(this.availableGaps.get(i)))
+                    possibleGaps.add(this.availableGaps.get(i));
             }
         }
         //Fourth: Return ant to its original position
@@ -919,11 +922,6 @@ public final class Hive {
 
         int n=0;
 
-        /*int xt=token.getR();
-        int yt=token.getQ();
-        int xc=Hex.getR();
-        int yc=Hex.getQ();
-        int zc=Hex.getD();*/
         int xt=token.getQ();
         int yt=token.getR();
         int xc=hex.getQ();
