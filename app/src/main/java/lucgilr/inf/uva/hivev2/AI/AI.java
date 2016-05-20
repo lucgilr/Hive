@@ -302,7 +302,8 @@ public class AI {
                     Log.d("toCheck",n[j].tokenInfo());
                     Log.d("friend","-1");
                     points += -1;
-                    if(checkIfBlockingGap(toMove,n[j],hex)) {
+                    //if(checkIfBlockingGap(toMove,n[j],hex)) {
+                    if(game.getHive().checkIfGapBlocked(n[j])){
                         Log.d("Blocking friend","-5");
                         points += -5;
                         if (n[j].getType().equals(TokenType.BEE)) {
@@ -314,7 +315,8 @@ public class AI {
                     Log.d("toCheck",n[j].tokenInfo());
                     Log.d("Enemy","+1");
                     points += 1;
-                    if(checkIfBlockingGap(toMove,n[j],hex)) {
+                    //if(checkIfBlockingGap(toMove,n[j],hex)) {
+                    if(game.getHive().checkIfGapBlocked(n[j])){
                         Log.d("blocking enemy","+5");
                         points += 5;
                         if (n[j].getType().equals(TokenType.BEE)) {
