@@ -627,8 +627,8 @@ public final class Hive {
      * @return
      */
     public boolean checkIfGapBlocked(Token token){
-        Log.d("Hive blocked?", token.tokenInfo());
-        Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));
+        /*Log.d("Hive blocked?", token.tokenInfo());
+        Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));*/
         if(token.getType().equals(TokenType.BEE) || token.getType().equals(TokenType.SPIDER) || token.getType().equals(TokenType.ANT)) {
             //First: If number of neighbours more than 4;
             if (numberOfNeighbours(token.getCoordinates()) > 4) return true;
