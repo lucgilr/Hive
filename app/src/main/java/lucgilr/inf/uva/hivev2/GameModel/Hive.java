@@ -536,13 +536,13 @@ public final class Hive {
      */
     public ArrayList<Hex> getPossibleGaps(Token token, boolean ia){
         ArrayList<Hex> possibleGaps = new ArrayList<>();
-        Log.d("isbeetle",String.valueOf(!token.isBeetle()));
-        Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));
+        /*Log.d("isbeetle",String.valueOf(!token.isBeetle()));
+        Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));*/
         boolean brokenHive = brokenHive(token);
         if(ia) brokenHive = false;
-        Log.d("brokenhive",String.valueOf(!brokenHive(token)));
+        //Log.d("brokenhive",String.valueOf(!brokenHive(token)));
         if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive){
-            Log.d("before switch","...");
+            //Log.d("before switch","...");
             switch(token.getType()){
                 case BEE: possibleGaps = beeMoves(token);
                     break;
@@ -625,10 +625,10 @@ public final class Hive {
             //Add neighbours to graph
             for (Token newNeighbour : newNeighbours)
                 if (newNeighbour != null){
-                    Log.d("token",token.tokenInfo());
+                    /*Log.d("token",token.tokenInfo());
                     Log.d("Token id g ",String.valueOf(token.getGraphId()));
                     Log.d("neig",newNeighbour.tokenInfo());
-                    Log.d("nigh id g",String.valueOf(newNeighbour.getGraphId()));
+                    Log.d("nigh id g",String.valueOf(newNeighbour.getGraphId()));*/
                     this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
                 }
 
@@ -646,7 +646,7 @@ public final class Hive {
     public boolean checkIfGapBlocked(Token token){
         //First: If moving the token breaks the hive...
         if(brokenHive(token)){
-            Log.d("Broken hive","...");
+            //Log.d("Broken hive","...");
             return true;
         }
         /*Log.d("Hive blocked?", token.tokenInfo());
