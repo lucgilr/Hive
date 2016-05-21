@@ -113,7 +113,7 @@ public final class Hive {
      * @param hex
      * CHANGES --> Hex to Hex
      */
-    public void addToken(Token token, Hex hex){
+    public void addToken(Token token, Hex hex, boolean graph){
         //If is a bee --> beeInGame
         if(token.getType()==TokenType.BEE) token.getPlayer().setBeeInGame(true);
         //Add Hex to token
@@ -123,17 +123,19 @@ public final class Hive {
         //Get neighbours
         Token[] neighbours = new Token[6];
         neighbours = tokenNeighbours(token.getCoordinates());
-        //Set token a graph id
-        token.setGraphId(this.vertex);
-        this.vertex=this.vertex+1;
-        //Add token to graph
-        this.graph.addVertex(token.getGraphId());
-        //Add edges (neighbours) to the vertex
-        for (Token neighbour : neighbours)
-            if (neighbour != null){
-                this.graph.addEdge(token.getGraphId(), neighbour.getGraphId());
-            }
-        //addEdges(neighbours,token);
+        if(graph) {
+            //Set token a graph id
+            token.setGraphId(this.vertex);
+            this.vertex = this.vertex + 1;
+            //Add token to graph
+            this.graph.addVertex(token.getGraphId());
+            //Add edges (neighbours) to the vertex
+            for (Token neighbour : neighbours)
+                if (neighbour != null) {
+                    this.graph.addEdge(token.getGraphId(), neighbour.getGraphId());
+                }
+            //addEdges(neighbours,token);
+        }
         //Set token to inGame
         token.setInGame(true);
         //Delete gap from ArrayList of gaps available
@@ -528,15 +530,19 @@ public final class Hive {
     /**
      * Returns a list of coordinates where a given token can be moved.
      * the token is already in game.
+     * IA -->
      * @param token
      * @return
      */
-    public ArrayList<Hex> getPossibleGaps(Token token){
+    public ArrayList<Hex> getPossibleGaps(Token token, boolean ia){
         ArrayList<Hex> possibleGaps = new ArrayList<>();
-        /*Log.d("isbeetle",String.valueOf(!token.isBeetle()));
+        Log.d("isbeetle",String.valueOf(!token.isBeetle()));
         Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));
-        Log.d("brokenhive",String.valueOf(!brokenHive(token)));*/
-        if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive(token)){
+        boolean brokenHive = brokenHive(token);
+        if(ia) brokenHive = false;
+        Log.d("brokenhive",String.valueOf(!brokenHive(token)));
+        if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive){
+            Log.d("before switch","...");
             switch(token.getType()){
                 case BEE: possibleGaps = beeMoves(token);
                     break;
@@ -562,7 +568,7 @@ public final class Hive {
     public String printPossibleGaps(Token token){
         String gaps ="\nPossible gaps for "+token.getType()+":\n";
         ArrayList<Hex> possibleGaps = new ArrayList<>();
-        possibleGaps = getPossibleGaps(token);
+        possibleGaps = getPossibleGaps(token,false);
         for(int i=0;i<possibleGaps.size(); i++){
             gaps+=" X: "+possibleGaps.get(i).getR()+" Y: "+possibleGaps.get(i).getQ()+" Z: "+possibleGaps.get(i).getD()+"\n";
         }
@@ -571,6 +577,7 @@ public final class Hive {
 
     /**
      * Moves a token from its currently position to a new one.
+     * IA
      * @param token to move
      * @param hex new position
      */
@@ -578,18 +585,20 @@ public final class Hive {
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
         //Check if players bee in game
         //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
+        //if(!ia) {
             //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
-            if(token.getType()==TokenType.BEETLE && token.getCoordinates().getD()!=0){
+            if (token.getType() == TokenType.BEETLE && token.getCoordinates().getD() != 0) {
                 //Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
-                Token t = searchToken(new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD()-1));
+                Token t = searchToken(new Hex(token.getCoordinates().getQ(), token.getCoordinates().getR(), token.getCoordinates().getD() - 1));
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
-            if(token.getType()== TokenType.BEETLE && hex.getD()!=0){
+            if (token.getType() == TokenType.BEETLE && hex.getD() != 0) {
                 //Token t = searchToken(new Hex(hex.getR(),hex.getQ(),hex.getD()-1));
-                Token t = searchToken(new Hex(hex.getQ(),hex.getR(),hex.getD()-1));
+                Token t = searchToken(new Hex(hex.getQ(), hex.getR(), hex.getD() - 1));
                 t.setBeetle(true);
             }
+        //}
             //Add gap to available gaps
             this.availableGaps.add(c);
             //Free gap in the board
@@ -1030,9 +1039,7 @@ public final class Hive {
      */
     public boolean checkIfGapTaken(Hex hex){
         for(int i=0;i<this.getBoard().size();i++) {
-            if (this.getBoard().get(i).getCoordinates().getQ() == hex.getQ()
-                    && this.getBoard().get(i).getCoordinates().getR() == hex.getR()
-                    && this.getBoard().get(i).getCoordinates().getD() == hex.getD())
+            if (this.getBoard().get(i).getCoordinates().toString().equals(hex.toString()))
                 return true;
         }
         return false;

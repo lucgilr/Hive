@@ -155,7 +155,7 @@ public class GameController {
      * @param coords
      */
     public void playToken(Token token, Hex coords){
-        model.getHive().addToken(token, coords);
+        model.getHive().addToken(token, coords,true);
     }
 
     /**
@@ -164,7 +164,7 @@ public class GameController {
      * @return
      */
     public ArrayList<Hex> getPossibleMoves(Token token){
-        return model.getHive().getPossibleGaps(token);
+        return model.getHive().getPossibleGaps(token,false);
     }
 
     /**
