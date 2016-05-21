@@ -581,7 +581,7 @@ public final class Hive {
      * @param token to move
      * @param hex new position
      */
-    public void movetoken(Token token, Hex hex){
+    public void movetoken(Token token, Hex hex, boolean ia){
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
         //Check if players bee in game
         //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
@@ -608,23 +608,31 @@ public final class Hive {
             //Update coordinates of the token of the board
             updateCoordinates(token,hex);
             //Add neighbours null coordinates to gapsAvailable
-            refreshGapsAvailable(hex);
+        if(!ia) {refreshGapsAvailable(hex);
             //Remove gap from available
-            removeHexFromAvaliable(hex);
+            removeHexFromAvaliable(hex);}
 
+        //if(!ia) {
             //Update graph:
             //Delete vertex from the graph
             this.graph.removeVertex(token.getGraphId());
             //If the destination gap is in level 0
             //if(token.getCoordinates().getD()==0) {
-                //Get new neighbours
-                Token[] newNeighbours = tokenNeighbours(token.getCoordinates());
-                //Add token again
-                this.graph.addVertex(token.getGraphId());
-                //Add neighbours to graph
-                for (Token newNeighbour : newNeighbours)
-                    if (newNeighbour != null)
-                        this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
+            //Get new neighbours
+            Token[] newNeighbours = tokenNeighbours(token.getCoordinates());
+            //Add token again
+            this.graph.addVertex(token.getGraphId());
+            //Add neighbours to graph
+            for (Token newNeighbour : newNeighbours)
+                if (newNeighbour != null){
+                    Log.d("token",token.tokenInfo());
+                    Log.d("Token id g ",String.valueOf(token.getGraphId()));
+                    Log.d("neig",newNeighbour.tokenInfo());
+                    Log.d("nigh id g",String.valueOf(newNeighbour.getGraphId()));
+                    this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
+                }
+
+        //}
             //}
 
         //}
@@ -636,20 +644,23 @@ public final class Hive {
      * @return
      */
     public boolean checkIfGapBlocked(Token token){
+        //First: If moving the token breaks the hive...
+        if(brokenHive(token)){
+            Log.d("Broken hive","...");
+            return true;
+        }
         /*Log.d("Hive blocked?", token.tokenInfo());
         Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));*/
         if(token.getType().equals(TokenType.BEE) || token.getType().equals(TokenType.SPIDER) || token.getType().equals(TokenType.ANT)) {
-            //First: If number of neighbours more than 4;
+            //Second: If number of neighbours more than 4;
             if (numberOfNeighbours(token.getCoordinates()) > 4) return true;
-            //Second: If it has at less 2 consecutive neighbours free --> Not blocked
+            //Third: If it has at less 2 consecutive neighbours free --> Not blocked
             if (numberOfNeighbours(token.getCoordinates()) == 4)
                 if (checkIfBlockedByFourNeighbours(token.getCoordinates())) return true;
-            //Third: If there is only 3 neighbours check that they don't block the gap
+            //Fourth: If there is only 3 neighbours check that they don't block the gap
             if (numberOfNeighbours(token.getCoordinates()) == 3)
                 if (checkIfBlockedByThreeNeighbours(token.getCoordinates())) return true;
         }
-        //Fourth: If moving the token breaks the hive...
-        if(brokenHive(token)) return true;
         return false;
     }
 
@@ -1027,8 +1038,13 @@ public final class Hive {
      */
     public void deteleToken(Token token){
         for(int i=0;i<this.getBoard().size();i++){
-            if(this.getBoard().get(i).getCoordinates().toString().equals(token.getCoordinates().toString()))
+            if(this.getBoard().get(i).getCoordinates().toString().equals(token.getCoordinates().toString())) {
+                //Delete it from the graph
+                this.graph.removeVertex(this.getBoard().get(i).getGraphId());
+                this.vertex = this.vertex - 1;
+                //Delete it from the board
                 this.getBoard().remove(this.getBoard().get(i));
+            }
         }
     }
 

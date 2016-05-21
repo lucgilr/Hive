@@ -200,7 +200,7 @@ public class AI {
             }
             if(!moves.isEmpty()){
                 bestmove = getBetterMove(moves);
-                this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex());
+                this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex(),false);
                 this.beeSaved = true;
                 this.move = true;
             }
@@ -271,7 +271,7 @@ public class AI {
         //Evaluate the points of the best move
         if(!bestMoves.isEmpty()){
             TokenMove bestmove = getBetterMove(bestMoves);
-            this.game.getHive().movetoken(bestmove.getToken(), bestmove.getHex());
+            this.game.getHive().movetoken(bestmove.getToken(), bestmove.getHex(),false);
             this.move = true;
         }
         //Second: If the tokens in the game can't be in a better position --> Add new ones
@@ -281,8 +281,10 @@ public class AI {
             //Takes a token from the box
             newToken = getToken();
             Log.d("Token to add",newToken.tokenInfo());
+            Log.d("To the position",newToken.getCoordinates().toString());
             //Add token to the board
-
+            this.game.getHive().addToken(newToken,newToken.getCoordinates(),true);
+            this.move=true;
         }else{
 
         }
@@ -305,7 +307,7 @@ public class AI {
         //Save current token position
         Hex currentPos = new Hex(toMove.getCoordinates().getQ(),toMove.getCoordinates().getR(),toMove.getCoordinates().getD());
         //Move token to the position to evaluate
-        this.game.getHive().movetoken(toMove,hex);
+        this.game.getHive().movetoken(toMove,hex,true);
 
         /*for(int j=0;j<this.game.getHive().getBoard().size();j++)
             Log.d("after checking",this.game.getHive().getBoard().get(j).tokenInfo());
@@ -346,7 +348,7 @@ public class AI {
             }
         }
         //Return token to its original position
-        this.game.getHive().movetoken(toMove, currentPos);
+        this.game.getHive().movetoken(toMove, currentPos,true);
 
         /*for(int j=0;j<this.game.getHive().getBoard().size();j++)
             Log.d("after checking",this.game.getHive().getBoard().get(j).tokenInfo());*/
@@ -392,7 +394,7 @@ public class AI {
         //this.game.getHive().movetoken(toMove,currentPos);
         //PRINT BOARD
 
-        Log.d("blocked?", String.valueOf(blocked));
+        //Log.d("blocked?", String.valueOf(blocked));
         return blocked;
     }
 
@@ -422,7 +424,7 @@ public class AI {
         ArrayList<TokenMove> moves = new ArrayList<>();
         //Take possible moves for the bee:
         ArrayList<Hex> beeMoves = new ArrayList<>();
-        beeMoves = this.game.getHive().getPossibleGaps(bee,false);
+        beeMoves = this.game.getHive().getPossibleGaps(bee, false);
         //Inspect the gaps found --> They have less than 3 neighbours?
         for(int i=0;i<beeMoves.size();i++){
             //Get number neighbours of that gap
@@ -438,7 +440,7 @@ public class AI {
         }
         if(!moves.isEmpty()){
             TokenMove bestmove = getBetterMove(moves);
-            this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex());
+            this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex(),false);
             this.beeSaved = true;
             this.move = true;
         }
@@ -463,12 +465,12 @@ public class AI {
             //Change coordinates of the token to move
             //this.game.getHive().deleteHex(toMove);
             //this.game.getHive().updateCoordinates(token, new Hex(-100,-100,-100));
-            this.game.getHive().movetoken(token,new Hex(-100,-100,-100));
+            this.game.getHive().movetoken(token,new Hex(-100,-100,-100),true);
             //Check if the token is now blocked
             if (!game.getHive().checkIfGapBlocked(toCheck)) unBlocked = true;
             //Return the token to the board
             //this.game.getHive().updateCoordinates(token,currentPos);
-            this.game.getHive().movetoken(token,currentPos);
+            this.game.getHive().movetoken(token,currentPos,true);
             //PRINT BOARD
             /*for (int i = 0; i < this.game.getHive().getBoard().size(); i++)
                 Log.d("before checking", this.game.getHive().getBoard().get(i).getCoordinates().toString());*/
@@ -482,7 +484,6 @@ public class AI {
 
 
     /**
-     * //Bring spiders early in the game: http://gen42.com/images/tipspage1.jpg
      * //Leave Grasshoppers to the last --> fill gaps http://gen42.com/images/tipspage1.jpg
      *
      * @return Token to place in the game.
@@ -497,50 +498,42 @@ public class AI {
         gaps = this.game.getHive().getPlayerGapsAvailable(this.player);
         //ArrayList to store Tokens and its moves
         ArrayList<TokenMove> moves = new ArrayList<>();
-        for(int i=0;i<tokens.size();i++){
-            ArrayList<TokenMove> tokenMovesPoints = new ArrayList<>();
-            for(int j=0; j<gaps.size();j++){
-                tokens.get(i).setCoordinates(gaps.get(j));
-                Log.d("token", tokens.get(i).tokenInfo());
-                Log.d("place", gaps.get(j).toString());
-                //Analyse each pair (token/place) to guess the best move
-                //First: get next moves
-                ArrayList<Hex> tokenMoves = new ArrayList<>();
-                //Add token to the board
-                //this.game.getHive().addToken(tokens.get(i),gaps.get(j),false);
-                /////
-                //Add coordinate to token
-                tokens.get(i).setCoordinates(gaps.get(j));
-                //Place token on the board
-                this.game.getHive().getBoard().add(tokens.get(i));
-                //Delete gap from ArrayList of gaps available
-                this.game.getHive().removeHexFromAvaliable(tokens.get(i).getCoordinates());
-                /////
-                //Get its moves
-                tokenMoves = this.game.getHive().getPossibleGaps(tokens.get(i),true);
-                Log.d("number of moves",String.valueOf(tokenMoves.size()));
-                //Delete token from the board
-                /////
-                //Change token coordinate
-                tokens.get(i).setCoordinates(new Hex(-100,-100,-100));
-                //Remove token from board
-                this.game.getHive().deteleToken(tokens.get(i));
-                //Add gap to gaps Available
-                this.game.getHive().getAvailableGaps().add(gaps.get(j));
-                ////
-                //Second: Analyse those moves
-                for(int k=0;k<tokenMoves.size();k++){
-                    int points = evalPosition(tokens.get(i),tokenMoves.get(k));
-                    Log.d("token",tokens.get(i).tokenInfo());
-                    Log.d("gap",gaps.get(j).toString());
+
+        //If the opening used was the first one, the AI has a spider in the box
+        //Following a tip from the authors game we will bring the spiders early in the game: http://gen42.com/images/tipspage1.jpg
+        if(this.randomOp==0){
+            token = this.player.takeTokenFromTheBox(5);
+            //Work out the best gap to place the spider
+            for(int i=0;i<gaps.size();i++){
+                Log.d("Gap", gaps.get(i).toString());
+                //Place token in that gap
+                //token.setCoordinates(gaps.get(i));
+                //this.game.getHive().getBoard().add(token);
+                this.game.getHive().addToken(token,gaps.get(i),true);
+
+                for(int j=0;j<this.game.getHive().getBoard().size();j++)
+                    Log.d("Board",this.game.getHive().getBoard().get(j).tokenInfo());
+
+                //Get possible moves from that position
+                ArrayList<Hex> possibleMoves = new ArrayList<>();
+                possibleMoves = this.game.getHive().getPossibleGaps(token,true);
+                Log.d("possibleMoves size",String.valueOf(possibleMoves.size()));
+
+                //Evaluate those moves
+                for(int j=0;j<possibleMoves.size();j++){
+                    int points = evalPosition(token,possibleMoves.get(j));
+                    Log.d("Position",possibleMoves.get(j).toString());
                     Log.d("points",String.valueOf(points));
-                    tokenMovesPoints.add(new TokenMove(tokens.get(i),gaps.get(j),points));
+                    moves.add(new TokenMove(token,gaps.get(i),points));
                 }
+
+                //Delete token from the board
+                this.game.getHive().deteleToken(token);
+
+                for(int j=0;j<this.game.getHive().getBoard().size();j++)
+                    Log.d("Board",this.game.getHive().getBoard().get(j).tokenInfo());
+
             }
-            //Third: Get better move for that token
-            TokenMove bestMove = new TokenMove();
-            bestMove = getBetterMove(tokenMovesPoints);
-            moves.add(bestMove);
         }
         if(!moves.isEmpty()){
             //Get better move

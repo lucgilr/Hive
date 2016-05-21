@@ -107,7 +107,7 @@ public class GameController {
      * @param hex
      */
     public void movetoken(Token token, Hex hex){
-        model.getHive().movetoken(token, hex);
+        model.getHive().movetoken(token, hex,false);
     }
 
     /**
