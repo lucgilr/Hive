@@ -384,7 +384,7 @@ public class AI {
      */
     private int evalToken(Token token){
         switch (token.getType()){
-            case BEE: return 10;
+            case BEE: return 20;
             case ANT: return 8;
             case SPIDER: return 6;
             case BEETLE: return 4;
@@ -440,6 +440,9 @@ public class AI {
      * @return Token to place in the game.
      */
     public Token getToken(){
+
+        Log.d("Turn",String.valueOf(this.player.getTurn()));
+
         Token token = new Token();
         //Get tokens in the box
         ArrayList<Token> tokens = new ArrayList<>();

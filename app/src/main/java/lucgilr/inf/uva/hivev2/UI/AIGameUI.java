@@ -44,6 +44,7 @@ public class AIGameUI extends AppCompatActivity {
     private boolean movingToken;
     private ArrayList<Hex> possibleGaps;
     private Token token;
+    private String displayLanguage;
 
 
     @Override
@@ -65,6 +66,9 @@ public class AIGameUI extends AppCompatActivity {
                 hScrollView.scrollTo(1150, 0);
             }
         }, 100);
+
+        //Language
+        displayLanguage = Locale.getDefault().getDisplayLanguage();
 
         //Create new GameUI
         game = new Game();
@@ -217,24 +221,50 @@ public class AIGameUI extends AppCompatActivity {
 
                         if(hexView.equals(sol)) {
                             if(!controller.getBoard().get(i).isBeetle()){
-                                if (color.equals("White")) {
-                                    if (id == 0) view.setBackgroundResource(R.drawable.whitebee);
-                                    else if (id == 1 || id == 2 || id == 3)
-                                        view.setBackgroundResource(R.drawable.whitegrass);
-                                    else if (id == 4 || id == 5)
-                                        view.setBackgroundResource(R.drawable.whitespider);
-                                    else if (id == 6 || id == 7)
-                                        view.setBackgroundResource(R.drawable.whitebeetle);
-                                    else view.setBackgroundResource(R.drawable.whiteant);
-                                } else {
-                                    if (id == 0) view.setBackgroundResource(R.drawable.blackbee);
-                                    else if (id == 1 || id == 2 || id == 3)
-                                        view.setBackgroundResource(R.drawable.blackgrass);
-                                    else if (id == 4 || id == 5)
-                                        view.setBackgroundResource(R.drawable.blackspider);
-                                    else if (id == 6 || id == 7)
-                                        view.setBackgroundResource(R.drawable.blackbeetle);
-                                    else view.setBackgroundResource(R.drawable.blackant);
+                                if(displayLanguage.equals("English")) {
+                                    if (color.equals("White")) {
+                                        if (id == 0)
+                                            view.setBackgroundResource(R.drawable.whitebee);
+                                        else if (id == 1 || id == 2 || id == 3)
+                                            view.setBackgroundResource(R.drawable.whitegrass);
+                                        else if (id == 4 || id == 5)
+                                            view.setBackgroundResource(R.drawable.whitespider);
+                                        else if (id == 6 || id == 7)
+                                            view.setBackgroundResource(R.drawable.whitebeetle);
+                                        else view.setBackgroundResource(R.drawable.whiteant);
+                                    } else {
+                                        if (id == 0)
+                                            view.setBackgroundResource(R.drawable.blackbee);
+                                        else if (id == 1 || id == 2 || id == 3)
+                                            view.setBackgroundResource(R.drawable.blackgrass);
+                                        else if (id == 4 || id == 5)
+                                            view.setBackgroundResource(R.drawable.blackspider);
+                                        else if (id == 6 || id == 7)
+                                            view.setBackgroundResource(R.drawable.blackbeetle);
+                                        else view.setBackgroundResource(R.drawable.blackant);
+                                    }
+                                }else{
+                                    if (color.equals("White")) {
+                                        if (id == 0)
+                                            view.setBackgroundResource(R.drawable.abejablanca);
+                                        else if (id == 1 || id == 2 || id == 3)
+                                            view.setBackgroundResource(R.drawable.saltamblanco);
+                                        else if (id == 4 || id == 5)
+                                            view.setBackgroundResource(R.drawable.aranablanca);
+                                        else if (id == 6 || id == 7)
+                                            view.setBackgroundResource(R.drawable.escarblanco);
+                                        else view.setBackgroundResource(R.drawable.hormigablanca);
+                                    } else {
+                                        if (id == 0)
+                                            view.setBackgroundResource(R.drawable.abejanegra);
+                                        else if (id == 1 || id == 2 || id == 3)
+                                            view.setBackgroundResource(R.drawable.saltamnegro);
+                                        else if (id == 4 || id == 5)
+                                            view.setBackgroundResource(R.drawable.arananegra);
+                                        else if (id == 6 || id == 7)
+                                            view.setBackgroundResource(R.drawable.escarnegro);
+                                        else view.setBackgroundResource(R.drawable.hormiganegra);
+                                    }
                                 }
                             }
                         }
@@ -371,7 +401,7 @@ public class AIGameUI extends AppCompatActivity {
                 final ArrayList<String> t = new ArrayList<>();
                 int turn = controller.getPlayerTurn();
                 boolean bee = controller.playerBeeInGame();
-                final String displayLanguage = Locale.getDefault().getDisplayLanguage();
+                //final String displayLanguage = Locale.getDefault().getDisplayLanguage();
                 String bug ="";
                 if(turn == 4 && !bee){
                     for (int i = 0; i < tokens.size(); i++) {
