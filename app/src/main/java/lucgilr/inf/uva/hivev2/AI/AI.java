@@ -1,5 +1,7 @@
 package lucgilr.inf.uva.hivev2.AI;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -275,8 +277,10 @@ public class AI {
     }
 
     /**
-     *
-     * @return
+     * Determines the score for the possible moves that each token in the game can make.
+     * If the token is already blocking the enemy's bee --> Do nothing.
+     * If the token can't best its current score --> Do nothing.
+     * @return list of possible moves and its score.
      */
     private ArrayList<TokenMove> moveTokenScores(){
         //Array to store the possible moves
@@ -319,14 +323,22 @@ public class AI {
     }
 
     /**
-     * Points: if the neighbour is an enemy: +1
-     * if its a friendly token: -1
-     * If the token is an enemy: +5 the move can block it.
-     * If the enemy is a bee: +10.
+     * Evaluate a position that a token can make.
+     * Points: If the neighbour is an friend: -1 (CHANGE)
+     *         If the move could block the token: -5
+     *         If the token is the AI bee: -10
+     *         If its an enemy token: +1 (CHANGE)
+     *         If the move could block the enemy token: +5
+     *         If the token is the enemy's bee: +10
      * @param hex
      * @return
      */
     private int evalPosition(Token toMove,Hex hex) {
+
+        Log.d("-----------------------","-----------------------");
+        Log.d("Token", toMove.tokenInfo());
+        Log.d("To move", hex.toString());
+
         //Save current token position
         Hex currentPos = new Hex(toMove.getCoordinates().getQ(),toMove.getCoordinates().getR(),toMove.getCoordinates().getD());
         //Move token to the position to evaluate
@@ -338,39 +350,58 @@ public class AI {
         for(int j=0;j<n.length;j++){
             if(n[j]!=null){
                 if(n[j].getPlayer().getColor().equals(this.player.getColor())){
-                    points += -1;
+                    points -= evalToken(n[j]);
+                    Log.d("for the friendly token",n[j].getType().toString());
+                    Log.d("Points",String.valueOf(points));
                     if(game.getHive().checkIfGapBlocked(n[j])){
-                        points += -5;
-                        if (n[j].getType().equals(TokenType.BEE)) {
-                            points += -10;
-                        }
+                        points *= 2;
+                        Log.d("Token blocked",String.valueOf(points));
                     }
                 }else{
-                    points += 1;
+                    points += evalToken(n[j]);
+                    Log.d("for the enemy token",n[j].getType().toString());
+                    Log.d("Points",String.valueOf(points));
                     if(game.getHive().checkIfGapBlocked(n[j])){
-                        points += 5;
-                        if (n[j].getType().equals(TokenType.BEE)) {
-                            points += 10;
-                        }
+                        points *= 2;
+                        Log.d("Token blocked",String.valueOf(points));
                     }
                 }
             }
         }
         //Return token to its original position
-        this.game.getHive().movetoken(toMove, currentPos,true);
+        this.game.getHive().movetoken(toMove, currentPos, true);
+
+        Log.d("Total Points", String.valueOf(points));
+        Log.d("-----------------------","-----------------------");
 
         return points;
     }
 
     /**
-     * Returns friendly tokens from a given token.
-     * @param bee
+     * Calculates the value of the given token.
+     * @param token
      * @return
      */
-    private ArrayList<Token> getFriends(Token bee) {
+    private int evalToken(Token token){
+        switch (token.getType()){
+            case BEE: return 10;
+            case ANT: return 8;
+            case SPIDER: return 6;
+            case BEETLE: return 4;
+            case GRASSHOPPER: return 2;
+            default: return 0;
+        }
+    }
+
+    /**
+     * Returns friendly tokens from a given token.
+     * @param token
+     * @return
+     */
+    private ArrayList<Token> getFriends(Token token) {
         ArrayList<Token> friends = new ArrayList<>();
         Token[] neighbours = new Token[6];
-        neighbours = this.game.getHive().tokenNeighbours(bee.getCoordinates());
+        neighbours = this.game.getHive().tokenNeighbours(token.getCoordinates());
         for(int i=0;i<neighbours.length;i++){
             if(neighbours[i]!=null)
                 if(neighbours[i].getPlayer().getColor().equals(this.player.getColor())) friends.add(neighbours[i]);
