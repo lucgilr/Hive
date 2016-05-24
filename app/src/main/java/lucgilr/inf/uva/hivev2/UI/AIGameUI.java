@@ -42,6 +42,7 @@ public class AIGameUI extends AppCompatActivity {
     private ArrayList<Hex> possibleGaps;
     private Token token;
     private String displayLanguage;
+    private boolean gameover;
 
     private RelativeLayout mRelativeLayout;
     private ScrollView vScrollView;
@@ -147,6 +148,14 @@ public class AIGameUI extends AppCompatActivity {
                 }
             }
 
+            //Check if a bee fully is surrounded
+            int endgame = controller.endGame();
+            if(endgame!=0 && !this.gameover){
+                //GAME OVER
+                this.gameover=true;
+                gameOver(endgame);
+            }
+
             //PRINT BOARD
             /*for(int i=0;i<this.game.getHive().getBoard().size();i++)
                 Log.d("token...",this.game.getHive().getBoard().get(i).tokenInfo());*/
@@ -175,9 +184,11 @@ public class AIGameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_SCROLL:
                             break;
                         case MotionEvent.ACTION_UP:
-                            v.setSelected(false);
-                            CircleImageView view = (CircleImageView) v;
-                            OnGridHexClick(view.getHex());
+                            if(!isGameover()) {
+                                v.setSelected(false);
+                                CircleImageView view = (CircleImageView) v;
+                                OnGridHexClick(view.getHex());
+                            }
                             break;
                     }
                     return true;
@@ -264,19 +275,14 @@ public class AIGameUI extends AppCompatActivity {
 
                 }
 
-                if(checkIfGapAvailable(view.getHex(), gaps)){
-                    view.setBackgroundResource(R.drawable.greyhex);
+                if(!this.gameover) {
+                    if (checkIfGapAvailable(view.getHex(), gaps)) {
+                        view.setBackgroundResource(R.drawable.greyhex);
+                    }
                 }
 
                 view.setOnTouchListener(gridNodeTouchListener);
                 addViewToLayout(view, hex, grid);
-
-                //Check if bee fully surrounded
-                int endgame = controller.endGame();
-                if(endgame!=0){
-                    //GAME OVER
-                    gameOver(endgame);
-                }
 
             }
             return grid;
@@ -293,7 +299,7 @@ public class AIGameUI extends AppCompatActivity {
         gaps=null;
         if(player==1){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("White player wins!");
+            alert.setMessage(R.string.whitePlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -304,7 +310,7 @@ public class AIGameUI extends AppCompatActivity {
             alert.show();
         }else if(player==2){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("Black player wins!");
+            alert.setMessage(R.string.blackPlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -315,7 +321,7 @@ public class AIGameUI extends AppCompatActivity {
             alert.show();
         }else if(player==3){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("It's a draw...");
+            alert.setMessage(R.string.bothPlayers);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -363,10 +369,10 @@ public class AIGameUI extends AppCompatActivity {
     private void nextPlayer(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setMessage("You can't make any move or add any token");
-        alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               game.oneMoreRound();
+                game.oneMoreRound();
                 player.oneMoreTurn();
                 initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
@@ -495,5 +501,10 @@ public class AIGameUI extends AppCompatActivity {
         }
         return false;
     }
+
+    private boolean isGameover(){
+        return this.gameover;
+    }
+
 }
 

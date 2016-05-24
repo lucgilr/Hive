@@ -7,4 +7,7 @@
     <string name="ant">Ant</string>
     <string name="spider">Spider</string>
     <string name="grasshopper">Grasshopper</string>
+    <string name="blackPlayer">Black Player Wins!</string>
+    <string name="whitePlayer">White Player Wins!</string>
+    <string name="bothPlayers">Its a Draw...</string>
 </resources>

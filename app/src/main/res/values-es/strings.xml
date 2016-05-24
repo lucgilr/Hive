@@ -8,4 +8,7 @@
     <string name="game">Partida</string>
     <string name="grasshopper">Saltamontes</string>
     <string name="spider">Araña</string>
+    <string name="blackPlayer">¡Gana el Jugador Negro!</string>
+    <string name="bothPlayers">Empate...</string>
+    <string name="whitePlayer">¡Gana el Jugador Blanco!</string>
 </resources>

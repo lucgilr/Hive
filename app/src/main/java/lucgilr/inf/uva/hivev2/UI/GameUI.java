@@ -1,6 +1,7 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -9,11 +10,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Grid;
 import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.R;
+import pl.polidea.view.ZoomView;
 
 /**
  * The original code has been modified but it can be found in:
@@ -50,8 +54,10 @@ public class GameUI extends AppCompatActivity {
     private ArrayList<Hex> possibleGaps;
     private Token token;
     private String displayLanguage;
+    private boolean gameover;
 
     private RelativeLayout mRelativeLayout;
+    private ZoomView zoomView;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
     private static int radius = 7;
@@ -61,6 +67,16 @@ public class GameUI extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        //LinearLayout
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
+        //Adding zoom...
+        /*View v = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.game_layout,null,false);
+        v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        zoomView = new ZoomView(this);
+        zoomView.addView(v);
+        mRelativeLayout.addView(zoomView);*/
+
 
         //Center scrolls
         vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
@@ -89,8 +105,7 @@ public class GameUI extends AppCompatActivity {
         possibleGaps = new ArrayList<>();
         gaps = new ArrayList<>();
         token = new Token();
-
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
+        this.gameover=false;
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
 
@@ -147,6 +162,20 @@ public class GameUI extends AppCompatActivity {
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
 
+            //Check if is Game Over
+            /*if(this.gameover){
+                //Back to main page
+                finish();
+            }*/
+
+            //Check if a bee fully surrounded
+            int endgame = controller.endGame();
+            if(endgame!=0 && !this.gameover){
+                //GAME OVER
+                this.gameover=true;
+                gameOver(endgame);
+            }
+
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 
@@ -171,9 +200,11 @@ public class GameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_SCROLL:
                             break;
                         case MotionEvent.ACTION_UP:
-                            v.setSelected(false);
-                            CircleImageView view = (CircleImageView) v;
-                            OnGridHexClick(view.getHex());
+                            if(!isGameover()) {
+                                v.setSelected(false);
+                                CircleImageView view = (CircleImageView) v;
+                                OnGridHexClick(view.getHex());
+                            }
                             break;
                     }
                     return true;
@@ -260,19 +291,14 @@ public class GameUI extends AppCompatActivity {
 
                 }
 
-                if(checkIfGapAvailable(view.getHex(), gaps)){
-                    view.setBackgroundResource(R.drawable.greyhex);
+                if(!this.gameover) {
+                    if (checkIfGapAvailable(view.getHex(), gaps)) {
+                        view.setBackgroundResource(R.drawable.greyhex);
+                    }
                 }
 
                 view.setOnTouchListener(gridNodeTouchListener);
                 addViewToLayout(view, hex, grid);
-
-                //Check if bee fully surrounded
-                int endgame = controller.endGame();
-                if(endgame!=0){
-                    //GAME OVER
-                    gameOver(endgame);
-                }
 
             }
             return grid;
@@ -289,33 +315,33 @@ public class GameUI extends AppCompatActivity {
         gaps=null;
         if(player==1){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("White player wins!");
+            alert.setMessage(R.string.whitePlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });
             alert.create();
             alert.show();
         }else if(player==2){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("Black player wins!");
+            alert.setMessage(R.string.blackPlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });
             alert.create();
             alert.show();
         }else if(player==3){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("It's a draw...");
+            alert.setMessage(R.string.bothPlayers);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
             });
             alert.create();
@@ -359,10 +385,10 @@ public class GameUI extends AppCompatActivity {
     private void nextPlayer(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setMessage("You can't make any move or add any token");
-        alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               game.oneMoreRound();
+                game.oneMoreRound();
                 player.oneMoreTurn();
                 initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
@@ -491,5 +517,10 @@ public class GameUI extends AppCompatActivity {
         }
         return false;
     }
+
+    private boolean isGameover(){
+        return this.gameover;
+    }
+
 }
 
