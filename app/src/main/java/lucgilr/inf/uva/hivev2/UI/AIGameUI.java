@@ -37,14 +37,16 @@ public class AIGameUI extends AppCompatActivity {
     private Language language;
 
     ArrayList<Hex> gaps;
-    private RelativeLayout mRelativeLayout;
-    private ScrollView vScrollView;
-    private HorizontalScrollView hScrollView;
     private Player player;
     private boolean movingToken;
     private ArrayList<Hex> possibleGaps;
     private Token token;
     private String displayLanguage;
+
+    private RelativeLayout mRelativeLayout;
+    private ScrollView vScrollView;
+    private HorizontalScrollView hScrollView;
+    private static int radius = 7;
 
 
     @Override
@@ -83,17 +85,6 @@ public class AIGameUI extends AppCompatActivity {
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
-        int radius = 6;
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            radius = extras.getInt("GRID_RADIUS", 6);
-            shape = Grid.Shape.valueOf(extras.getString("GRID_SHAPE"));
-            if (shape == null) {
-                radius = 6;
-                shape = Grid.Shape.HEXAGON_POINTY_TOP;
-            }
-        }
 
         initGridView(radius, shape);
     }
@@ -377,7 +368,7 @@ public class AIGameUI extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                game.oneMoreRound();
                 player.oneMoreTurn();
-                initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         });
         alert.create();
@@ -393,7 +384,7 @@ public class AIGameUI extends AppCompatActivity {
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingToken=false;
-            initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
             ArrayList<Token> tokens = controller.getTokensFromBox();
@@ -435,7 +426,7 @@ public class AIGameUI extends AppCompatActivity {
                         controller.playToken(token,coords);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
-                        initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                        initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                     }
                 });
                 alert.create();
@@ -449,12 +440,12 @@ public class AIGameUI extends AppCompatActivity {
                 if (!possibleGaps.isEmpty()) {
                     movingToken = true;
                     this.gaps = new ArrayList<>(possibleGaps);
-                    initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                 }
         }else if(!checkIfGapAvailable(hex, gaps)) {
             this.gaps = controller.getPlayerGaps(player);
             this.movingToken=false;
-            initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
 
     }

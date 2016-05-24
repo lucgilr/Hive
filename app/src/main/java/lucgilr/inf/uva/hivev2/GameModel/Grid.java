@@ -1,6 +1,7 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Hex;

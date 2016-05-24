@@ -45,14 +45,16 @@ public class GameUI extends AppCompatActivity {
     private Language language;
 
     ArrayList<Hex> gaps;
-    private RelativeLayout mRelativeLayout;
-    private ScrollView vScrollView;
-    private HorizontalScrollView hScrollView;
     private Player player;
     private boolean movingToken;
     private ArrayList<Hex> possibleGaps;
     private Token token;
     private String displayLanguage;
+
+    private RelativeLayout mRelativeLayout;
+    private ScrollView vScrollView;
+    private HorizontalScrollView hScrollView;
+    private static int radius = 7;
 
 
     @Override
@@ -91,17 +93,6 @@ public class GameUI extends AppCompatActivity {
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
-        int radius = 6;
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            radius = extras.getInt("GRID_RADIUS", 6);
-            shape = Grid.Shape.valueOf(extras.getString("GRID_SHAPE"));
-            if (shape == null) {
-                radius = 6;
-                shape = Grid.Shape.HEXAGON_POINTY_TOP;
-            }
-        }
 
         initGridView(radius, shape);
     }
@@ -152,14 +143,9 @@ public class GameUI extends AppCompatActivity {
 
             if(!this.movingToken){
                 gaps = controller.getPlayerGaps(player);
-                Log.d("gaps other size",String.valueOf(gaps.size()));
                 //If there are not gaps and the bee is not in game
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
-
-            //PRINT BOARD
-            for(int i=0;i<game.getHive().getBoard().size();i++)
-                Log.d("token",game.getHive().getBoard().get(i).tokenInfo());
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
@@ -378,7 +364,7 @@ public class GameUI extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                game.oneMoreRound();
                 player.oneMoreTurn();
-                initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         });
         alert.create();
@@ -389,16 +375,14 @@ public class GameUI extends AppCompatActivity {
         //Toast.makeText(GameUI.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
 
         if(this.movingToken && checkIfGapAvailable(hex, gaps)){
-            Log.d("1.moving token","...");
             Hex coords = getRealCoords(hex.getR(),hex.getQ());
             controller.movetoken(token, coords);
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingToken=false;
-            initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
-            Log.d("2.select token","...");
             ArrayList<Token> tokens = controller.getTokensFromBox();
             if(!tokens.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
@@ -438,29 +422,26 @@ public class GameUI extends AppCompatActivity {
                         controller.playToken(token,coords);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
-                        initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                        initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                     }
                 });
                 alert.create();
                 alert.show();
             }
         }else if(tokenTouched(hex)){
-            Log.d("3.Token touched","...");
             token = new Token();
             token = getTokenFromBoard(hex);
-            Log.d("token type",token.getType().toString());
             possibleGaps = controller.getPossibleMoves(token);
             if (!possibleGaps.isEmpty()) {
                 movingToken = true;
                 this.gaps = new ArrayList<>(possibleGaps);
-                initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         }else if(!checkIfGapAvailable(hex, gaps)) {
-            Log.d("4. deselect","...");
             this.gaps = controller.getPlayerGaps(player);
             //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
-            initGridView(6, Grid.Shape.HEXAGON_POINTY_TOP);
+            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
 
     }
