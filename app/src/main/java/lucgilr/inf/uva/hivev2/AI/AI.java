@@ -172,7 +172,7 @@ public class AI {
         Token bee = new Token();
         bee = this.player.inspectTokenInGame(0);
         //First: if the bee is blocked --> Try to move one of its friendly neighbours
-        if(this.game.getHive().checkIfGapBlocked(bee)){
+        if(this.game.getHive().checkIfTokenBlocked(bee)){
             saveBee(bee);
         }else{
             //Second: If the bee is not blocked --> Get number of neighbours
@@ -200,6 +200,11 @@ public class AI {
             for(int i=0;i<friends.size();i++){
                 ArrayList<Hex> gaps = new ArrayList<>();
                 gaps = this.game.getHive().getPossibleGaps(friends.get(i),false);
+                //PRINT GAPS
+                Log.d("Gaps for",friends.get(i).tokenInfo());
+                for(int a=0;a<gaps.size();a++)
+                    Log.d("gap...",gaps.get(a).toString());
+                ////////////
                 if(!gaps.isEmpty()){
                     //If gaps is not empty --> evaluate the move
                     for(int j=0;j<gaps.size();j++){
@@ -227,6 +232,11 @@ public class AI {
         //Take possible moves for the bee:
         ArrayList<Hex> beeMoves = new ArrayList<>();
         beeMoves = this.game.getHive().getPossibleGaps(bee, false);
+        //PRINT GAPS
+        Log.d("Gaps for",bee.tokenInfo());
+        for(int a=0;a<beeMoves.size();a++)
+            Log.d("gap...",beeMoves.get(a).toString());
+        ////////////
         //Inspect the gaps found --> They have less than 3 neighbours?
         for(int i=0;i<beeMoves.size();i++){
             //Get number neighbours of that gap
@@ -292,6 +302,11 @@ public class AI {
             //If the token can't be moved --> Do nothing
             ArrayList<Hex> tokenMoves = new ArrayList<>();
             tokenMoves = this.game.getHive().getPossibleGaps(player.getTokensInGame().get(i),false);
+            //PRINT GAPS
+            Log.d("Gaps for",player.getTokensInGame().get(i).tokenInfo());
+            for(int a=0;a<tokenMoves.size();a++)
+                Log.d("gap...",tokenMoves.get(a).toString());
+            ////////////
             if(!tokenMoves.isEmpty()) {
                 //If the token is already blocking the enemy's bee --> Do nothing
                 Token[] n = new Token[6];
@@ -353,7 +368,7 @@ public class AI {
                     points -= evalToken(n[j]);
                     Log.d("for the friendly token",n[j].getType().toString());
                     Log.d("Points",String.valueOf(points));
-                    if(game.getHive().checkIfGapBlocked(n[j])){
+                    if(game.getHive().checkIfTokenBlocked(n[j])){
                         points *= 2;
                         Log.d("Token blocked",String.valueOf(points));
                     }
@@ -361,7 +376,7 @@ public class AI {
                     points += evalToken(n[j]);
                     Log.d("for the enemy token",n[j].getType().toString());
                     Log.d("Points",String.valueOf(points));
-                    if(game.getHive().checkIfGapBlocked(n[j])){
+                    if(game.getHive().checkIfTokenBlocked(n[j])){
                         points *= 2;
                         Log.d("Token blocked",String.valueOf(points));
                     }
@@ -420,13 +435,13 @@ public class AI {
         //Blocked?
         boolean unBlocked = false;
         //If the token in the given gap is already bloked
-        if(game.getHive().checkIfGapBlocked(toCheck)) {
+        if(game.getHive().checkIfTokenBlocked(toCheck)) {
             //Save actual token coordinates
             Hex currentPos = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
             //Change coordinates of the token to move
             this.game.getHive().movetoken(token,new Hex(-100,-100,-100),true);
             //Check if the token is now blocked
-            if (!game.getHive().checkIfGapBlocked(toCheck)) unBlocked = true;
+            if (!game.getHive().checkIfTokenBlocked(toCheck)) unBlocked = true;
             //Return the token to the board
             this.game.getHive().movetoken(token,currentPos,true);
         }
@@ -435,7 +450,7 @@ public class AI {
 
 
     /**
-     * //Leave Grasshoppers to the last --> fill gaps http://gen42.com/images/tipspage1.jpg
+     *
      *
      * @return Token to place in the game.
      */
@@ -456,6 +471,31 @@ public class AI {
         if(this.randomOp==0){
             token = this.player.takeTokenFromTheBox(5);
             //Work out the best gap to place the spider
+            Log.d("Token",token.tokenInfo());
+            moves = addTokenScores(token);
+        }else if(this.player.getTurn()<=12){
+            //Take beetles or ants
+            int type = getRandomPos(0,1);
+            if(type==0){
+                //Take beetle
+                if(this.player.isTokenInBox(TokenType.BEETLE))
+                    token = this.player.takeToken(TokenType.BEETLE.toString());
+                else
+                    token = this.player.takeToken(TokenType.ANT.toString());
+            }else{
+                //Take ant
+                if(this.player.isTokenInBox(TokenType.ANT))
+                    token = this.player.takeToken(TokenType.ANT.toString());
+                else
+                    token = this.player.takeToken(TokenType.BEETLE.toString());
+            }
+            Log.d("Token",token.tokenInfo());
+            moves = addTokenScores(token);
+        }else if(this.player.getTurn()>12){
+            //Keep hoppers in reserve for end moves
+            //http://www.gen42.com/images/tipspage1.jpg
+            token = this.player.takeToken(TokenType.GRASSHOPPER.toString());
+            Log.d("Token",token.tokenInfo());
             moves = addTokenScores(token);
         }
         if(!moves.isEmpty()){
@@ -488,6 +528,11 @@ public class AI {
             //Get possible moves from that position
             ArrayList<Hex> possibleMoves = new ArrayList<>();
             possibleMoves = this.game.getHive().getPossibleGaps(token,true);
+            //PRINT GAPS
+            Log.d("Gaps for",token.tokenInfo());
+            for(int a=0;a<possibleMoves.size();a++)
+                Log.d("gap...",possibleMoves.get(a).toString());
+            ////////////
             //Evaluate those moves
             for(int j=0;j<possibleMoves.size();j++){
                 int points = evalPosition(token,possibleMoves.get(j));

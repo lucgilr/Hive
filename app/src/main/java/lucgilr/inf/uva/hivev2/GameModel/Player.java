@@ -239,4 +239,11 @@ public class Player {
         return token;
     }
 
+    public boolean isTokenInBox(TokenType type){
+        for(int i=0;i<this.getTokensInTheBox().size();i++){
+            if(this.getTokensInTheBox().get(i).getType().equals(type)) return true;
+        }
+        return false;
+    }
+
 }

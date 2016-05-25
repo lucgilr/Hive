@@ -139,7 +139,7 @@ public final class Hive {
         //Set token to inGame
         token.setInGame(true);
         //Delete gap from ArrayList of gaps available
-        removeHexFromAvaliable(token.getCoordinates());
+        removeHexFromAvaliable(token.getCoordinates(),this.availableGaps);
         //add new neighbours if they are not already there and have no token
         refreshGapsAvailable(token.getCoordinates());
     }
@@ -187,17 +187,6 @@ public final class Hive {
      * @param hex of the token to look for
      * @return token if found
      */
-    /*private Token searchToken(Hex Hex){
-        for (Token board1 : this.board) {
-            if (board1.getCoordinates().getR() == Hex.getR()
-                    && board1.getCoordinates().getQ() == Hex.getQ()
-                    && board1.getCoordinates().getD() == Hex.getD()) {
-                return board1;
-            }
-        }
-        return null;
-    }*/
-    //CHANGES --> Hex to Hex
     public Token searchToken(Hex hex){
         for (Token board1 : this.board) {
             if (board1.getCoordinates().getR() == hex.getR()
@@ -212,23 +201,11 @@ public final class Hive {
     /**
      * Updates token coordinates
      * @param token to update
-     * @param Hex new coordinates
+     * @param hex new coordinates
      */
-    /*private void updateCoordinates(Token token, Hex Hex) {
-        for (Token board1 : this.board) {
-            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
-                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
-                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
-                board1.setCoordinates(Hex);
-            }
-        }
-    }*/
-    //CHANGES --> Hex to Hex
     public void updateCoordinates(Token token, Hex hex) {
         for (Token board1 : this.board) {
-            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
-                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
-                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
+            if (board1.getCoordinates().toString().equals(token.getCoordinates().toString())) {
                 board1.setCoordinates(hex);
             }
         }
@@ -239,20 +216,9 @@ public final class Hive {
      * Updates it to an impossible position in the board: -100,-100,-100
      * @param token
      */
-    /*private void deleteHex(Token token){
-        for (Token board1 : this.board) {
-            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
-                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
-                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
-                board1.setCoordinates(new Hex(-100,-100,-100));
-            }
-        }
-    }*/
     public void deleteHex(Token token){
         for (Token board1 : this.board) {
-            if (board1.getCoordinates().getR() == token.getCoordinates().getR()
-                    && board1.getCoordinates().getQ() == token.getCoordinates().getQ()
-                    && board1.getCoordinates().getD() == token.getCoordinates().getD()) {
+            if (board1.getCoordinates().toString().equals(token.getCoordinates().toString())) {
                 board1.setCoordinates(new Hex(-100,-100,-100));
             }
         }
@@ -307,7 +273,7 @@ public final class Hive {
 
     /**
      * counts how many neighbors has a given position.
-     * @param Hex
+     * @param hex
      * @return
      */
     //CHANGES --> Hex to Hex
@@ -324,7 +290,7 @@ public final class Hive {
     /**
      * checks if all the neighbors tokens for a given gap are from a specific player.
      * @param player
-     * @param Hex
+     * @param hex
      * @return
      */
     //CHANGES --> Hex to Hex
@@ -375,8 +341,10 @@ public final class Hive {
             //A token can only be placed in the lower level of the hive
             if(this.availableGaps.get(i).getD()==0){
                 if(player.getTurn()!=1){
-                    if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
+                    if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i))) {
+                        Log.d("Gap to add",this.availableGaps.get(i).toString());
                         gaps.add(this.availableGaps.get(i));
+                    }
                 }else{
                     gaps.add(this.availableGaps.get(i));
                 }
@@ -425,7 +393,7 @@ public final class Hive {
 
     /**
      * Returns the list of positions surrounding a gap.
-     * @param Hex
+     * @param hex
      * @return
      */
     public ArrayList<Hex> getNeighbourHex(Hex hex){
@@ -470,13 +438,14 @@ public final class Hive {
 
     /**
      * Deletes a coordinate from the list of available gaps.
-     * @param Hex
+     * @param hex
      */
-    public void removeHexFromAvaliable(Hex hex){
-        Iterator<Hex> it = this.availableGaps.iterator();
+    public void removeHexFromAvaliable(Hex hex, ArrayList<Hex> list){
+        //Iterator<Hex> it = this.availableGaps.iterator();
+        Iterator<Hex> it = list.iterator();
         while (it.hasNext()) {
             Hex c = it.next();
-            if (c.getR()==hex.getR() && c.getQ()==hex.getQ() && c.getD()==hex.getD()) {
+            if (c.toString().equals(hex.toString())) {
                 it.remove();
             }
         }
@@ -484,7 +453,7 @@ public final class Hive {
 
     /**
      * Checks if a positions is already in the list of available gaps.
-     * @param Hex
+     * @param hex
      * @return
      */
     private boolean checkIfDuplicate(Hex hex){
@@ -500,7 +469,7 @@ public final class Hive {
     /**
      * Add new positions to the list of available gaps.
      * Checks if the new position is not already in the list.
-     * @param Hex
+     * @param hex
      */
     private void refreshGapsAvailable(Hex hex) {
         ArrayList<Hex> newNeighbours = new ArrayList<>();
@@ -516,14 +485,14 @@ public final class Hive {
 
     /**
      * Deletes gaps from available if they haven't any neighbour.
-     * @param Hex
+     * @param hex
      */
-    private void deleteGapsAvailable(Hex hex) {
+    private void deleteGapsAvailable(Hex hex, ArrayList<Hex> list) {
         ArrayList<Hex> oldNeighbours = new ArrayList<>();
         oldNeighbours = getNeighbourHex(hex);
         for(int i=0; i<oldNeighbours.size();i++){
             //If this neighbours gap has no neighbours --> delete from gapsAvailable
-            if(numberOfNeighbours(oldNeighbours.get(i))==0) removeHexFromAvaliable(oldNeighbours.get(i));
+            if(numberOfNeighbours(oldNeighbours.get(i))==0) removeHexFromAvaliable(oldNeighbours.get(i),list);
         }
     }
 
@@ -604,13 +573,13 @@ public final class Hive {
             //Free gap in the board
             deleteHex(token);
             //Delete gap neighbours if they haven't any neighbour
-            deleteGapsAvailable(c);
+            deleteGapsAvailable(c,this.availableGaps);
             //Update coordinates of the token of the board
             updateCoordinates(token,hex);
             //Add neighbours null coordinates to gapsAvailable
         if(!ia) {refreshGapsAvailable(hex);
             //Remove gap from available
-            removeHexFromAvaliable(hex);}
+            removeHexFromAvaliable(hex,this.availableGaps);}
 
         //if(!ia) {
             //Update graph:
@@ -643,7 +612,7 @@ public final class Hive {
      * @param hex
      * @return
      */
-    public boolean checkIfGapBlocked(Token token){
+    public boolean checkIfTokenBlocked(Token token){
         //First: If moving the token breaks the hive...
         if(brokenHive(token)){
             //Log.d("Broken hive","...");
@@ -665,8 +634,27 @@ public final class Hive {
     }
 
     /**
+     *
+     * @param hex
+     * @return
+     */
+    public boolean checkIfGapBlocked(Hex hex){
+        /*Log.d("Hive blocked?", token.tokenInfo());
+        Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));*/
+            //Second: If number of neighbours more than 4;
+            if (numberOfNeighbours(hex) > 4) return true;
+            //Third: If it has at less 2 consecutive neighbours free --> Not blocked
+            if (numberOfNeighbours(hex) == 4)
+                if (checkIfBlockedByFourNeighbours(hex)) return true;
+            //Fourth: If there is only 3 neighbours check that they don't block the gap
+            if (numberOfNeighbours(hex) == 3)
+                if (checkIfBlockedByThreeNeighbours(hex)) return true;
+        return false;
+    }
+
+    /**
      * Checks if a position surrounded by 4 tokens is blocked.
-     * @param Hex
+     * @param hex
      * @return
      */
     private boolean checkIfBlockedByFourNeighbours(Hex hex){
@@ -685,7 +673,7 @@ public final class Hive {
 
     /**
      * If a position is surrounded by 3 separated tokens is blocked.
-     * @param Hex
+     * @param hex
      * @return
      */
     private boolean checkIfBlockedByThreeNeighbours(Hex hex){
@@ -708,7 +696,7 @@ public final class Hive {
         ArrayList<Hex> realGaps = new ArrayList<>();
         ArrayList<Hex> nToken = new ArrayList<>();
         //First: Check if blocked
-        if(!checkIfGapBlocked(token)){
+        if(!checkIfTokenBlocked(token)){
             //Second: Get neighbours
             possibleGaps = getNeighbourHex(token.getCoordinates());
             //Third : For each coordinate --> check if its a gap and that the token can slide to it
@@ -843,7 +831,6 @@ public final class Hive {
         ArrayList<Hex> l3Token = new ArrayList<>();
 
         //Save original Hex
-        //Hex c1 = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),0);
         Hex c1 = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),0);
 
         //Level 1
@@ -906,26 +893,34 @@ public final class Hive {
      * @return
      */
     private ArrayList<Hex> antMoves(Token token) {
-        //Hex c = new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD());
+        //First: Copy gapsAvailable to new Array
+        ArrayList<Hex> availableGapsClon = new ArrayList<>();
+        //availableGapsClon = this.getAvailableGaps();
+        for(int i=0;i<this.availableGaps.size();i++)
+            availableGapsClon.add(this.availableGaps.get(i));
+        Log.d("available gaps size",String.valueOf(this.getAvailableGaps().size()));
+        Log.d("Clon size",String.valueOf(availableGapsClon.size()));
         Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
         ArrayList<Hex> possibleGaps = new ArrayList<>();
         //First: Check if blocked
-        if(!checkIfGapBlocked(token)){
+        if(!checkIfTokenBlocked(token)){
             //Second: take ant from the board
             //Free gap in the board
             deleteHex(token);
             //Delete gap neighbours if they haven't any neighbour
-            deleteGapsAvailable(c);
-            //Third: Get all available gaps and check if z==0 and then if they are not blocked
-            for(int i=0; i<this.availableGaps.size(); i++){
-                if(this.availableGaps.get(i).getD()==0)
-                    //if(!checkIfGapBlocked(this.availableGaps.get(i)))
-                    possibleGaps.add(this.availableGaps.get(i));
+            deleteGapsAvailable(c,availableGapsClon);
+            //Third: Get all available gaps and check if d==0 and then if they are not blocked
+            for(int i=0; i<availableGapsClon.size(); i++){
+                if(availableGapsClon.get(i).getD()==0)
+                    if(!checkIfGapBlocked(availableGapsClon.get(i)))
+                        possibleGaps.add(availableGapsClon.get(i));
             }
         }
         //Fourth: Return ant to its original position
         updateCoordinates(token,c);
         //this.availableGaps.add(c);
+        Log.d("available gaps size end",String.valueOf(this.getAvailableGaps().size()));
+        Log.d("Clon size end", String.valueOf(availableGapsClon.size()));
         return possibleGaps;
         //return this.availableGaps;
     }
@@ -935,7 +930,7 @@ public final class Hive {
      * 1st checks that the gap is empty
      * 2nd checks if it has neighbours. If it has 2 the token can't slide to it.
      * @param token
-     * @param Hex
+     * @param hex
      * @return
      */
     private int checkGap(Hex token, Hex hex){

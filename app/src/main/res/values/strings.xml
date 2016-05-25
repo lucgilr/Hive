@@ -10,4 +10,7 @@
     <string name="blackPlayer">Black Player Wins!</string>
     <string name="whitePlayer">White Player Wins!</string>
     <string name="bothPlayers">Its a Draw...</string>
+    <string name="playerTurn">Players turn</string>
+    <string name="blackStarts">Black player starts to play</string>
+    <string name="whiteStarts">White player starts to play</string>
 </resources>

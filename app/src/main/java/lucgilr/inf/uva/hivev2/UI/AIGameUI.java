@@ -157,8 +157,14 @@ public class AIGameUI extends AppCompatActivity {
             }
 
             //PRINT BOARD
-            /*for(int i=0;i<this.game.getHive().getBoard().size();i++)
-                Log.d("token...",this.game.getHive().getBoard().get(i).tokenInfo());*/
+            Log.d("BOARD PLAYER 1","BOARD PLAYER 1");
+            for(int i=0;i<this.game.getHive().getBoard().size();i++)
+                Log.d("token...",this.game.getHive().getBoard().get(i).tokenInfo());
+
+            //PRINT GAPS AVAILABLE
+            Log.d("GAPS SELECTED","GAPS SELECTED");
+            for(int i=0;i<gaps.size();i++)
+                Log.d("Gap...",gaps.get(i).toString());
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
@@ -450,6 +456,8 @@ public class AIGameUI extends AppCompatActivity {
                 }
         }else if(!checkIfGapAvailable(hex, gaps)) {
             this.gaps = controller.getPlayerGaps(player);
+            Log.d("gaps size",String.valueOf(gaps.size()));
+            Log.d("controller size",String.valueOf(controller.getPlayerGaps(player).size()));
             this.movingToken=false;
             initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }

@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
@@ -108,6 +110,9 @@ public class GameUI extends AppCompatActivity {
         this.gameover=false;
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
+
+        //Show dialog --> first player
+        firstPlayer();
 
         initGridView(radius, shape);
     }
@@ -309,6 +314,29 @@ public class GameUI extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void firstPlayer(){
+        String player = controller.getPlayer().getColor();
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.playerTurn);
+        if(player.equals("Black"))
+            alert.setMessage(R.string.blackStarts);
+        else
+            alert.setMessage(R.string.whiteStarts);
+        alert.setCancelable(true);
+
+        final AlertDialog dlg = alert.create();
+        dlg.show();
+
+        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dlg.dismiss();
+                t.cancel();
+            }
+        },4000); //Shows message for 4 seconds
     }
 
     private void gameOver(int player){
