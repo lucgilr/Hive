@@ -1,11 +1,11 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
- * The tokens can be of 5 different types:
+ * The pieces can be of 5 different types:
  * Bee, Grasshopper, Beetle, Spider and Ant.
  * @author Lucía Gil Román
  */
-public enum TokenType {
+public enum PieceType {
 
     BEE,
     GRASSHOPPER,

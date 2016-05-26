@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 import lucgilr.inf.uva.hivev2.AI.AI;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
+import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Hive;
+import lucgilr.inf.uva.hivev2.GameModel.Piece;
+import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
-import lucgilr.inf.uva.hivev2.GameModel.Token;
-import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.UI.AIGameUI;
 import lucgilr.inf.uva.hivev2.UI.GameUI;
 
@@ -65,8 +66,8 @@ public class GameController {
      * @param player
      * @return
      */
-    public ArrayList<Hex> getPlayerGaps(Player player){
-        return model.getHive().getPlayerGapsAvailable(player);
+    public ArrayList<Hexagon> getPlayerGaps(Player player){
+        return model.getHive().getAvailableHexagonsPlayer(player);
     }
 
     /**
@@ -89,7 +90,7 @@ public class GameController {
      *
      * @return
      */
-    public ArrayList<Token> getBoard(){
+    public ArrayList<Piece> getBoard(){
         return model.getHive().getBoard();
     }
 
@@ -103,11 +104,11 @@ public class GameController {
 
     /**
      *
-     * @param token
-     * @param hex
+     * @param piece
+     * @param hexagon
      */
-    public void movetoken(Token token, Hex hex){
-        model.getHive().movetoken(token, hex,false);
+    public void movetoken(Piece piece, Hexagon hexagon){
+        model.getHive().movePiece(piece, hexagon, false);
     }
 
     /**
@@ -136,8 +137,8 @@ public class GameController {
      *
      * @return
      */
-    public ArrayList<Token> getTokensFromBox(){
-        return getPlayer().getTokensInTheBox();
+    public ArrayList<Piece> getTokensFromBox(){
+        return getPlayer().getPiecesInTheBox();
     }
 
     /**
@@ -145,26 +146,26 @@ public class GameController {
      * @param type
      * @return
      */
-    public Token takeTokenByType(String type){
-        return getPlayer().takeToken(type);
+    public Piece takeTokenByType(PieceType type){
+        return getPlayer().takePieceByType(type);
     }
 
     /**
      *
-     * @param token
+     * @param piece
      * @param coords
      */
-    public void playToken(Token token, Hex coords){
-        model.getHive().addToken(token, coords,true);
+    public void playToken(Piece piece, Hexagon coords){
+        model.getHive().addPiece(piece, coords, true);
     }
 
     /**
      *
-     * @param token
+     * @param piece
      * @return
      */
-    public ArrayList<Hex> getPossibleMoves(Token token){
-        return model.getHive().getPossibleGaps(token,false);
+    public ArrayList<Hexagon> getPossibleMoves(Piece piece){
+        return model.getHive().getPossibleHexagon(piece, false);
     }
 
     /**

@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import lucgilr.inf.uva.hivev2.GameModel.Game;
-import lucgilr.inf.uva.hivev2.GameModel.Hex;
+import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
+import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
-import lucgilr.inf.uva.hivev2.GameModel.Token;
-import lucgilr.inf.uva.hivev2.GameModel.TokenMove;
-import lucgilr.inf.uva.hivev2.GameModel.TokenType;
+import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 
 /**
  * NOTAS:
@@ -32,8 +31,8 @@ public class AI {
     //Opening sets vars
     private int random;
     private int randomOp;
-    Hex[] opening;
-    Hex hex;
+    Hexagon[] opening;
+    Hexagon hexagon;
     //To check if the AI has already move
     boolean move;
 
@@ -42,8 +41,8 @@ public class AI {
         //Opening vars
         this.random=0;
         this.randomOp=0;
-        this.opening = new Hex[2];
-        this.hex=new Hex();
+        this.opening = new Hexagon[2];
+        this.hexagon =new Hexagon();
         this.move=false;
     }
 
@@ -87,34 +86,34 @@ public class AI {
         Random rand = new Random();
         if(player.getTurn()==1){
             //Size of the possible positions
-            int size = game.getHive().getPlayerGapsAvailable(player).size();
+            int size = game.getHive().getAvailableHexagonsPlayer(player).size();
             //Generate a random number (To choose a random position)
             this.random = rand.nextInt((size - 1) + 1);
             //Place spider (id=4)
-            Token t = new Token();
-            t = player.takeTokenFromTheBox(4);
-            this.hex = game.getHive().getPlayerGapsAvailable(player).get(random);
-            game.getHive().addToken(t, hex,true);
+            Piece t = new Piece();
+            t = player.takePieceFromTheBox(4);
+            this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
+            game.getHive().addPiece(t, hexagon, true);
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Ant (id=8)
-            Token t = new Token();
-            t = player.takeTokenFromTheBox(8);
-            this.opening = game.getHive().vPosition(hex);
-            this.hex = opening[random];
-            game.getHive().addToken(t,hex,true);
+            Piece t = new Piece();
+            t = player.takePieceFromTheBox(8);
+            this.opening = game.getHive().vHexagons(hexagon);
+            this.hexagon = opening[random];
+            game.getHive().addPiece(t, hexagon, true);
         }else if(player.getTurn()==3){
             //Place Bee (id=0)
-            Token t = new Token();
-            t = player.takeTokenFromTheBox(0);
+            Piece t = new Piece();
+            t = player.takePieceFromTheBox(0);
             if(random==0){
-                hex = opening[1];
+                hexagon = opening[1];
             }else{
-                hex = opening[0];
+                hexagon = opening[0];
             }
             //first: check if there is already a token in that gap
-            if(!game.getHive().checkIfGapTaken(this.hex))
-                game.getHive().addToken(t,this.hex,true);
+            if(!game.getHive().checkIfHexagonTaken(this.hexagon))
+                game.getHive().addPiece(t, this.hexagon, true);
             else attackOpponent();
         }
     }
@@ -127,34 +126,34 @@ public class AI {
         Random rand = new Random();
         if(player.getTurn()==1){
             //Size of the possible positions
-            int size = game.getHive().getPlayerGapsAvailable(player).size();
+            int size = game.getHive().getAvailableHexagonsPlayer(player).size();
             //Generate a random number (To choose a random position)
             this.random = rand.nextInt((size - 1) + 1);
             //Place Bee (id=0)
-            Token t = new Token();
-            t = player.takeTokenFromTheBox(0);
-            this.hex = game.getHive().getPlayerGapsAvailable(player).get(random);
-            game.getHive().addToken(t, hex, true);
+            Piece t = new Piece();
+            t = player.takePieceFromTheBox(0);
+            this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
+            game.getHive().addPiece(t, hexagon, true);
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Spider (id=4)
-            Token t = new Token();
-            t = player.takeTokenFromTheBox(4);
-            this.opening = game.getHive().vPosition(hex);
-            this.hex = opening[random];
-            game.getHive().addToken(t,hex,true);
+            Piece t = new Piece();
+            t = player.takePieceFromTheBox(4);
+            this.opening = game.getHive().vHexagons(hexagon);
+            this.hexagon = opening[random];
+            game.getHive().addPiece(t, hexagon, true);
         }else if(player.getTurn()==3){
             //Place Spider (id=5)
-            Token t = new Token();
-            t = player.takeTokenFromTheBox(5);
+            Piece t = new Piece();
+            t = player.takePieceFromTheBox(5);
             if(random==0){
-                hex = opening[1];
+                hexagon = opening[1];
             }else{
-                hex = opening[0];
+                hexagon = opening[0];
             }
             //first: check if there is already a token in that gap
-            if(!game.getHive().checkIfGapTaken(this.hex))
-                game.getHive().addToken(t, this.hex,true);
+            if(!game.getHive().checkIfHexagonTaken(this.hexagon))
+                game.getHive().addPiece(t, this.hexagon, true);
             else{
                 beeStatus();
                 if(!this.move) attackOpponent();
@@ -169,14 +168,14 @@ public class AI {
      * Third: If the bee is not blocked and surrounded by less than 3 tokens --> The bee is already save.
      */
     private void beeStatus(){
-        Token bee = new Token();
-        bee = this.player.inspectTokenInGame(0);
+        Piece bee = new Piece();
+        bee = this.player.inspectPieceInGame(0);
         //First: if the bee is blocked --> Try to move one of its friendly neighbours
-        if(this.game.getHive().checkIfTokenBlocked(bee)){
+        if(this.game.getHive().checkIfPieceBlocked(bee)){
             saveBee(bee);
         }else{
             //Second: If the bee is not blocked --> Get number of neighbours
-            int n = game.getHive().numberOfNeighbours(bee.getCoordinates());
+            int n = game.getHive().numberOfNeighbours(bee.getHexagon());
             //If the bee has more than 2 neighbours --> Move to a safer place.
             if(n>2){
                 moveBee(bee);
@@ -190,18 +189,18 @@ public class AI {
      * @param bee
      * @return
      */
-    private void saveBee(Token bee){
-        ArrayList<TokenMove> moves = new ArrayList<>();
+    private void saveBee(Piece bee){
+        ArrayList<PieceMoveScore> moves = new ArrayList<>();
         //Get friendly tokens
-        ArrayList<Token> friends = new ArrayList<>();
+        ArrayList<Piece> friends = new ArrayList<>();
         friends = getFriends(bee);
         if(!friends.isEmpty()){
             //Get possible moves for the friendly token
             for(int i=0;i<friends.size();i++){
-                ArrayList<Hex> gaps = new ArrayList<>();
-                gaps = this.game.getHive().getPossibleGaps(friends.get(i),false);
+                ArrayList<Hexagon> gaps = new ArrayList<>();
+                gaps = this.game.getHive().getPossibleHexagon(friends.get(i), false);
                 //PRINT GAPS
-                Log.d("Gaps for",friends.get(i).tokenInfo());
+                Log.d("Gaps for",friends.get(i).pieceInfo());
                 for(int a=0;a<gaps.size();a++)
                     Log.d("gap...",gaps.get(a).toString());
                 ////////////
@@ -209,15 +208,15 @@ public class AI {
                     //If gaps is not empty --> evaluate the move
                     for(int j=0;j<gaps.size();j++){
                         int points = evalPosition(friends.get(i),gaps.get(j));
-                        moves.add(new TokenMove(friends.get(i), gaps.get(j), points));
+                        moves.add(new PieceMoveScore(friends.get(i), gaps.get(j), points));
                     }
                 }
             }
         }
         if(!moves.isEmpty()){
-            TokenMove bestmove = new TokenMove();
+            PieceMoveScore bestmove = new PieceMoveScore();
             bestmove = getBetterMove(moves);
-            this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex(),false);
+            this.game.getHive().movePiece(bestmove.getPiece(), bestmove.getHexagon(), false);
             this.move = true;
         }
     }
@@ -226,14 +225,14 @@ public class AI {
      * Tries to find a better position for the bee.
      * @param bee
      */
-    private void moveBee(Token bee){
+    private void moveBee(Piece bee){
         //Array to store the possible moves
-        ArrayList<TokenMove> moves = new ArrayList<>();
+        ArrayList<PieceMoveScore> moves = new ArrayList<>();
         //Take possible moves for the bee:
-        ArrayList<Hex> beeMoves = new ArrayList<>();
-        beeMoves = this.game.getHive().getPossibleGaps(bee, false);
+        ArrayList<Hexagon> beeMoves = new ArrayList<>();
+        beeMoves = this.game.getHive().getPossibleHexagon(bee, false);
         //PRINT GAPS
-        Log.d("Gaps for",bee.tokenInfo());
+        Log.d("Gaps for",bee.pieceInfo());
         for(int a=0;a<beeMoves.size();a++)
             Log.d("gap...",beeMoves.get(a).toString());
         ////////////
@@ -244,12 +243,12 @@ public class AI {
             //If they have less than 3 neighbours --> inspect those neighbours
             if(gaps<3){
                 int points = evalPosition(bee,beeMoves.get(i));
-                moves.add(new TokenMove(bee,beeMoves.get(i),points));
+                moves.add(new PieceMoveScore(bee,beeMoves.get(i),points));
             }
         }
         if(!moves.isEmpty()){
-            TokenMove bestmove = getBetterMove(moves);
-            this.game.getHive().movetoken(bestmove.getToken(),bestmove.getHex(),false);
+            PieceMoveScore bestmove = getBetterMove(moves);
+            this.game.getHive().movePiece(bestmove.getPiece(), bestmove.getHexagon(), false);
             this.move = true;
         }
     }
@@ -263,22 +262,22 @@ public class AI {
      */
     private void attackOpponent() {
         //Array to store the possible moves
-        ArrayList<TokenMove> bestMoves = new ArrayList<>();
+        ArrayList<PieceMoveScore> bestMoves = new ArrayList<>();
         //First: Check if a token already in the game can be place in a better position
         bestMoves = moveTokenScores();
         //Evaluate the points of the best move
         if(!bestMoves.isEmpty()){
-            TokenMove bestmove = getBetterMove(bestMoves);
-            this.game.getHive().movetoken(bestmove.getToken(), bestmove.getHex(),false);
+            PieceMoveScore bestmove = getBetterMove(bestMoves);
+            this.game.getHive().movePiece(bestmove.getPiece(), bestmove.getHexagon(), false);
             this.move = true;
         }
         //Second: If the tokens in the game can't be in a better position --> Add new ones
-        if(!this.move && !this.game.getHive().getPlayerGapsAvailable(this.player).isEmpty()){
-            Token newToken = new Token();
+        if(!this.move && !this.game.getHive().getAvailableHexagonsPlayer(this.player).isEmpty()){
+            Piece newPiece = new Piece();
             //Takes a token from the box
-            newToken = getToken();
+            newPiece = getToken();
             //Add token to the board
-            this.game.getHive().addToken(newToken,newToken.getCoordinates(),true);
+            this.game.getHive().addPiece(newPiece, newPiece.getHexagon(), true);
             this.move=true;
         }else{
             //Third: No tokens to add... NEXT PLAYER?
@@ -292,29 +291,29 @@ public class AI {
      * If the token can't best its current score --> Do nothing.
      * @return list of possible moves and its score.
      */
-    private ArrayList<TokenMove> moveTokenScores(){
+    private ArrayList<PieceMoveScore> moveTokenScores(){
         //Array to store the possible moves
-        ArrayList<TokenMove> bestMoves = new ArrayList<>();
+        ArrayList<PieceMoveScore> bestMoves = new ArrayList<>();
         boolean tokenBlocking = false;
-        for(int i=0;i<player.getTokensInGame().size();i++){
+        for(int i=0;i<player.getPiecesInGame().size();i++){
             //Array to store the moves for the token
-            ArrayList<TokenMove> moves = new ArrayList<>();
+            ArrayList<PieceMoveScore> moves = new ArrayList<>();
             //If the token can't be moved --> Do nothing
-            ArrayList<Hex> tokenMoves = new ArrayList<>();
-            tokenMoves = this.game.getHive().getPossibleGaps(player.getTokensInGame().get(i),false);
+            ArrayList<Hexagon> tokenMoves = new ArrayList<>();
+            tokenMoves = this.game.getHive().getPossibleHexagon(player.getPiecesInGame().get(i), false);
             //PRINT GAPS
-            Log.d("Gaps for",player.getTokensInGame().get(i).tokenInfo());
+            Log.d("Gaps for",player.getPiecesInGame().get(i).pieceInfo());
             for(int a=0;a<tokenMoves.size();a++)
                 Log.d("gap...",tokenMoves.get(a).toString());
             ////////////
             if(!tokenMoves.isEmpty()) {
                 //If the token is already blocking the enemy's bee --> Do nothing
-                Token[] n = new Token[6];
-                n = game.getHive().tokenNeighbours(player.getTokensInGame().get(i).getCoordinates());
+                Piece[] n = new Piece[6];
+                n = game.getHive().pieceNeighbours(player.getPiecesInGame().get(i).getHexagon());
                 for (int j = 0; j < n.length; j++) {
                     if (n[j] != null) {
-                        if (n[j].getType().equals(TokenType.BEE) && n[j].getPlayer().getColor().equals("White")) {
-                            if (checkIfUnblockingGap(player.getTokensInGame().get(i), n[j])) {
+                        if (n[j].getType().equals(PieceType.BEE) && n[j].getPlayer().getColor().equals("White")) {
+                            if (checkIfUnblockingGap(player.getPiecesInGame().get(i), n[j])) {
                                 tokenBlocking = true;
                             }
                         }
@@ -323,13 +322,13 @@ public class AI {
                 if (!tokenBlocking) {
                     //Evaluate each move
                     for (int j = 0; j < tokenMoves.size(); j++) {
-                        int points = evalPosition(player.getTokensInGame().get(i), tokenMoves.get(j));
-                        moves.add(new TokenMove(player.getTokensInGame().get(i), tokenMoves.get(j), points));
+                        int points = evalPosition(player.getPiecesInGame().get(i), tokenMoves.get(j));
+                        moves.add(new PieceMoveScore(player.getPiecesInGame().get(i), tokenMoves.get(j), points));
                     }
                     //Check if it's current position is better than the new one
-                    int current = evalPosition(player.getTokensInGame().get(i),player.getTokensInGame().get(i).getCoordinates());
-                    TokenMove bestMoveToken = getBetterMove(moves);
-                    int bestMove = bestMoveToken.getPoints();
+                    int current = evalPosition(player.getPiecesInGame().get(i),player.getPiecesInGame().get(i).getHexagon());
+                    PieceMoveScore bestMoveToken = getBetterMove(moves);
+                    int bestMove = bestMoveToken.getScore();
                     if(bestMove>current) bestMoves.add(bestMoveToken);
                 }
             }
@@ -345,46 +344,46 @@ public class AI {
      *         If its an enemy token: +1 (CHANGE)
      *         If the move could block the enemy token: +5
      *         If the token is the enemy's bee: +10
-     * @param hex
+     * @param hexagon
      * @return
      */
-    private int evalPosition(Token toMove,Hex hex) {
+    private int evalPosition(Piece toMove,Hexagon hexagon) {
 
         Log.d("-----------------------","-----------------------");
-        Log.d("Token", toMove.tokenInfo());
-        Log.d("To move", hex.toString());
+        Log.d("Piece", toMove.pieceInfo());
+        Log.d("To move", hexagon.toString());
 
         //Save current token position
-        Hex currentPos = new Hex(toMove.getCoordinates().getQ(),toMove.getCoordinates().getR(),toMove.getCoordinates().getD());
+        Hexagon currentPos = new Hexagon(toMove.getHexagon().getQ(),toMove.getHexagon().getR(),toMove.getHexagon().getD());
         //Move token to the position to evaluate
-        this.game.getHive().movetoken(toMove,hex,true);
+        this.game.getHive().movePiece(toMove, hexagon, true);
 
         int points = 0;
-        Token[] n = new Token[6];
-        n = this.game.getHive().tokenNeighbours(hex);
+        Piece[] n = new Piece[6];
+        n = this.game.getHive().pieceNeighbours(hexagon);
         for(int j=0;j<n.length;j++){
             if(n[j]!=null){
                 if(n[j].getPlayer().getColor().equals(this.player.getColor())){
                     points -= evalToken(n[j]);
                     Log.d("for the friendly token",n[j].getType().toString());
                     Log.d("Points",String.valueOf(points));
-                    if(game.getHive().checkIfTokenBlocked(n[j])){
+                    if(game.getHive().checkIfPieceBlocked(n[j])){
                         points *= 2;
-                        Log.d("Token blocked",String.valueOf(points));
+                        Log.d("Piece blocked",String.valueOf(points));
                     }
                 }else{
                     points += evalToken(n[j]);
                     Log.d("for the enemy token",n[j].getType().toString());
                     Log.d("Points",String.valueOf(points));
-                    if(game.getHive().checkIfTokenBlocked(n[j])){
+                    if(game.getHive().checkIfPieceBlocked(n[j])){
                         points *= 2;
-                        Log.d("Token blocked",String.valueOf(points));
+                        Log.d("Piece blocked",String.valueOf(points));
                     }
                 }
             }
         }
         //Return token to its original position
-        this.game.getHive().movetoken(toMove, currentPos, true);
+        this.game.getHive().movePiece(toMove, currentPos, true);
 
         Log.d("Total Points", String.valueOf(points));
         Log.d("-----------------------","-----------------------");
@@ -393,12 +392,12 @@ public class AI {
     }
 
     /**
-     * Calculates the value of the given token.
-     * @param token
+     * Calculates the value of the given piece.
+     * @param piece
      * @return
      */
-    private int evalToken(Token token){
-        switch (token.getType()){
+    private int evalToken(Piece piece){
+        switch (piece.getType()){
             case BEE: return 20;
             case ANT: return 8;
             case SPIDER: return 6;
@@ -409,14 +408,14 @@ public class AI {
     }
 
     /**
-     * Returns friendly tokens from a given token.
-     * @param token
+     * Returns friendly tokens from a given piece.
+     * @param piece
      * @return
      */
-    private ArrayList<Token> getFriends(Token token) {
-        ArrayList<Token> friends = new ArrayList<>();
-        Token[] neighbours = new Token[6];
-        neighbours = this.game.getHive().tokenNeighbours(token.getCoordinates());
+    private ArrayList<Piece> getFriends(Piece piece) {
+        ArrayList<Piece> friends = new ArrayList<>();
+        Piece[] neighbours = new Piece[6];
+        neighbours = this.game.getHive().pieceNeighbours(piece.getHexagon());
         for(int i=0;i<neighbours.length;i++){
             if(neighbours[i]!=null)
                 if(neighbours[i].getPlayer().getColor().equals(this.player.getColor())) friends.add(neighbours[i]);
@@ -425,25 +424,25 @@ public class AI {
     }
 
     /**
-     * Checks, if the token in the given coordinates gaps is blocked,
-     * and if moving the given token would unblock it.
-     * @param token
+     * Checks, if the piece in the given coordinates gaps is blocked,
+     * and if moving the given piece would unblock it.
+     * @param piece
      * @param toCheck
      * @return
      */
-    private boolean checkIfUnblockingGap(Token token, Token toCheck){
+    private boolean checkIfUnblockingGap(Piece piece, Piece toCheck){
         //Blocked?
         boolean unBlocked = false;
-        //If the token in the given gap is already bloked
-        if(game.getHive().checkIfTokenBlocked(toCheck)) {
-            //Save actual token coordinates
-            Hex currentPos = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
-            //Change coordinates of the token to move
-            this.game.getHive().movetoken(token,new Hex(-100,-100,-100),true);
-            //Check if the token is now blocked
-            if (!game.getHive().checkIfTokenBlocked(toCheck)) unBlocked = true;
-            //Return the token to the board
-            this.game.getHive().movetoken(token,currentPos,true);
+        //If the piece in the given gap is already bloked
+        if(game.getHive().checkIfPieceBlocked(toCheck)) {
+            //Save actual piece coordinates
+            Hexagon currentPos = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD());
+            //Change coordinates of the piece to move
+            this.game.getHive().movePiece(piece, new Hexagon(-100, -100, -100), true);
+            //Check if the piece is now blocked
+            if (!game.getHive().checkIfPieceBlocked(toCheck)) unBlocked = true;
+            //Return the piece to the board
+            this.game.getHive().movePiece(piece, currentPos, true);
         }
         return unBlocked;
     }
@@ -452,94 +451,94 @@ public class AI {
     /**
      *
      *
-     * @return Token to place in the game.
+     * @return Piece to place in the game.
      */
-    public Token getToken(){
+    public Piece getToken(){
 
         Log.d("Turn",String.valueOf(this.player.getTurn()));
 
-        Token token = new Token();
-        //Get tokens in the box
-        ArrayList<Token> tokens = new ArrayList<>();
-        tokens = this.player.getTokensInTheBox();
+        Piece piece = new Piece();
+        //Get pieces in the box
+        ArrayList<Piece> pieces = new ArrayList<>();
+        pieces = this.player.getPiecesInTheBox();
 
         //ArrayList to store Tokens and its moves
-        ArrayList<TokenMove> moves = new ArrayList<>();
+        ArrayList<PieceMoveScore> moves = new ArrayList<>();
 
         //If the opening used was the first one, the AI has a spider in the box
         //Following a tip from the authors game we will bring the spiders early in the game: http://gen42.com/images/tipspage1.jpg
         if(this.randomOp==0){
-            token = this.player.takeTokenFromTheBox(5);
+            piece = this.player.takePieceFromTheBox(5);
             //Work out the best gap to place the spider
-            Log.d("Token",token.tokenInfo());
-            moves = addTokenScores(token);
+            Log.d("Piece", piece.pieceInfo());
+            moves = addTokenScores(piece);
         }else if(this.player.getTurn()<=12){
             //Take beetles or ants
             int type = getRandomPos(0,1);
             if(type==0){
                 //Take beetle
-                if(this.player.isTokenInBox(TokenType.BEETLE))
-                    token = this.player.takeToken(TokenType.BEETLE.toString());
+                if(this.player.isPieceInBox(PieceType.BEETLE))
+                    piece = this.player.takePieceByType(PieceType.BEETLE);
                 else
-                    token = this.player.takeToken(TokenType.ANT.toString());
+                    piece = this.player.takePieceByType(PieceType.ANT);
             }else{
                 //Take ant
-                if(this.player.isTokenInBox(TokenType.ANT))
-                    token = this.player.takeToken(TokenType.ANT.toString());
+                if(this.player.isPieceInBox(PieceType.ANT))
+                    piece = this.player.takePieceByType(PieceType.ANT);
                 else
-                    token = this.player.takeToken(TokenType.BEETLE.toString());
+                    piece = this.player.takePieceByType(PieceType.BEETLE);
             }
-            Log.d("Token",token.tokenInfo());
-            moves = addTokenScores(token);
+            Log.d("Piece", piece.pieceInfo());
+            moves = addTokenScores(piece);
         }else if(this.player.getTurn()>12){
             //Keep hoppers in reserve for end moves
             //http://www.gen42.com/images/tipspage1.jpg
-            token = this.player.takeToken(TokenType.GRASSHOPPER.toString());
-            Log.d("Token",token.tokenInfo());
-            moves = addTokenScores(token);
+            piece = this.player.takePieceByType(PieceType.GRASSHOPPER);
+            Log.d("Piece", piece.pieceInfo());
+            moves = addTokenScores(piece);
         }
         if(!moves.isEmpty()){
             //Get better move
-            TokenMove bestToken = new TokenMove();
+            PieceMoveScore bestToken = new PieceMoveScore();
             bestToken = getBetterMove(moves);
-            token = bestToken.getToken();
-            token.setCoordinates(bestToken.getHex());
+            piece = bestToken.getPiece();
+            piece.setHexagon(bestToken.getHexagon());
         }
 
-        return token;
+        return piece;
     }
 
     /**
      *
-     * @param token
+     * @param piece
      * @return
      */
-    private ArrayList<TokenMove> addTokenScores(Token token){
+    private ArrayList<PieceMoveScore> addTokenScores(Piece piece){
 
         //Get possible gaps for the player
-        ArrayList<Hex> gaps = new ArrayList<>();
-        gaps = this.game.getHive().getPlayerGapsAvailable(this.player);
+        ArrayList<Hexagon> gaps = new ArrayList<>();
+        gaps = this.game.getHive().getAvailableHexagonsPlayer(this.player);
         //ArrayList to store Tokens and its moves
-        ArrayList<TokenMove> moves = new ArrayList<>();
+        ArrayList<PieceMoveScore> moves = new ArrayList<>();
 
         for(int i=0;i<gaps.size();i++){
-            //Place token in that gap
-            this.game.getHive().addToken(token,gaps.get(i),true);
+            //Place piece in that gap
+            this.game.getHive().addPiece(piece, gaps.get(i), true);
             //Get possible moves from that position
-            ArrayList<Hex> possibleMoves = new ArrayList<>();
-            possibleMoves = this.game.getHive().getPossibleGaps(token,true);
+            ArrayList<Hexagon> possibleMoves = new ArrayList<>();
+            possibleMoves = this.game.getHive().getPossibleHexagon(piece, true);
             //PRINT GAPS
-            Log.d("Gaps for",token.tokenInfo());
+            Log.d("Gaps for", piece.pieceInfo());
             for(int a=0;a<possibleMoves.size();a++)
                 Log.d("gap...",possibleMoves.get(a).toString());
             ////////////
             //Evaluate those moves
             for(int j=0;j<possibleMoves.size();j++){
-                int points = evalPosition(token,possibleMoves.get(j));
-                moves.add(new TokenMove(token,gaps.get(i),points));
+                int points = evalPosition(piece,possibleMoves.get(j));
+                moves.add(new PieceMoveScore(piece,gaps.get(i),points));
             }
-            //Delete token from the board
-            this.game.getHive().deteleToken(token);
+            //Delete piece from the board
+            this.game.getHive().detelePiece(piece);
         }
 
         return moves;
@@ -549,24 +548,24 @@ public class AI {
      * Get opponents Tokens in game.
      * @return
      */
-    public ArrayList<Token> getOpponentsTokens(){
-        ArrayList<Token> tokens = new ArrayList<>();
+    public ArrayList<Piece> getOpponentsTokens(){
+        ArrayList<Piece> pieces = new ArrayList<>();
         for(int i=0;i<game.getHive().getBoard().size();i++){
             if(game.getHive().getBoard().get(i).getPlayer().getColor().equals("White"))
-                tokens.add(game.getHive().getBoard().get(i));
+                pieces.add(game.getHive().getBoard().get(i));
         }
-        return tokens;
+        return pieces;
     }
 
     /**
      *
-     * @param hex
+     * @param hexagon
      * @param list
      * @return
      */
-    public boolean checksIfCoordinateInGivenList(Hex hex, ArrayList<Hex> list){
+    public boolean checksIfCoordinateInGivenList(Hexagon hexagon, ArrayList<Hexagon> list){
         for(int i=0;i<list.size();i++){
-            if(list.get(i).toString().equals(hex.toString())) return true;
+            if(list.get(i).toString().equals(hexagon.toString())) return true;
         }
         return false;
     }
@@ -577,8 +576,8 @@ public class AI {
      * @param list2
      * @return
      */
-    public boolean getCommonFromLists(ArrayList<Hex> list1,ArrayList<Hex> list2){
-        ArrayList<Hex> common = new ArrayList<>();
+    public boolean getCommonFromLists(ArrayList<Hexagon> list1,ArrayList<Hexagon> list2){
+        ArrayList<Hexagon> common = new ArrayList<>();
         for(int i=0;i<list1.size();i++){
             for(int j=0;j<list2.size();j++){
                 if(list1.get(i).toString().equals(list2.toString())) return true;
@@ -592,14 +591,14 @@ public class AI {
      * @param player
      * @return
      */
-    public ArrayList<Hex> getBeeEmptyNeighbours(Player player){
-        Token bee = new Token();
-        bee = player.inspectTokenInGame(0);
-        ArrayList<Hex> n = new ArrayList<>();
-        Token[] nb = new Token[6];
-        nb = game.getHive().tokenNeighbours(bee.getCoordinates());
+    public ArrayList<Hexagon> getBeeEmptyNeighbours(Player player){
+        Piece bee = new Piece();
+        bee = player.inspectPieceInGame(0);
+        ArrayList<Hexagon> n = new ArrayList<>();
+        Piece[] nb = new Piece[6];
+        nb = game.getHive().pieceNeighbours(bee.getHexagon());
         for(int i=0;i<nb.length;i++){
-            if(nb[i]==null) n.add(nb[i].getCoordinates());
+            if(nb[i]==null) n.add(nb[i].getHexagon());
         }
         return n;
     }
@@ -620,12 +619,12 @@ public class AI {
      * @param moves
      * @return
      */
-    public TokenMove getBetterMove(ArrayList<TokenMove> moves){
+    public PieceMoveScore getBetterMove(ArrayList<PieceMoveScore> moves){
         int max = -100;
-        TokenMove chosenOne = new TokenMove();
+        PieceMoveScore chosenOne = new PieceMoveScore();
         for(int i=0;i<moves.size();i++){
-            if(moves.get(i).getPoints()>max){
-                max = moves.get(i).getPoints();
+            if(moves.get(i).getScore()>max){
+                max = moves.get(i).getScore();
                 chosenOne = moves.get(i);
             }
         }

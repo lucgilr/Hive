@@ -1,12 +1,18 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
+ * @author Narek (https://github.com/starwheel)
+ * @author Lucía Gil Román - Adding d for a 3 dimension coordinate system.
+ *
  * The original file can be found in:
  * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Hex.java
  * Non-cube hex coordinates (q, r)
- * Lucía Gil Román - Adding d for a 3 dimension coordinate system.
+ *
+ * An Hexagon is identified by 3 coordinates: Column (q), Row (r) and a 3rd Dimension (d)
+ *
  */
-public class Hex {
+public class Hexagon {
+
     private int q; //column
     private int r; //row
     private int d; //3rd dimension
@@ -14,7 +20,7 @@ public class Hex {
     /**
      * The initial values of the coordinates are (0,0,0)
      */
-    public Hex(){
+    public Hexagon(){
         this.q=0;
         this.r=0;
         this.d=0;
@@ -25,7 +31,7 @@ public class Hex {
      * @param q //Column
      * @param r //Row
      */
-    public Hex (int q, int r) {
+    public Hexagon(int q, int r) {
         this.q = q;
         this.r = r;
         this.d = 0;
@@ -37,13 +43,13 @@ public class Hex {
      * @param r //Row
      * @param d //3rd dimension
      */
-    public Hex (int q, int r, int d){
+    public Hexagon(int q, int r, int d){
         this.q=q;
         this.r=r;
         this.d=d;
     }
 
-    public Hex (float q, float r) {
+    public Hexagon(float q, float r) {
         float x = q;
         float y = -q-r;
         float z = r;

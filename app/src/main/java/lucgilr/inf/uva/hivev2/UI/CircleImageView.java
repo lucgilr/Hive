@@ -19,7 +19,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import lucgilr.inf.uva.hivev2.GameModel.Hex;
+import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.R;
 
 public class CircleImageView extends ImageView {
@@ -57,7 +57,7 @@ public class CircleImageView extends ImageView {
     private boolean mReady;
     private boolean mSetupPending;
 
-    private Hex mHex; //Hold the node coordinates on the grid
+    private Hexagon mHexagon; //Hold the node coordinates on the grid
 
     public CircleImageView(Context context) {
         super(context);
@@ -129,12 +129,12 @@ public class CircleImageView extends ImageView {
         setup();
     }
 
-    public Hex getHex() {
-        return mHex;
+    public Hexagon getHex() {
+        return mHexagon;
     }
 
-    public void setHex(Hex hex) {
-        mHex = hex;
+    public void setHex(Hexagon hexagon) {
+        mHexagon = hexagon;
     }
 
     public int getBorderColor() {

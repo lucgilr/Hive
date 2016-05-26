@@ -1,8 +1,6 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.jgrapht.UndirectedGraph;
@@ -11,26 +9,25 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.alg.BlockCutpointGraph;
 
 /**
- *  Representation of the board.
  * @author Lucía Gil Román
+ *
+ * Representation of the Hive.
+ * The Hive has a fictional board, it is made by putting together pieces.
  */
 public final class Hive {
 
-    //private ArrayList<Hex> availableGaps;
-    private ArrayList<Hex> availableGaps;
-    private ArrayList<Token> board;
-    UndirectedGraph<Integer,DefaultEdge> graph;
+    private ArrayList<Hexagon> availableHexagons;
+    private ArrayList<Piece> board;
+    private UndirectedGraph<Integer,DefaultEdge> graph;
     private int vertex;
 
     /**
      *
-     * There is only one position available (0,0,0).
      */
     public Hive(){
-        this.board=new ArrayList<Token>();
-        availableGaps = new ArrayList<>();
-        //this.availableGaps.add(new Hex(0,0,0));
-        this.availableGaps.add(new Hex(0,0,0));
+        this.board=new ArrayList<>();
+        availableHexagons = new ArrayList<>();
+        this.availableHexagons.add(new Hexagon(0, 0, 0));
         this.graph = new SimpleGraph<Integer,DefaultEdge>(DefaultEdge.class);
         this.vertex=0;
     }
@@ -39,7 +36,7 @@ public final class Hive {
      *
      * @return
      */
-    public ArrayList<Token> getBoard() {
+    public ArrayList<Piece> getBoard() {
         return board;
     }
 
@@ -47,7 +44,7 @@ public final class Hive {
      *
      * @param board
      */
-    public void setBoard(ArrayList<Token> board) {
+    public void setBoard(ArrayList<Piece> board) {
         this.board = board;
     }
 
@@ -55,22 +52,16 @@ public final class Hive {
      *
      * @return
      */
-    /*public ArrayList<Hex> getAvailableGaps() {
-        return availableGaps;
-    }*/
-    public ArrayList<Hex> getAvailableGaps() {
-        return availableGaps;
+    public ArrayList<Hexagon> getAvailableHexagons() {
+        return availableHexagons;
     }
 
     /**
      *
-     * @param availableGaps
+     * @param availableHexagons
      */
-    /*public void setAvailableGaps(ArrayList<Hex> availableGaps) {
-        this.availableGaps = availableGaps;
-    }*/
-    public void setAvailableGaps(ArrayList<Hex> availableGaps) {
-        this.availableGaps = availableGaps;
+    public void setAvailableHexagons(ArrayList<Hexagon> availableHexagons) {
+        this.availableHexagons = availableHexagons;
     }
 
     /**
@@ -106,92 +97,65 @@ public final class Hive {
     }
 
     /**
-     * Adds a token to a gap in the board.
-     * Deletes de used gap from the list of gaps available for its use and adds the new ones from
-     * the new token.
-     * @param token
-     * @param hex
-     * CHANGES --> Hex to Hex
+     * Adds a piece to a hexagon on the board.
+     * Deletes de used hexagon from the list of available hexagons for its use and adds the new ones from
+     * the new piece.
+     * @param piece
+     * @param hexagon
+     * CHANGES --> Hexagon to Hexagon
      */
-    public void addToken(Token token, Hex hex, boolean graph){
-        //If is a bee --> beeInGame
-        if(token.getType()==TokenType.BEE) token.getPlayer().setBeeInGame(true);
-        //Add Hex to token
-        token.setCoordinates(hex);
-        //Place token on the board
-        this.board.add(token);
+    public void addPiece(Piece piece, Hexagon hexagon, boolean graph){
+        //If is a bee --> set the player's bee in game as true
+        if(piece.getType()== PieceType.BEE) piece.getPlayer().setBeeInGame(true);
+        //Add Hexagon position to the piece
+        piece.setHexagon(hexagon);
+        //Place piece on the board
+        this.board.add(piece);
         //Get neighbours
-        Token[] neighbours = new Token[6];
-        neighbours = tokenNeighbours(token.getCoordinates());
+        Piece[] neighbours = new Piece[6];
+        neighbours = pieceNeighbours(piece.getHexagon());
         if(graph) {
-            //Set token a graph id
-            token.setGraphId(this.vertex);
+            //Set piece a graph id
+            piece.setGraphId(this.vertex);
             this.vertex = this.vertex + 1;
-            //Add token to graph
-            this.graph.addVertex(token.getGraphId());
+            //Add piece to graph
+            this.graph.addVertex(piece.getGraphId());
             //Add edges (neighbours) to the vertex
-            for (Token neighbour : neighbours)
+            for (Piece neighbour : neighbours)
                 if (neighbour != null) {
-                    this.graph.addEdge(token.getGraphId(), neighbour.getGraphId());
+                    this.graph.addEdge(piece.getGraphId(), neighbour.getGraphId());
                 }
-            //addEdges(neighbours,token);
         }
-        //Set token to inGame
-        token.setInGame(true);
-        //Delete gap from ArrayList of gaps available
-        removeHexFromAvaliable(token.getCoordinates(),this.availableGaps);
-        //add new neighbours if they are not already there and have no token
-        refreshGapsAvailable(token.getCoordinates());
+        //Set piece to inGame
+        piece.setInGame(true);
+        //Delete hexagon from ArrayList of available hexagons
+        removeHexFromAvailable(piece.getHexagon(), this.availableHexagons);
+        //add new neighbours if they are not already there and have no piece
+        refreshAvailableHexagons(piece.getHexagon());
     }
 
     /**
-     * Prints board situation.
-     * @return
-     */
-    public String printBoard(){
-        String board="\nBOARD SITUATION:\n";
-        for(int i=0;i<this.board.size();i++){
-            board+="Type: "+this.board.get(i).getType()
-                    +" Player: "+this.board.get(i).getPlayer().getColor()
-                    +" Coordinates: "+this.board.get(i).getCoordinates().toString()
-                    +" Beetle: "+this.board.get(i).isBeetle()+"\n";
-        }
-        return board;
-    }
-
-    /**
-     * Checks if a token is in the board
-     * @param hex of the token to look for
+     * Checks if a piece is on the board
+     * @param hexagon --> position of the piece to look for
      * @return true if found in the board
      */
-    /*private boolean isInBoard(Hex Hex){
+    private boolean isInBoard(Hexagon hexagon){
         for(int i=0;i<this.board.size();i++){
-            if(this.board.get(i).getCoordinates().getR()==Hex.getR()
-                    && this.board.get(i).getCoordinates().getQ()==Hex.getQ()
-                    && this.board.get(i).getCoordinates().getD()==Hex.getD())
-                return true;
-        }
-        return false;
-    }*/
-    //CHANGES --> Hex to Hex
-    private boolean isInBoard(Hex hex){
-        for(int i=0;i<this.board.size();i++){
-            if(this.board.get(i).getCoordinates().toString().equals(hex.toString()))
+            if(this.board.get(i).getHexagon().toString().equals(hexagon.toString()))
                 return true;
         }
         return false;
     }
 
     /**
-     * Search a token in the board given its coordinates
-     * @param hex of the token to look for
-     * @return token if found
+     * Search a piece in the board given its hexagon
+     * @param hexagon --> position of the piece to look for
+     * @return piece if found
+     * HAY UNA PARECIDA --> LA ANTERIOR
      */
-    public Token searchToken(Hex hex){
-        for (Token board1 : this.board) {
-            if (board1.getCoordinates().getR() == hex.getR()
-                    && board1.getCoordinates().getQ() == hex.getQ()
-                    && board1.getCoordinates().getD() == hex.getD()) {
+    public Piece searchPiece(Hexagon hexagon){
+        for (Piece board1 : this.board) {
+            if (board1.getHexagon().toString().equals(hexagon.toString())) {
                 return board1;
             }
         }
@@ -199,88 +163,85 @@ public final class Hive {
     }
 
     /**
-     * Updates token coordinates
-     * @param token to update
-     * @param hex new coordinates
+     * Moves piece to a new hexagon
+     * @param piece to update
+     * @param hexagon new hexagon
      */
-    public void updateCoordinates(Token token, Hex hex) {
-        for (Token board1 : this.board) {
-            if (board1.getCoordinates().toString().equals(token.getCoordinates().toString())) {
-                board1.setCoordinates(hex);
+    public void updateHexagon(Piece piece, Hexagon hexagon) {
+        for (Piece board1 : this.board) {
+            if (board1.getHexagon().toString().equals(piece.getHexagon().toString())) {
+                board1.setHexagon(hexagon);
             }
         }
     }
 
     /**
-     * Deletes the coordinates of a token.
-     * Updates it to an impossible position in the board: -100,-100,-100
-     * @param token
+     * "Moves" the piece to the reserve hexagon. The reserve hexagon has the coordinates (-100,-100,-100)
+     * HAY UNA PARECIDA --> LA ANTERIOR
+     * @param piece
      */
-    public void deleteHex(Token token){
-        for (Token board1 : this.board) {
-            if (board1.getCoordinates().toString().equals(token.getCoordinates().toString())) {
-                board1.setCoordinates(new Hex(-100,-100,-100));
+    public void deleteHex(Piece piece){
+        for (Piece board1 : this.board) {
+            if (board1.getHexagon().toString().equals(piece.getHexagon().toString())) {
+                board1.setHexagon(new Hexagon(-100, -100, -100));
             }
         }
     }
 
     /**
-     * returns the neighbours Tokens from a given gap.
-     * @param hex
+     * returns the neighbours of a piece from a given hexagon.
+     * @param hexagon
      * @return
      */
-    //CHANGES --> Hex to Hex
-    public Token[] tokenNeighbours(Hex hex){
-        //int x = Hex.getR();
-        //int y = Hex.getQ();
-        int x = hex.getQ();
-        int y = hex.getR();
+    public Piece[] pieceNeighbours(Hexagon hexagon){
+
+        int x = hexagon.getQ();
+        int y = hexagon.getR();
         int z = 0;
-        Token[] n = new Token[6];
+        Piece[] n = new Piece[6];
         //
-        while(isInBoard(new Hex(x+1,y-1,z))) z=z+1;
-        if(z==0) n[0]=searchToken(new Hex(x+1,y-1,z));
-        else n[0]=searchToken(new Hex(x+1,y-1,z-1));
+        while(isInBoard(new Hexagon(x+1,y-1,z))) z=z+1;
+        if(z==0) n[0]= searchPiece(new Hexagon(x + 1, y - 1, z));
+        else n[0]= searchPiece(new Hexagon(x + 1, y - 1, z - 1));
         z=0;
         //
-        while(isInBoard(new Hex(x+1,y,z))) z=z+1;
-        if(z==0) n[1]=searchToken(new Hex(x+1,y,z));
-        else n[1]=searchToken(new Hex(x+1,y,z-1));
+        while(isInBoard(new Hexagon(x+1,y,z))) z=z+1;
+        if(z==0) n[1]= searchPiece(new Hexagon(x + 1, y, z));
+        else n[1]= searchPiece(new Hexagon(x + 1, y, z - 1));
         z=0;
         //
-        while(isInBoard(new Hex(x,y+1,z))) z=z+1;
-        if(z==0) n[2]=searchToken(new Hex(x,y+1,z));
-        else n[2]=searchToken(new Hex(x,y+1,z-1));
+        while(isInBoard(new Hexagon(x,y+1,z))) z=z+1;
+        if(z==0) n[2]= searchPiece(new Hexagon(x, y + 1, z));
+        else n[2]= searchPiece(new Hexagon(x, y + 1, z - 1));
         z=0;
         //
-        while(isInBoard(new Hex(x-1,y+1,z))) z=z+1;
-        if(z==0) n[3]=searchToken(new Hex(x-1,y+1,z));
-        else n[3]=searchToken(new Hex(x-1,y+1,z-1));
+        while(isInBoard(new Hexagon(x-1,y+1,z))) z=z+1;
+        if(z==0) n[3]= searchPiece(new Hexagon(x - 1, y + 1, z));
+        else n[3]= searchPiece(new Hexagon(x - 1, y + 1, z - 1));
         z=0;
         //
-        while(isInBoard(new Hex(x-1,y,z))) z=z+1;
-        if(z==0) n[4]=searchToken(new Hex(x-1,y,z));
-        else n[4]=searchToken(new Hex(x-1,y,z-1));
+        while(isInBoard(new Hexagon(x-1,y,z))) z=z+1;
+        if(z==0) n[4]= searchPiece(new Hexagon(x - 1, y, z));
+        else n[4]= searchPiece(new Hexagon(x - 1, y, z - 1));
         z=0;
         //
-        while(isInBoard(new Hex(x,y-1,z))) z=z+1;
-        if(z==0) n[5]=searchToken(new Hex(x,y-1,z));
-        else n[5]=searchToken(new Hex(x,y-1,z-1));
+        while(isInBoard(new Hexagon(x,y-1,z))) z=z+1;
+        if(z==0) n[5]= searchPiece(new Hexagon(x, y - 1, z));
+        else n[5]= searchPiece(new Hexagon(x, y - 1, z - 1));
         z=0;
         //
         return n;
     }
 
     /**
-     * counts how many neighbors has a given position.
-     * @param hex
+     * counts how many neighbors has a given hexagon.
+     * @param hexagon
      * @return
      */
-    //CHANGES --> Hex to Hex
-    public int numberOfNeighbours(Hex hex){
+    public int numberOfNeighbours(Hexagon hexagon){
         int n = 0;
-        Token[] nb = new Token[6];
-        nb = tokenNeighbours(hex);
+        Piece[] nb = new Piece[6];
+        nb = pieceNeighbours(hexagon);
         for (int i=0;i<nb.length;i++){
             if(nb[i]!=null) n = n+1;
         }
@@ -288,16 +249,15 @@ public final class Hive {
     }
 
     /**
-     * checks if all the neighbors tokens for a given gap are from a specific player.
+     * Checks if all the neighbors of a piece for a given hexagon are from a specific player.
      * @param player
-     * @param hex
+     * @param hexagon
      * @return
      */
-    //CHANGES --> Hex to Hex
-    public boolean checkNeighboursTokenSamePlayer(Player player, Hex hex){
-        Token[] n = new Token[6];
-        n = tokenNeighbours(hex);
-        for (Token n1 : n) {
+    public boolean checkNeighboursPieceSamePlayer(Player player, Hexagon hexagon){
+        Piece[] n = new Piece[6];
+        n = pieceNeighbours(hexagon);
+        for (Piece n1 : n) {
             if (n1 != null) {
                 if (!n1.getPlayer().getColor().equals(player.getColor())) {
                     return false;
@@ -308,671 +268,551 @@ public final class Hive {
     }
 
     /**
-     * Prints in which gaps can a player place a token for the first time.
-     * If it's the first turn of the player the token must touch a token
-     * of the opposite player.
+     * Gets the hexagons where a player can place a piece.
      * @param player
      * @return
      */
-    public String printPlayerGapsAvailable(Player player){
-        String gaps="\nGaps avaliable: \n";
-        for(int i=0;i<this.availableGaps.size();i++)
-            //A token can only be placed in the lower level of the hive
-            if(this.availableGaps.get(i).getD()==0){
+    public ArrayList<Hexagon> getAvailableHexagonsPlayer(Player player){
+        ArrayList<Hexagon> hexagons = new ArrayList<>();
+        for(int i=0;i<this.availableHexagons.size();i++)
+            //A piece can only be placed for the first time in the lower level of the hive
+            if(this.availableHexagons.get(i).getD()==0){
                 if(player.getTurn()!=1){
-                    if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
-                        gaps+=this.availableGaps.get(i).toString()+"\n";
+                    if(checkNeighboursPieceSamePlayer(player, this.getAvailableHexagons().get(i)))
+                        hexagons.add(this.availableHexagons.get(i));
                 }else{
-                    gaps+=this.availableGaps.get(i).toString()+"\n";
+                    hexagons.add(this.availableHexagons.get(i));
                 }
             }
-        return gaps;
+        return hexagons;
     }
 
     /**
-     *
-     * @param player
+     * Returns the list of hexagons surrounding an hexagon.
+     * @param hexagon
      * @return
      */
-    //CHANGES --> Hex to Hex
-    public ArrayList<Hex> getPlayerGapsAvailable(Player player){
-        ArrayList<Hex> gaps = new ArrayList<>();
-        for(int i=0;i<this.availableGaps.size();i++)
-            //A token can only be placed in the lower level of the hive
-            if(this.availableGaps.get(i).getD()==0){
-                if(player.getTurn()!=1){
-                    if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i))) {
-                        Log.d("Gap to add",this.availableGaps.get(i).toString());
-                        gaps.add(this.availableGaps.get(i));
-                    }
-                }else{
-                    gaps.add(this.availableGaps.get(i));
-                }
-            }
-        return gaps;
-    }
+    public ArrayList<Hexagon> getNeighbourHex(Hexagon hexagon){
 
-    /**
-     * Checks if there are available gaps for a player to place a token
-     * @param player
-     * @return
-     */
-    //CHANGES --> Hex to Hex
-    public boolean checkIfGapsAvailable(Player player){
-        ArrayList<Hex> gaps = new ArrayList<Hex>();
-        for(int i=0; i<this.getAvailableGaps().size();i++){
-            if(this.availableGaps.get(i).getD()==0){
-                if(player.getTurn()!=1){
-                    if(checkNeighboursTokenSamePlayer(player,this.getAvailableGaps().get(i)))
-                        gaps.add(this.availableGaps.get(i));
-                }else{
-                    gaps.add(this.availableGaps.get(i));
-                }
-            }
-        }
-        if(gaps.isEmpty()) return false;
-        else return true;
-    }
-
-    /**
-     * Prints neighbors tokens for a given token.
-     * Creo que este método no se usa --> Mirarlo
-     * @param token
-     * @return
-     */
-    public String printNeighboursTokens(Token token){
-        Token[] n = new Token[6];
-        n = tokenNeighbours(token.getCoordinates());
-        String ns="Neighbours: \n";
-        for(int i=0;i<n.length;i++){
-            if(n[i]!=null)
-                ns+="At ("+n[i].getCoordinates().getR()+","+n[i].getCoordinates().getD()+") Type: "+n[i].getType()+" Player: "+n[i].getPlayer().getColor();
-        }
-        return ns;
-    }
-
-    /**
-     * Returns the list of positions surrounding a gap.
-     * @param hex
-     * @return
-     */
-    public ArrayList<Hex> getNeighbourHex(Hex hex){
-        /*int x = Hex.getR();
-        int y = Hex.getQ();*/
-        int x = hex.getQ();
-        int y = hex.getR();
+        int x = hexagon.getQ();
+        int y = hexagon.getR();
         int z = 0;
-        ArrayList<Hex> neighbours = new ArrayList<Hex>();
+        ArrayList<Hexagon> neighbours = new ArrayList<>();
 
-        while(isInBoard(new Hex(x+1,y-1,z)))
+        while(isInBoard(new Hexagon(x+1,y-1,z)))
             z=z+1;
-        neighbours.add(new Hex(x+1,y-1,z));
+        neighbours.add(new Hexagon(x+1,y-1,z));
         z=0;
 
-        while(isInBoard(new Hex(x+1,y,z)))
+        while(isInBoard(new Hexagon(x+1,y,z)))
             z=z+1;
-        neighbours.add(new Hex(x+1,y,z));
+        neighbours.add(new Hexagon(x+1,y,z));
         z=0;
 
-        while(isInBoard(new Hex(x,y+1,z)))
+        while(isInBoard(new Hexagon(x,y+1,z)))
             z=z+1;
-        neighbours.add(new Hex(x,y+1,z));
+        neighbours.add(new Hexagon(x,y+1,z));
         z=0;
 
-        while(isInBoard(new Hex(x-1,y+1,z)))
+        while(isInBoard(new Hexagon(x-1,y+1,z)))
             z=z+1;
-        neighbours.add(new Hex(x-1,y+1,z));
+        neighbours.add(new Hexagon(x-1,y+1,z));
         z=0;
 
-        while(isInBoard(new Hex(x-1,y,z)))
+        while(isInBoard(new Hexagon(x-1,y,z)))
             z=z+1;
-        neighbours.add(new Hex(x-1,y,z));
+        neighbours.add(new Hexagon(x-1,y,z));
         z=0;
 
-        while(isInBoard(new Hex(x,y-1,z)))
+        while(isInBoard(new Hexagon(x,y-1,z)))
             z=z+1;
-        neighbours.add(new Hex(x,y-1,z));
+        neighbours.add(new Hexagon(x,y-1,z));
 
         return neighbours;
     }
 
     /**
-     * Deletes a coordinate from the list of available gaps.
-     * @param hex
+     * Deletes a hexagon from a given list with hexagons.
+     * @param hexagon
      */
-    public void removeHexFromAvaliable(Hex hex, ArrayList<Hex> list){
-        //Iterator<Hex> it = this.availableGaps.iterator();
-        Iterator<Hex> it = list.iterator();
+    public void removeHexFromAvailable(Hexagon hexagon, ArrayList<Hexagon> list){
+        Iterator<Hexagon> it = list.iterator();
         while (it.hasNext()) {
-            Hex c = it.next();
-            if (c.toString().equals(hex.toString())) {
+            Hexagon c = it.next();
+            if (c.toString().equals(hexagon.toString())) {
                 it.remove();
             }
         }
     }
 
     /**
-     * Checks if a positions is already in the list of available gaps.
-     * @param hex
+     * Checks if a hexagon is already in the list of available hexagons.
+     * @param hexagon
      * @return
      */
-    private boolean checkIfDuplicate(Hex hex){
-        for(int i=0;i < this.availableGaps.size();i++){
-            if(this.availableGaps.get(i).getR()==hex.getR()
-                    && this.availableGaps.get(i).getQ()==hex.getQ()
-                    && this.availableGaps.get(i).getD()==hex.getD())
+    private boolean checkIfDuplicate(Hexagon hexagon){
+        for(int i=0;i < this.availableHexagons.size();i++){
+            if(this.availableHexagons.get(i).toString().equals(hexagon.toString()))
                 return false;
         }
         return true;
     }
 
     /**
-     * Add new positions to the list of available gaps.
-     * Checks if the new position is not already in the list.
-     * @param hex
+     * Add new hexagon to the list of available hexagons.
+     * Checks if the new hexagon is not already in the list.
+     * @param hexagon
      */
-    private void refreshGapsAvailable(Hex hex) {
-        ArrayList<Hex> newNeighbours = new ArrayList<>();
-        newNeighbours = getNeighbourHex(hex);
+    private void refreshAvailableHexagons(Hexagon hexagon) {
+        ArrayList<Hexagon> newNeighbours = new ArrayList<>();
+        newNeighbours = getNeighbourHex(hexagon);
         for(int i=0;i<newNeighbours.size();i++){
             if(!isInBoard(newNeighbours.get(i)))
                 if(checkIfDuplicate(newNeighbours.get(i)))
-                    this.getAvailableGaps().add(newNeighbours.get(i));
+                    this.getAvailableHexagons().add(newNeighbours.get(i));
 
         }
 
     }
 
     /**
-     * Deletes gaps from available if they haven't any neighbour.
-     * @param hex
+     * Deletes a hexagon from a given list with hexagons if they haven't any neighbour.
+     * @param hexagon
      */
-    private void deleteGapsAvailable(Hex hex, ArrayList<Hex> list) {
-        ArrayList<Hex> oldNeighbours = new ArrayList<>();
-        oldNeighbours = getNeighbourHex(hex);
+    private void deleteAvailableHexagons(Hexagon hexagon, ArrayList<Hexagon> list) {
+        ArrayList<Hexagon> oldNeighbours = new ArrayList<>();
+        oldNeighbours = getNeighbourHex(hexagon);
         for(int i=0; i<oldNeighbours.size();i++){
-            //If this neighbours gap has no neighbours --> delete from gapsAvailable
-            if(numberOfNeighbours(oldNeighbours.get(i))==0) removeHexFromAvaliable(oldNeighbours.get(i),list);
+            //If this neighbours has no neighbours --> delete from AvailableHexagons
+            if(numberOfNeighbours(oldNeighbours.get(i))==0) removeHexFromAvailable(oldNeighbours.get(i), list);
         }
     }
 
     /**
-     * Returns a list of coordinates where a given token can be moved.
-     * the token is already in game.
+     * Returns a list of hexagons where a given piece can be moved.
+     * the piece is already in game.
      * IA -->
-     * @param token
+     * @param piece
      * @return
      */
-    public ArrayList<Hex> getPossibleGaps(Token token, boolean ia){
-        ArrayList<Hex> possibleGaps = new ArrayList<>();
-        /*Log.d("isbeetle",String.valueOf(!token.isBeetle()));
-        Log.d("isbeeingame",String.valueOf(token.getPlayer().isBeeInGame()));*/
-        boolean brokenHive = brokenHive(token);
+    public ArrayList<Hexagon> getPossibleHexagon(Piece piece, boolean ia){
+        ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
+        boolean brokenHive = brokenHive(piece);
         if(ia) brokenHive = false;
-        //Log.d("brokenhive",String.valueOf(!brokenHive(token)));
-        if(!token.isBeetle() && token.getPlayer().isBeeInGame() && !brokenHive){
-            //Log.d("before switch","...");
-            switch(token.getType()){
-                case BEE: possibleGaps = beeMoves(token);
+        if(!piece.isBeetle() && piece.getPlayer().isBeeInGame() && !brokenHive){
+            switch(piece.getType()){
+                case BEE: possibleHexagons = beeMoves(piece);
                     break;
-                case GRASSHOPPER: possibleGaps = grasshopperMoves(token.getCoordinates());
+                case GRASSHOPPER: possibleHexagons = grasshopperMoves(piece.getHexagon());
                     break;
-                case BEETLE: possibleGaps = beetleMoves(token);
+                case BEETLE: possibleHexagons = beetleMoves(piece);
                     break;
-                case SPIDER: possibleGaps = spiderMoves(token);
+                case SPIDER: possibleHexagons = spiderMoves(piece);
                     break;
-                case ANT: possibleGaps = antMoves(token);
+                case ANT: possibleHexagons = antMoves(piece);
                     break;
                 default: break;
             }
         }
-        return possibleGaps;
+        return possibleHexagons;
     }
 
     /**
-     * Prints a list of coordinates where a given token can be moved.
-     * @param token
-     * @return
-     */
-    public String printPossibleGaps(Token token){
-        String gaps ="\nPossible gaps for "+token.getType()+":\n";
-        ArrayList<Hex> possibleGaps = new ArrayList<>();
-        possibleGaps = getPossibleGaps(token,false);
-        for(int i=0;i<possibleGaps.size(); i++){
-            gaps+=" X: "+possibleGaps.get(i).getR()+" Y: "+possibleGaps.get(i).getQ()+" Z: "+possibleGaps.get(i).getD()+"\n";
-        }
-        return gaps;
-    }
-
-    /**
-     * Moves a token from its currently position to a new one.
+     * Moves a piece from its currently hexagon to a new one.
      * IA
-     * @param token to move
-     * @param hex new position
+     * @param piece to move
+     * @param hexagon new position
      */
-    public void movetoken(Token token, Hex hex, boolean ia){
-        Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
+    public void movePiece(Piece piece, Hexagon hexagon, boolean ia){
+        Hexagon c = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD());
         //Check if players bee in game
-        //if(token.getPlayer().isBeeInGame() && !token.isBeetle() && !brokenHive(token)){
-        //if(!ia) {
-            //Check, if the token is a beetle, if its moving from the top of another token --> unmark it
-            if (token.getType() == TokenType.BEETLE && token.getCoordinates().getD() != 0) {
-                //Token t = searchToken(new Hex(token.getCoordinates().getR(),token.getCoordinates().getQ(),token.getCoordinates().getD()-1));
-                Token t = searchToken(new Hex(token.getCoordinates().getQ(), token.getCoordinates().getR(), token.getCoordinates().getD() - 1));
+            //Check, if the piece is a beetle, if its moving from the top of another piece --> unmark it
+            if (piece.getType() == PieceType.BEETLE && piece.getHexagon().getD() != 0) {
+                //Piece t = searchPiece(new Hexagon(piece.getHexagon().getR(),piece.getHexagon().getQ(),piece.getHexagon().getD()-1));
+                Piece t = searchPiece(new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD() - 1));
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
-            if (token.getType() == TokenType.BEETLE && hex.getD() != 0) {
-                //Token t = searchToken(new Hex(hex.getR(),hex.getQ(),hex.getD()-1));
-                Token t = searchToken(new Hex(hex.getQ(), hex.getR(), hex.getD() - 1));
+            if (piece.getType() == PieceType.BEETLE && hexagon.getD() != 0) {
+                //Piece t = searchPiece(new Hexagon(hexagon.getR(),hexagon.getQ(),hexagon.getD()-1));
+                Piece t = searchPiece(new Hexagon(hexagon.getQ(), hexagon.getR(), hexagon.getD() - 1));
                 t.setBeetle(true);
             }
-        //}
-            //Add gap to available gaps
-            this.availableGaps.add(c);
-            //Free gap in the board
-            deleteHex(token);
-            //Delete gap neighbours if they haven't any neighbour
-            deleteGapsAvailable(c,this.availableGaps);
-            //Update coordinates of the token of the board
-            updateCoordinates(token,hex);
-            //Add neighbours null coordinates to gapsAvailable
-        if(!ia) {refreshGapsAvailable(hex);
-            //Remove gap from available
-            removeHexFromAvaliable(hex,this.availableGaps);}
+            //Add hexagon to available hexagons list
+            this.availableHexagons.add(c);
+            //Free hexagon in the board
+            deleteHex(piece);
+            //Delete hexagon neighbours if they haven't any neighbour
+            deleteAvailableHexagons(c, this.availableHexagons);
+            //Update hexagon of the piece of the board
+            updateHexagon(piece, hexagon);
+        if(!ia) {
+            refreshAvailableHexagons(hexagon);
+            //Remove hexagon from available
+            removeHexFromAvailable(hexagon, this.availableHexagons);}
 
-        //if(!ia) {
             //Update graph:
             //Delete vertex from the graph
-            this.graph.removeVertex(token.getGraphId());
-            //If the destination gap is in level 0
-            //if(token.getCoordinates().getD()==0) {
+            this.graph.removeVertex(piece.getGraphId());
+            //If the destination hexagon is in level 0
             //Get new neighbours
-            Token[] newNeighbours = tokenNeighbours(token.getCoordinates());
-            //Add token again
-            this.graph.addVertex(token.getGraphId());
+            Piece[] newNeighbours = pieceNeighbours(piece.getHexagon());
+            //Add piece again
+            this.graph.addVertex(piece.getGraphId());
             //Add neighbours to graph
-            for (Token newNeighbour : newNeighbours)
+            for (Piece newNeighbour : newNeighbours)
                 if (newNeighbour != null){
-                    /*Log.d("token",token.tokenInfo());
-                    Log.d("Token id g ",String.valueOf(token.getGraphId()));
-                    Log.d("neig",newNeighbour.tokenInfo());
-                    Log.d("nigh id g",String.valueOf(newNeighbour.getGraphId()));*/
-                    this.graph.addEdge(token.getGraphId(), newNeighbour.getGraphId());
+                    this.graph.addEdge(piece.getGraphId(), newNeighbour.getGraphId());
                 }
-
-        //}
-            //}
-
-        //}
     }
 
     /**
-     * Checks if a given position is blocked.
-     * @param hex
+     * Checks if a given piece is blocked.
+     * @param piece
      * @return
      */
-    public boolean checkIfTokenBlocked(Token token){
-        //First: If moving the token breaks the hive...
-        if(brokenHive(token)){
-            //Log.d("Broken hive","...");
+    public boolean checkIfPieceBlocked(Piece piece){
+        //First: If moving the piece breaks the hive...
+        if(brokenHive(piece)){
             return true;
         }
-        /*Log.d("Hive blocked?", token.tokenInfo());
-        Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));*/
-        if(token.getType().equals(TokenType.BEE) || token.getType().equals(TokenType.SPIDER) || token.getType().equals(TokenType.ANT)) {
+        if(piece.getType().equals(PieceType.BEE) || piece.getType().equals(PieceType.SPIDER) || piece.getType().equals(PieceType.ANT)) {
             //Second: If number of neighbours more than 4;
-            if (numberOfNeighbours(token.getCoordinates()) > 4) return true;
+            if (numberOfNeighbours(piece.getHexagon()) > 4) return true;
             //Third: If it has at less 2 consecutive neighbours free --> Not blocked
-            if (numberOfNeighbours(token.getCoordinates()) == 4)
-                if (checkIfBlockedByFourNeighbours(token.getCoordinates())) return true;
-            //Fourth: If there is only 3 neighbours check that they don't block the gap
-            if (numberOfNeighbours(token.getCoordinates()) == 3)
-                if (checkIfBlockedByThreeNeighbours(token.getCoordinates())) return true;
+            if (numberOfNeighbours(piece.getHexagon()) == 4)
+                if (checkIfBlockedByFourNeighbours(piece.getHexagon())) return true;
+            //Fourth: If there is only 3 neighbours check that they don't block the hexagon
+            if (numberOfNeighbours(piece.getHexagon()) == 3)
+                if (checkIfBlockedByThreeNeighbours(piece.getHexagon())) return true;
         }
         return false;
     }
 
     /**
      *
-     * @param hex
+     * @param hexagon
      * @return
      */
-    public boolean checkIfGapBlocked(Hex hex){
-        /*Log.d("Hive blocked?", token.tokenInfo());
-        Log.d("neigh",String.valueOf(numberOfNeighbours(token.getCoordinates())));*/
+    public boolean checkIfHexagonBlocked(Hexagon hexagon){
             //Second: If number of neighbours more than 4;
-            if (numberOfNeighbours(hex) > 4) return true;
+            if (numberOfNeighbours(hexagon) > 4) return true;
             //Third: If it has at less 2 consecutive neighbours free --> Not blocked
-            if (numberOfNeighbours(hex) == 4)
-                if (checkIfBlockedByFourNeighbours(hex)) return true;
-            //Fourth: If there is only 3 neighbours check that they don't block the gap
-            if (numberOfNeighbours(hex) == 3)
-                if (checkIfBlockedByThreeNeighbours(hex)) return true;
+            if (numberOfNeighbours(hexagon) == 4)
+                if (checkIfBlockedByFourNeighbours(hexagon)) return true;
+            //Fourth: If there is only 3 neighbours check that they don't block the hexagon
+            if (numberOfNeighbours(hexagon) == 3)
+                if (checkIfBlockedByThreeNeighbours(hexagon)) return true;
         return false;
     }
 
     /**
-     * Checks if a position surrounded by 4 tokens is blocked.
-     * @param hex
+     * Checks if a hexagon surrounded by 4 pieces is blocked.
+     * @param hexagon
      * @return
      */
-    private boolean checkIfBlockedByFourNeighbours(Hex hex){
-        /*int x = Hex.getR();
-        int y = Hex.getQ();*/
-        int x = hex.getQ();
-        int y = hex.getR();
-        if(!isInBoard(new Hex(x+1,y-1,0)) && !isInBoard(new Hex(x+1,y,0))) return false;
-        else if(!isInBoard(new Hex(x+1,y,0)) && !isInBoard(new Hex(x,y+1,0))) return false;
-        else if(!isInBoard(new Hex(x,y+1,0)) && !isInBoard(new Hex(x-1,y+1,0))) return false;
-        else if(!isInBoard(new Hex(x-1,y+1,0)) && !isInBoard(new Hex(x-1,y,0))) return false;
-        else if(!isInBoard(new Hex(x-1,y,0)) && !isInBoard(new Hex(x,y-1,0))) return false;
-        else if(!isInBoard(new Hex(x,y-1,0)) && !isInBoard(new Hex(x+1,y-1,0))) return false;
+    private boolean checkIfBlockedByFourNeighbours(Hexagon hexagon){
+
+        int x = hexagon.getQ();
+        int y = hexagon.getR();
+
+        if(!isInBoard(new Hexagon(x+1,y-1,0)) && !isInBoard(new Hexagon(x+1,y,0))) return false;
+        else if(!isInBoard(new Hexagon(x+1,y,0)) && !isInBoard(new Hexagon(x,y+1,0))) return false;
+        else if(!isInBoard(new Hexagon(x,y+1,0)) && !isInBoard(new Hexagon(x-1,y+1,0))) return false;
+        else if(!isInBoard(new Hexagon(x-1,y+1,0)) && !isInBoard(new Hexagon(x-1,y,0))) return false;
+        else if(!isInBoard(new Hexagon(x-1,y,0)) && !isInBoard(new Hexagon(x,y-1,0))) return false;
+        else if(!isInBoard(new Hexagon(x,y-1,0)) && !isInBoard(new Hexagon(x+1,y-1,0))) return false;
         else return true;
     }
 
     /**
-     * If a position is surrounded by 3 separated tokens is blocked.
-     * @param hex
+     * If a hexagon is surrounded by 3 separated pieces is blocked.
+     * @param hexagon
      * @return
      */
-    private boolean checkIfBlockedByThreeNeighbours(Hex hex){
-        /*int x = Hex.getR();
-        int y = Hex.getQ();*/
-        int x = hex.getQ();
-        int y = hex.getR();
-        if(!isInBoard(new Hex(x,y-1,0)) && !isInBoard(new Hex(x+1,y,0)) && !isInBoard(new Hex(x-1,y+1,0))) return true;
-        else if(!isInBoard(new Hex(x+1,y-1,0)) && !isInBoard(new Hex(x,y+1,0)) && !isInBoard(new Hex(x-1,y,0))) return true;
+    private boolean checkIfBlockedByThreeNeighbours(Hexagon hexagon){
+
+        int x = hexagon.getQ();
+        int y = hexagon.getR();
+
+        if(!isInBoard(new Hexagon(x,y-1,0)) && !isInBoard(new Hexagon(x+1,y,0)) && !isInBoard(new Hexagon(x-1,y+1,0))) return true;
+        else if(!isInBoard(new Hexagon(x+1,y-1,0)) && !isInBoard(new Hexagon(x,y+1,0)) && !isInBoard(new Hexagon(x-1,y,0))) return true;
         else return false;
     }
 
     /**
-     * The bee can slide to an empty neighbour gap.
-     * @param token
+     * The bee can slide to an empty neighbour hexagon.
+     * @param piece
      * @return
      */
-    private ArrayList<Hex> beeMoves(Token token) {
-        ArrayList<Hex> possibleGaps = new ArrayList<>();
-        ArrayList<Hex> realGaps = new ArrayList<>();
-        ArrayList<Hex> nToken = new ArrayList<>();
+    private ArrayList<Hexagon> beeMoves(Piece piece) {
+        ArrayList<Hexagon> possibleHex = new ArrayList<>();
+        ArrayList<Hexagon> realHex = new ArrayList<>();
         //First: Check if blocked
-        if(!checkIfTokenBlocked(token)){
+        if(!checkIfPieceBlocked(piece)){
             //Second: Get neighbours
-            possibleGaps = getNeighbourHex(token.getCoordinates());
-            //Third : For each coordinate --> check if its a gap and that the token can slide to it
-            for(int i=0; i<possibleGaps.size(); i++){
-                if(possibleGaps.get(i).getD()==0){
-                    if(checkGap(token.getCoordinates(),possibleGaps.get(i))==1)
-                        realGaps.add(possibleGaps.get(i));
+            possibleHex = getNeighbourHex(piece.getHexagon());
+            //Third : For each hexagon --> check if the piece can slide to it
+            for(int i=0; i<possibleHex.size(); i++){
+                if(possibleHex.get(i).getD()==0){
+                    if(checkHexagon(piece.getHexagon(), possibleHex.get(i))==1)
+                        realHex.add(possibleHex.get(i));
                 }
             }
         }
-        return realGaps;
+        return realHex;
     }
 
     /**
      * The grasshopper can jump over other insects.
-     * @param hex
+     * @param hexagon
      * @return
      */
-    private ArrayList<Hex> grasshopperMoves(Hex hex) {
-        ArrayList<Hex> possibleGaps = new ArrayList<>();
-        /*int x = Hex.getR();
-        int y = Hex.getQ();*/
-        int x = hex.getQ();
-        int y = hex.getR();
+    private ArrayList<Hexagon> grasshopperMoves(Hexagon hexagon) {
+
+        ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
+        int x = hexagon.getQ();
+        int y = hexagon.getR();
+
         //Check 6 sides: While there is a neighbour -> keep jumping
         //Face 1
         int i=1;
         int j=1;
-        while(isInBoard(new Hex(x+i,y-j,0))){
+        while(isInBoard(new Hexagon(x+i,y-j,0))){
 
             i=i+1;
             j=j+1;
         }
         if(i!=1 && j!=1){
-            Hex c = new Hex(hex.getQ()+i,hex.getR()-j,0);
-            //Hex c = new Hex(hex.getR(),hex.getQ(),0);
-
-            possibleGaps.add(c);
+            Hexagon c = new Hexagon(hexagon.getQ()+i, hexagon.getR()-j,0);
+            possibleHexagons.add(c);
         }
         //Face 2
         i=1;
-        while(isInBoard(new Hex(x+i,y, 0))){
-
+        while(isInBoard(new Hexagon(x+i,y, 0))){
             i=i+1;
         }
         if(i!=1){
-            //Hex c = new Hex(hex.getR()+i,hex.getQ(),0);
-            Hex c = new Hex(hex.getQ()+i,hex.getR(),0);
-
-            possibleGaps.add(c);
+            Hexagon c = new Hexagon(hexagon.getQ()+i, hexagon.getR(),0);
+            possibleHexagons.add(c);
         }
         //Face 3
         j=1;
-        while(isInBoard(new Hex(x,y+j, 0))){
+        while(isInBoard(new Hexagon(x,y+j, 0))){
             j=j+1;
         }
         if(j!=1){
-            Hex c = new Hex(hex.getQ(),hex.getR()+j,0);
-            //Hex c = new Hex(hex.getR(),hex.getQ(),0);
-            possibleGaps.add(c);
+            Hexagon c = new Hexagon(hexagon.getQ(), hexagon.getR()+j,0);
+            possibleHexagons.add(c);
         }
         //Face 4
         i=1;
         j=1;
-        while(isInBoard(new Hex(x-i,y+j,0))){
+        while(isInBoard(new Hexagon(x-i,y+j,0))){
             i=i+1;
             j= j +1;
         }
         if(i!=1 && j!=1){
-            Hex c = new Hex(hex.getQ()-i,hex.getR()+j,0);
-            possibleGaps.add(c);
+            Hexagon c = new Hexagon(hexagon.getQ()-i, hexagon.getR()+j,0);
+            possibleHexagons.add(c);
         }
         //Face 5
         i=1;
-        while(isInBoard(new Hex(x-i,y, 0))){
+        while(isInBoard(new Hexagon(x-i,y, 0))){
             i=i+1;
         }
         if(i!=1){
-            Hex c = new Hex(hex.getQ()-i,hex.getR(),0);
-            possibleGaps.add(c);
+            Hexagon c = new Hexagon(hexagon.getQ()-i, hexagon.getR(),0);
+            possibleHexagons.add(c);
         }
         //Face 6
         j=1;
-        while(isInBoard(new Hex(x,y-j, 0))){
+        while(isInBoard(new Hexagon(x,y-j, 0))){
             j=j+1;
         }
         if(j!=1){
-            Hex c = new Hex(hex.getQ(),hex.getR()-j,0);
-            possibleGaps.add(c);
+            Hexagon c = new Hexagon(hexagon.getQ(), hexagon.getR()-j,0);
+            possibleHexagons.add(c);
         }
-        return possibleGaps;
+        return possibleHexagons;
     }
 
     /**
-     * The beetle can go on top of its neighbours or slide to an empty gap.
-     * @param token
+     * The beetle can go on top of its neighbours or slide to an empty hexagon.
+     * @param piece
      * @return
      */
-    private ArrayList<Hex> beetleMoves(Token token) {
-        ArrayList<Hex> possibleGaps = new ArrayList<>();
-        ArrayList<Hex> realGaps = new ArrayList<>();
+    private ArrayList<Hexagon> beetleMoves(Piece piece) {
+        ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
+        ArrayList<Hexagon> realHexagons = new ArrayList<>();
         int x,y,z;
-        possibleGaps = getNeighbourHex(token.getCoordinates());
-        for(int i=0; i<possibleGaps.size(); i++){
-            x=possibleGaps.get(i).getR();
-            y=possibleGaps.get(i).getQ();
-            z=possibleGaps.get(i).getD();
+        possibleHexagons = getNeighbourHex(piece.getHexagon());
+        for(int i=0; i<possibleHexagons.size(); i++){
+            x=possibleHexagons.get(i).getR();
+            y=possibleHexagons.get(i).getQ();
+            z=possibleHexagons.get(i).getD();
             if(z!=0){
-                int n = checkGap(token.getCoordinates(),possibleGaps.get(i));
-                if(n==1 || n==0) realGaps.add(possibleGaps.get(i));
+                int n = checkHexagon(piece.getHexagon(), possibleHexagons.get(i));
+                if(n==1 || n==0) realHexagons.add(possibleHexagons.get(i));
             }else{
-                if(token.getCoordinates().getD()>z){
-                    realGaps.add(possibleGaps.get(i));
+                if(piece.getHexagon().getD()>z){
+                    realHexagons.add(possibleHexagons.get(i));
                 }else{
-                    if(checkGap(token.getCoordinates(),possibleGaps.get(i))==1) realGaps.add(possibleGaps.get(i));
+                    if(checkHexagon(piece.getHexagon(), possibleHexagons.get(i))==1) realHexagons.add(possibleHexagons.get(i));
                 }
             }
         }
-        System.out.println(realGaps.size());
-        return realGaps;
+        System.out.println(realHexagons.size());
+        return realHexagons;
     }
 
     /**
-     * The spider can slide to a gap 3 gaps away. Exactly 3, not less not more.
-     * @param token
+     * The spider can slide to a hexagon 3 hexagons away. Exactly 3, not less not more.
+     * @param piece
      * @return
      */
-    private ArrayList<Hex> spiderMoves(Token token) {
-        ArrayList<Hex> realGaps = new ArrayList<>();
-        ArrayList<Hex> l1Token = new ArrayList<>();
-        ArrayList<Hex> l2Token = new ArrayList<>();
-        ArrayList<Hex> l3Token = new ArrayList<>();
+    private ArrayList<Hexagon> spiderMoves(Piece piece) {
+        ArrayList<Hexagon> realHexagons = new ArrayList<>();
+        ArrayList<Hexagon> l1Piece = new ArrayList<>();
+        ArrayList<Hexagon> l2Piece = new ArrayList<>();
+        ArrayList<Hexagon> l3Piece = new ArrayList<>();
 
-        //Save original Hex
-        Hex c1 = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),0);
+        //Save original Hexagon
+        Hexagon c1 = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(),0);
 
         //Level 1
-        l1Token=getNeighbourHex(token.getCoordinates());
-        for(int i=0;i<l1Token.size();i++){
-            if(l1Token.get(i).getD()==0){
-                if (checkGap(c1, l1Token.get(i))==1){
-                    //Hex c2 = new Hex(l1Token.get(i).getR(),l1Token.get(i).getQ(), 0);
-                    Hex c2 = new Hex(l1Token.get(i).getQ(),l1Token.get(i).getR(), 0);
-                    //Move Spider to that gap
-                    updateCoordinates(token,l1Token.get(i));
+        l1Piece=getNeighbourHex(piece.getHexagon());
+        for(int i=0;i<l1Piece.size();i++){
+            if(l1Piece.get(i).getD()==0){
+                if (checkHexagon(c1, l1Piece.get(i))==1){
+                    //Hexagon c2 = new Hexagon(l1Piece.get(i).getR(),l1Piece.get(i).getQ(), 0);
+                    Hexagon c2 = new Hexagon(l1Piece.get(i).getQ(),l1Piece.get(i).getR(), 0);
+                    //Move Spider to that hexagon
+                    updateHexagon(piece, l1Piece.get(i));
                     //Take neighbours
-                    l2Token=getNeighbourHex(l1Token.get(i));
+                    l2Piece=getNeighbourHex(l1Piece.get(i));
                     //Level 2
-                    for(int j=0;j<l2Token.size();j++){
-                        //if is not Hex from previous spider position
-                        if(!(l2Token.get(j).getR()== c2.getR() && l2Token.get(j).getQ()==c2.getQ())
-                                && !(l2Token.get(j).getR()== c1.getR() && l2Token.get(j).getQ()==c1.getQ())){
-                            if(l2Token.get(j).getD()==0){
-                                if(checkGap(l1Token.get(i),l2Token.get(j))==1){
-                                    //Save original Hex
-                                    //Hex c3 = new Hex(l2Token.get(j).getR(),l2Token.get(j).getQ(),0);
-                                    Hex c3 = new Hex(l2Token.get(j).getQ(),l2Token.get(j).getR(),0);
-                                    //Move Spider to that gap
-                                    updateCoordinates(token,l2Token.get(j));
+                    for(int j=0;j<l2Piece.size();j++){
+                        //if is not the hexagon from previous spider position
+                        if(!(l2Piece.get(j).getR()== c2.getR() && l2Piece.get(j).getQ()==c2.getQ())
+                                && !(l2Piece.get(j).getR()== c1.getR() && l2Piece.get(j).getQ()==c1.getQ())){
+                            if(l2Piece.get(j).getD()==0){
+                                if(checkHexagon(l1Piece.get(i), l2Piece.get(j))==1){
+                                    //Save original Hexagon
+                                    //Hexagon c3 = new Hexagon(l2Piece.get(j).getR(),l2Piece.get(j).getQ(),0);
+                                    Hexagon c3 = new Hexagon(l2Piece.get(j).getQ(),l2Piece.get(j).getR(),0);
+                                    //Move Spider to that hexagon
+                                    updateHexagon(piece, l2Piece.get(j));
                                     //Take neighbours
-                                    l3Token=getNeighbourHex(l2Token.get(j));
+                                    l3Piece=getNeighbourHex(l2Piece.get(j));
                                     //Level 3
-                                    for(int k = 0;k<l3Token.size();k++){
-                                        if(!(l3Token.get(k).getR()== c3.getR() && l3Token.get(k).getQ()==c3.getQ())
-                                                && !(l3Token.get(k).getR()== c2.getR() && l3Token.get(k).getQ()==c2.getQ())
-                                                && !(l3Token.get(k).getR()== c1.getR() && l3Token.get(k).getQ()==c1.getQ())){
-                                            if(l3Token.get(k).getD()==0){
-                                                if(checkGap(l2Token.get(j),l3Token.get(k))==1){
-                                                    realGaps.add(l3Token.get(k));
+                                    for(int k = 0;k<l3Piece.size();k++){
+                                        if(!(l3Piece.get(k).getR()== c3.getR() && l3Piece.get(k).getQ()==c3.getQ())
+                                                && !(l3Piece.get(k).getR()== c2.getR() && l3Piece.get(k).getQ()==c2.getQ())
+                                                && !(l3Piece.get(k).getR()== c1.getR() && l3Piece.get(k).getQ()==c1.getQ())){
+                                            if(l3Piece.get(k).getD()==0){
+                                                if(checkHexagon(l2Piece.get(j), l3Piece.get(k))==1){
+                                                    realHexagons.add(l3Piece.get(k));
                                                 }
                                             }
                                         }
                                     }
 
                                 }
-                                updateCoordinates(token,c2);
+                                updateHexagon(piece, c2);
                             }
                         }
                     }
 
                 }
-                updateCoordinates(token,c1);
+                updateHexagon(piece, c1);
             }
 
         }
-        //leave spider in its original position
-        updateCoordinates(token, c1);
-        return realGaps;
+        //leave spider in its original hexagon
+        updateHexagon(piece, c1);
+        return realHexagons;
     }
 
     /**
-     * An ant could go in any gap that is not blocked.
-     * @param token
+     * An ant could go in any hexagon that is not blocked.
+     * @param piece
      * @return
      */
-    private ArrayList<Hex> antMoves(Token token) {
-        //First: Copy gapsAvailable to new Array
-        ArrayList<Hex> availableGapsClon = new ArrayList<>();
-        //availableGapsClon = this.getAvailableGaps();
-        for(int i=0;i<this.availableGaps.size();i++)
-            availableGapsClon.add(this.availableGaps.get(i));
-        Log.d("available gaps size",String.valueOf(this.getAvailableGaps().size()));
-        Log.d("Clon size",String.valueOf(availableGapsClon.size()));
-        Hex c = new Hex(token.getCoordinates().getQ(),token.getCoordinates().getR(),token.getCoordinates().getD());
-        ArrayList<Hex> possibleGaps = new ArrayList<>();
+    private ArrayList<Hexagon> antMoves(Piece piece) {
+        //First: Copy AvailableHexagons to new Array
+        ArrayList<Hexagon> availableHexagonsClon = new ArrayList<>();
+        for(int i=0;i<this.availableHexagons.size();i++)
+            availableHexagonsClon.add(this.availableHexagons.get(i));
+        Hexagon c = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD());
+        ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
         //First: Check if blocked
-        if(!checkIfTokenBlocked(token)){
+        if(!checkIfPieceBlocked(piece)){
             //Second: take ant from the board
-            //Free gap in the board
-            deleteHex(token);
-            //Delete gap neighbours if they haven't any neighbour
-            deleteGapsAvailable(c,availableGapsClon);
-            //Third: Get all available gaps and check if d==0 and then if they are not blocked
-            for(int i=0; i<availableGapsClon.size(); i++){
-                if(availableGapsClon.get(i).getD()==0)
-                    if(!checkIfGapBlocked(availableGapsClon.get(i)))
-                        possibleGaps.add(availableGapsClon.get(i));
+            //Free hexagon in the board
+            deleteHex(piece);
+            //Delete hexagon neighbours if they haven't any neighbour
+            deleteAvailableHexagons(c, availableHexagonsClon);
+            //Third: Get all available hexagons and check if d==0 and then if they are not blocked
+            for(int i=0; i<availableHexagonsClon.size(); i++){
+                if(availableHexagonsClon.get(i).getD()==0)
+                    if(!checkIfHexagonBlocked(availableHexagonsClon.get(i)))
+                        possibleHexagons.add(availableHexagonsClon.get(i));
             }
         }
-        //Fourth: Return ant to its original position
-        updateCoordinates(token,c);
-        //this.availableGaps.add(c);
-        Log.d("available gaps size end",String.valueOf(this.getAvailableGaps().size()));
-        Log.d("Clon size end", String.valueOf(availableGapsClon.size()));
-        return possibleGaps;
-        //return this.availableGaps;
+        //Fourth: Return ant to its original hexagon
+        updateHexagon(piece, c);
+        return possibleHexagons;
     }
 
     /**
-     * Checks if a token could go in a gap
-     * 1st checks that the gap is empty
-     * 2nd checks if it has neighbours. If it has 2 the token can't slide to it.
-     * @param token
-     * @param hex
+     * Checks if a piece could go in a hexagon
+     * 1st checks that the hexagon is empty
+     * 2nd checks if it has neighbours. If it has 2 the piece can't slide to it.
+     * @param piece
+     * @param hexagon
      * @return
      */
-    private int checkGap(Hex token, Hex hex){
+    private int checkHexagon(Hexagon piece, Hexagon hexagon){
 
         int n=0;
 
-        int xt=token.getQ();
-        int yt=token.getR();
-        int xc=hex.getQ();
-        int yc=hex.getR();
-        int zc=hex.getD();
+        int xt=piece.getQ();
+        int yt=piece.getR();
+        int xc= hexagon.getQ();
+        int yc= hexagon.getR();
+        int zc= hexagon.getD();
 
 
         if(xc==xt+1 && yc==yt-1){
-            if(!isInBoard(new Hex(xc,yc,zc))){
-                if(isInBoard(new Hex(xc-1,yc,zc))) n=n+1;
-                if(isInBoard(new Hex(xc,yc+1,zc))) n=n+1;
+            if(!isInBoard(new Hexagon(xc,yc,zc))){
+                if(isInBoard(new Hexagon(xc-1,yc,zc))) n=n+1;
+                if(isInBoard(new Hexagon(xc,yc+1,zc))) n=n+1;
             }
         }else if(xc==xt+1 && yc==yt){
-            if(!isInBoard(new Hex(xc,yc,zc))){
-                if(isInBoard(new Hex(xc,yc-1,zc))) n=n+1;
-                if(isInBoard(new Hex(xc-1,yc+1,zc))) n=n+1;
+            if(!isInBoard(new Hexagon(xc,yc,zc))){
+                if(isInBoard(new Hexagon(xc,yc-1,zc))) n=n+1;
+                if(isInBoard(new Hexagon(xc-1,yc+1,zc))) n=n+1;
             }
         }else if(xc==xt && yc==yt+1){
-            if(!isInBoard(new Hex(xc,yc,zc))){
-                if(isInBoard(new Hex(xc+1,yc-1,zc))) n=n+1;
-                if(isInBoard(new Hex(xc-1,yc,zc))) n=n+1;
+            if(!isInBoard(new Hexagon(xc,yc,zc))){
+                if(isInBoard(new Hexagon(xc+1,yc-1,zc))) n=n+1;
+                if(isInBoard(new Hexagon(xc-1,yc,zc))) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt+1){
-            if(!isInBoard(new Hex(xc,yc,zc))){
-                if(isInBoard(new Hex(xc+1,yc,zc))) n=n+1;
-                if(isInBoard(new Hex(xc,yc-1,zc))) n=n+1;
+            if(!isInBoard(new Hexagon(xc,yc,zc))){
+                if(isInBoard(new Hexagon(xc+1,yc,zc))) n=n+1;
+                if(isInBoard(new Hexagon(xc,yc-1,zc))) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt){
-            if(!isInBoard(new Hex(xc,yc,zc))){
-                if(isInBoard(new Hex(xc,yc+1,zc))) n=n+1;
-                if(isInBoard(new Hex(xc+1,yc-1,zc))) n=n+1;
+            if(!isInBoard(new Hexagon(xc,yc,zc))){
+                if(isInBoard(new Hexagon(xc,yc+1,zc))) n=n+1;
+                if(isInBoard(new Hexagon(xc+1,yc-1,zc))) n=n+1;
             }
         }else if(xc==xt && yc==yt-1){
-            if(!isInBoard(new Hex(xc,yc,zc))){
-                if(isInBoard(new Hex(xc-1,yc+1,zc))) n=n+1;
-                if(isInBoard(new Hex(xc+1,yc,zc))) n=n+1;
+            if(!isInBoard(new Hexagon(xc,yc,zc))){
+                if(isInBoard(new Hexagon(xc-1,yc+1,zc))) n=n+1;
+                if(isInBoard(new Hexagon(xc+1,yc,zc))) n=n+1;
             }
         }
 
@@ -981,59 +821,59 @@ public final class Hive {
 
     /**
      *
-     * @param token
+     * @param piece
      * @return
      */
-    public boolean brokenHive(Token token){
-        //If the destination gap is in level 0
-        if(token.getCoordinates().getD()==0) {
+    public boolean brokenHive(Piece piece){
+        //If the destination hexagon is in level 0
+        if(piece.getHexagon().getD()==0) {
             BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
-            return bcg.isCutpoint(token.getGraphId());
+            return bcg.isCutpoint(piece.getGraphId());
         }else
             return false;
     }
 
     /**
      *
-     * @param hex
+     * @param hexagon
      * @return
      */
-    public Hex[] vPosition(Hex hex){
-        Hex[] gaps = new Hex[2];
+    public Hexagon[] vHexagons(Hexagon hexagon){
+        Hexagon[] hexagons = new Hexagon[2];
 
-        int x = hex.getQ();
-        int y = hex.getR();
+        int x = hexagon.getQ();
+        int y = hexagon.getR();
 
-        if(isInBoard(new Hex(x+1,y-1,0))){
-            gaps[0] = new Hex(x-1,y,0);
-            gaps[1] = new Hex(x,y+1,0);
-        }else if(isInBoard(new Hex(x+1,y,0))){
-            gaps[0] = new Hex(x,y-1,0);
-            gaps[1] = new Hex(x-1,y+1,0);
-        }else if(isInBoard(new Hex(x,y+1,0))){
-            gaps[0] = new Hex(x-1,y,0);
-            gaps[1] = new Hex(x+1,y-1,0);
-        }else if(isInBoard(new Hex(x-1,y+1,0))){
-            gaps[0] = new Hex(x,y-1,0);
-            gaps[1] = new Hex(x+1,y,0);
-        }else if(isInBoard(new Hex(x-1,y,0))){
-            gaps[0] = new Hex(x+1,y-1,0);
-            gaps[1] = new Hex(x,y+1,0);
+        if(isInBoard(new Hexagon(x+1,y-1,0))){
+            hexagons[0] = new Hexagon(x-1,y,0);
+            hexagons[1] = new Hexagon(x,y+1,0);
+        }else if(isInBoard(new Hexagon(x+1,y,0))){
+            hexagons[0] = new Hexagon(x,y-1,0);
+            hexagons[1] = new Hexagon(x-1,y+1,0);
+        }else if(isInBoard(new Hexagon(x,y+1,0))){
+            hexagons[0] = new Hexagon(x-1,y,0);
+            hexagons[1] = new Hexagon(x+1,y-1,0);
+        }else if(isInBoard(new Hexagon(x-1,y+1,0))){
+            hexagons[0] = new Hexagon(x,y-1,0);
+            hexagons[1] = new Hexagon(x+1,y,0);
+        }else if(isInBoard(new Hexagon(x-1,y,0))){
+            hexagons[0] = new Hexagon(x+1,y-1,0);
+            hexagons[1] = new Hexagon(x,y+1,0);
         }else{
-            gaps[0] = new Hex(x-1,y+1,0);
-            gaps[1] = new Hex(x+1,y,0);
+            hexagons[0] = new Hexagon(x-1,y+1,0);
+            hexagons[1] = new Hexagon(x+1,y,0);
         }
 
-        return gaps;
+        return hexagons;
     }
 
     /**
-     * Deletes a token from the board game.
-     * A token can be remove if it was placed to test strategics for the AI.
+     * Deletes a piece from the board game.
+     * A piece can be remove if it was placed to test strategics for the AI.
      */
-    public void deteleToken(Token token){
+    public void detelePiece(Piece piece){
         for(int i=0;i<this.getBoard().size();i++){
-            if(this.getBoard().get(i).getCoordinates().toString().equals(token.getCoordinates().toString())) {
+            if(this.getBoard().get(i).getHexagon().toString().equals(piece.getHexagon().toString())) {
                 //Delete it from the graph
                 this.graph.removeVertex(this.getBoard().get(i).getGraphId());
                 this.vertex = this.vertex - 1;
@@ -1044,13 +884,13 @@ public final class Hive {
     }
 
     /**
-     * Checks if a given position has a token.
-     * @param hex
+     * Checks if a given hexagon has a piece.
+     * @param hexagon
      * @return
      */
-    public boolean checkIfGapTaken(Hex hex){
+    public boolean checkIfHexagonTaken(Hexagon hexagon){
         for(int i=0;i<this.getBoard().size();i++) {
-            if (this.getBoard().get(i).getCoordinates().toString().equals(hex.toString()))
+            if (this.getBoard().get(i).getHexagon().toString().equals(hexagon.toString()))
                 return true;
         }
         return false;

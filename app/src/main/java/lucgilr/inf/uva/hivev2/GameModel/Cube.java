@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
+ * @author Narek (https://github.com/starwheel)
+ *
  * Original source for this file:
  * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Cube.java
  * Cube using 3-vector for the coordinates (x, y, z)
@@ -37,15 +39,15 @@ public class Cube {
         this.z = rz;
     }
 
-    public Hex toHex() {
-        return new Hex(x, z);
+    public Hexagon toHex() {
+        return new Hexagon(x, z);
     }
 
-    public Hex cubeToOddRHex() {
+    public Hexagon cubeToOddRHex() {
         int q = x + (z - (z&1)) / 2;
         int r = z;
 
-        return new Hex(q, r);
+        return new Hexagon(q, r);
     }
 
     public String toString() {

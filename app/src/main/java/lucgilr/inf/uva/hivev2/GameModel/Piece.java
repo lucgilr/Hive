@@ -1,51 +1,45 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
-import java.util.ArrayList;
-
 /**
- * A token represents an insect of the hive. 
+ * A piece represents an insect of the hive.
+ * An hexagon is assigned to a piece to represent its position on the board.
  * @author Lucía Gil Román
  */
-public class Token {
+public class Piece {
 
     private int id;
-    private TokenType type;
+    private PieceType type;
     private int value;
     private Player player;
     private boolean inGame;
-    //private Coords coordinates;
-    private Hex coordinates;
+    private Hexagon hexagon;
     private boolean blocked;
     private boolean beetle;
     private int graphId;
-    //TEST THIS
-    private ArrayList<Token> neighbours;
 
     /**
      *
      */
-    public Token(){
+    public Piece(){
         this.value=0;
         this.inGame=false;
-        //this.coordinates=new Coords(100,100,100);
-        this.coordinates=new Hex(100,100,100);
+        this.hexagon =new Hexagon(-100,-100,-100);
         this.blocked=false;
         this.beetle=false;
     }
 
     /**
      *
-     * @param tipo
+     * @param type
      * @param id
      * @param player
      */
-    public Token(TokenType tipo,int id,Player player){
-        this.type=tipo;
+    public Piece(PieceType type, int id, Player player){
+        this.type=type;
         this.value=0;
         this.inGame=false;
-        //this.coordinates=new Coords(100,100,100);
-        this.coordinates=new Hex(100,100,100);
+        this.hexagon =new Hexagon(100,100,100);
         this.blocked=false;
         this.id=id;
         this.player=player;
@@ -57,7 +51,7 @@ public class Token {
      *
      * @return
      */
-    public TokenType getType() {
+    public PieceType getType() {
         return type;
     }
 
@@ -65,7 +59,7 @@ public class Token {
      *
      * @param type
      */
-    public void setType(TokenType type) {
+    public void setType(PieceType type) {
         this.type = type;
     }
 
@@ -87,8 +81,8 @@ public class Token {
 
 
     /**
-     * Tells if the token is on the board o is in the player's box.
-     * @return true if the token is on the board. Otherwise returns false. 
+     * Tells if the piece is on the board o is in the player's box.
+     * @return true if the piece is on the board. Otherwise returns false.
      */
     public boolean isInGame() {
         return inGame;
@@ -96,7 +90,7 @@ public class Token {
 
     /**
      * Set the situation of the token.
-     * @param enJuego true if the token is on board and false if it isn't.
+     * @param enJuego true if the piece is on board and false if it isn't.
      */
     public void setInGame(boolean enJuego) {
         this.inGame = enJuego;
@@ -104,15 +98,15 @@ public class Token {
 
 
     /**
-     * If the token is blocked it can't move, so this method allows us to know its blocked condition.
-     * @return true if its blocked and false if the token can be moved.
+     * If the piece is blocked it can't be moved, so this method allows us to know its blocked condition.
+     * @return true if its blocked and false if the piece can be moved.
      */
     public boolean isBlocked() {
         return blocked;
     }
 
     /**
-     * Set the blocked situation of the token.
+     * Set the blocked situation of the piece.
      * @param blocked true if it's blocked, false if it isn't.
      */
     public void setBlocked(boolean blocked) {
@@ -120,8 +114,8 @@ public class Token {
     }
 
     /**
-     * If a token has a BEETLE token on top it can't move, so we can say it's blocked.
-     * @return true if the token has a BEETLE on top, false otherwise.
+     * If a piece has a BEETLE on top it can't move, so we can say it's blocked.
+     * @return true if the piece has a BEETLE on top, false otherwise.
      */
     public boolean isBeetle() {
         return beetle;
@@ -129,7 +123,7 @@ public class Token {
 
     /**
      * Set ...
-     * @param beetle true if the token has a BEETLE on top, and false if it hasn't.
+     * @param beetle true if the piece has a BEETLE on top, and false if it hasn't.
      */
     public void setBeetle(boolean beetle) {
         this.beetle = beetle;
@@ -137,7 +131,7 @@ public class Token {
     }
 
     /**
-     * Gets the Unique Identification number for a player's token.
+     * Gets the Unique Identification number for a player's piece.
      * @return
      */
     public int getId() {
@@ -145,7 +139,7 @@ public class Token {
     }
 
     /**
-     * Sets an ID for a player's token.
+     * Sets an ID for a player's piece.
      * @param id
      */
     public void setId(int id) {
@@ -153,31 +147,31 @@ public class Token {
     }
 
     /**
-     * Sets coordinates to the token so it can now its position on the board.
-     * @param coordinates
+     * Assigns an hexagon to the piece.
+     * @param hexagon
      */
-    public void setCoordinates(Hex coordinates) {
-        this.coordinates = coordinates;
+    public void setHexagon(Hexagon hexagon) {
+        this.hexagon = hexagon;
     }
 
     /**
-     * Gives the coordinates of the token.
+     * Gives the hexagon of the piece.
      * @return
      */
-    public Hex getCoordinates() {
-        return coordinates;
+    public Hexagon getHexagon() {
+        return hexagon;
     }
 
     /**
-     * The token belongs to a Player. This method give us which player.
-     * @return the Player who is playing with this token. 
+     * The piece belongs to a Player. This method give us which player.
+     * @return the Player who is playing with this piece.
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
-     * Every token is from a player. We can indicate which player with this method. 
+     * Every piece is from a player. We can indicate which player with this method.
      * @param player
      */
     public void setPlayer(Player player) {
@@ -185,7 +179,7 @@ public class Token {
     }
 
     /**
-     * When a token is placed on the board for the first time it is given
+     * When a piece is placed on the board for the first time it is given
      * an Unique Identifier so it can be represented as a vertex in a graph.
      * @return
      */
@@ -194,7 +188,7 @@ public class Token {
     }
 
     /**
-     * Sets the token ID for the graph.
+     * Sets the piece ID for the graph.
      * @param graphId
      */
     public void setGraphId(int graphId) {
@@ -205,15 +199,15 @@ public class Token {
      *
      * @return
      */
-    public String tokenInfo(){
+    public String pieceInfo(){
         return " id #"+this.id+" "
                 + " Type: "+this.type+" "
                 + " Value: "+this.value+" "
                 + " Player: "+this.player.getColor()+" "
                 + " In GameUI: "+this.inGame+" "
-                + " X: "+this.coordinates.getQ()+" "
-                + " Y: "+this.coordinates.getR()+" "
-                + " Z: "+this.coordinates.getD()+" "
+                + " X: "+this.hexagon.getQ()+" "
+                + " Y: "+this.hexagon.getR()+" "
+                + " Z: "+this.hexagon.getD()+" "
                 + " Blocked: "+this.blocked+" "
                 + " Beetle: "+this.beetle+"\n";
     }

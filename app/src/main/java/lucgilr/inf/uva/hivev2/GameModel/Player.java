@@ -5,16 +5,19 @@ import java.util.ArrayList;
 
 /**
  * A player is the person/AI who plays the GameUI.
+ * It has assigned a color to distinguish itself from the other player.
+ * When a new player is set it receives a box with eleven pieces to play
+ * and a turn count that increments every time the player makes a move
+ * or adds a piece to the board game.
  * @author Lucía Gil Román
  */
 public class Player {
 
     private String color;
     private int turn;
-    private int points;
-    private ArrayList<Token> tokensInGame;
-    private ArrayList<Token> tokensInTheBox;
-    private int playedTokens;
+    private ArrayList<Piece> piecesInGame;
+    private ArrayList<Piece> piecesInTheBox;
+    private int playedPieces;
     private boolean beeInGame;
 
     /**
@@ -24,54 +27,50 @@ public class Player {
     public Player(String color){
         this.color=color;
         this.turn=1;
-        //this.turn=0;
-        this.tokensInTheBox = new ArrayList<>();
-        this.tokensInTheBox = setBoxTokens();
-        this.tokensInGame = new ArrayList<>();
+        this.piecesInTheBox = new ArrayList<>();
+        this.piecesInTheBox = setPiecesBox();
+        this.piecesInGame = new ArrayList<>();
     }
 
     /**
-     *
-     * @return
+     * @return color assigned to the player.
      */
     public String getColor() {
         return color;
     }
 
     /**
-     *
-     * @pacolorname
+     * Sets a color to a player
+     * @param color
      */
     public void setColor(String color) {
         this.color=color;
     }
 
     /**
-     *
      * @return
      */
-    public int getPlayedTokens() {
-        return playedTokens;
+    public int getPlayedPieces() {
+        return playedPieces;
     }
 
     /**
      *
-     * @param playedTokens
+     * @param playedPieces
      */
-    public void setPlayedTokens(int playedTokens) {
-        this.playedTokens = playedTokens;
+    public void setPlayedPieces(int playedPieces) {
+        this.playedPieces = playedPieces;
     }
 
     /**
-     *
-     * @return
+     * @return the number of turns the player has played.
      */
     public int getTurn() {
         return turn;
     }
 
     /**
-     *
+     * Assigns a turn to the player.
      * @param turn
      */
     public void setTurn(int turn) {
@@ -79,63 +78,44 @@ public class Player {
     }
 
     /**
-     *
-     * @return
+     * @return pieces that are already on the board.
      */
-    public int getPoints() {
-        return points;
+    public ArrayList<Piece> getPiecesInGame() {
+        return piecesInGame;
     }
 
     /**
      *
-     * @param points
+     * @param piecesInGame
      */
-    public void setPoints(int points) {
-        this.points = points;
+    public void setPiecesInGame(ArrayList<Piece> piecesInGame) {
+        this.piecesInGame = piecesInGame;
+    }
+
+    /**
+     * @return pieces that the player has not played yet.
+     */
+    public ArrayList<Piece> getPiecesInTheBox() {
+        return piecesInTheBox;
     }
 
     /**
      *
-     * @return
+     * @param piecesInTheBox
      */
-    public ArrayList<Token> getTokensInGame() {
-        return tokensInGame;
+    public void setPiecesInTheBox(ArrayList<Piece> piecesInTheBox) {
+        this.piecesInTheBox = piecesInTheBox;
     }
 
     /**
-     *
-     * @param tokensInGame
-     */
-    public void setTokensInGame(ArrayList<Token> tokensInGame) {
-        this.tokensInGame = tokensInGame;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Token> getTokensInTheBox() {
-        return tokensInTheBox;
-    }
-
-    /**
-     *
-     * @param tokensInTheBox
-     */
-    public void setTokensInTheBox(ArrayList<Token> tokensInTheBox) {
-        this.tokensInTheBox = tokensInTheBox;
-    }
-
-    /**
-     *
-     * @return
+     * @return true if the player's bee is on the board, false otherwise.
      */
     public boolean isBeeInGame() {
         return beeInGame;
     }
 
     /**
-     *
+     * Assigns true if the bee's player has been set on the board.
      * @param beeInGame
      */
     public void setBeeInGame(boolean beeInGame) {
@@ -143,105 +123,104 @@ public class Player {
     }
 
     /**
-     * Assign all possible tokens to the player 
-     * @return
+     * @return all possible pieces to the player
      */
-    private ArrayList<Token> setBoxTokens() {
-        this.tokensInTheBox.add(new Token(TokenType.BEE,0,this));
-        this.tokensInTheBox.add(new Token(TokenType.GRASSHOPPER,1,this));
-        this.tokensInTheBox.add(new Token(TokenType.GRASSHOPPER,2,this));
-        this.tokensInTheBox.add(new Token(TokenType.GRASSHOPPER,3,this));
-        this.tokensInTheBox.add(new Token(TokenType.SPIDER,4,this));
-        this.tokensInTheBox.add(new Token(TokenType.SPIDER,5,this));
-        this.tokensInTheBox.add(new Token(TokenType.BEETLE,6,this));
-        this.tokensInTheBox.add(new Token(TokenType.BEETLE,7,this));
-        this.tokensInTheBox.add(new Token(TokenType.ANT,8,this));
-        this.tokensInTheBox.add(new Token(TokenType.ANT,9,this));
-        this.tokensInTheBox.add(new Token(TokenType.ANT,10,this));
-        return this.tokensInTheBox;
+    private ArrayList<Piece> setPiecesBox() {
+        this.piecesInTheBox.add(new Piece(PieceType.BEE,0,this));
+        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,1,this));
+        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,2,this));
+        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,3,this));
+        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,4,this));
+        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,5,this));
+        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,6,this));
+        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,7,this));
+        this.piecesInTheBox.add(new Piece(PieceType.ANT,8,this));
+        this.piecesInTheBox.add(new Piece(PieceType.ANT,9,this));
+        this.piecesInTheBox.add(new Piece(PieceType.ANT,10,this));
+        return this.piecesInTheBox;
     }
 
     /**
-     *
+     * Increments the players turn count.
      */
     public void oneMoreTurn(){
         this.turn+=1;
     }
 
     /**
-     *
+     * Returns a piece given its id.
      * @param id
      * @return
      */
-    public Token getTokenById(int id){
-        for(int i=0;i<this.tokensInTheBox.size();i++){
-            if(this.tokensInTheBox.get(i).getId()==id)
-                return this.tokensInTheBox.get(i);
+    public Piece getPieceById(int id){
+        for(int i=0;i<this.piecesInTheBox.size();i++){
+            if(this.piecesInTheBox.get(i).getId()==id)
+                return this.piecesInTheBox.get(i);
         }
-        for(int j=0;j<this.tokensInGame.size();j++){
-            if(this.tokensInGame.get(j).getId()==id)
-                return this.tokensInGame.get(j);
+        for(int j=0;j<this.piecesInGame.size();j++){
+            if(this.piecesInGame.get(j).getId()==id)
+                return this.piecesInGame.get(j);
         }
         return null;
     }
 
     /**
-     *
-     * @param id
+     * Takes a piece from the box to place on the board.
+     * @param id of the piece to play.
      * @return
      */
-    public Token takeTokenFromTheBox(int id){
-        //Get token
-        Token t = getTokenById(id);
-        //Set atribute inGame as true
-        t.setInGame(true);
-        //Set token in TokensInGame
-        getTokensInGame().add(t);
-        //Take token from TokensInTheBox
-        getTokensInTheBox().remove(t);
+    public Piece takePieceFromTheBox(int id){
+        //Get piece
+        Piece t = getPieceById(id);
+        //Add piece to piecesInGame
+        getPiecesInGame().add(t);
+        //Delete piece from the box
+        getPiecesInTheBox().remove(t);
         return t;
     }
 
     /**
-     * Returns the Token given its type.
+     * Returns the Piece given its type.
      * @param type
      * @return
      */
-    public Token takeToken(String type){
-
-        Token t = new Token();
-        //Get token
-        for(int i=0;i<this.tokensInTheBox.size();i++){
-            if(this.tokensInTheBox.get(i).getType().equals(TokenType.valueOf(type)))
-                t = this.tokensInTheBox.get(i);
+    public Piece takePieceByType(PieceType type){
+        Piece t = new Piece();
+        //Get piece
+        for(int i=0;i<this.piecesInTheBox.size();i++){
+            if(this.piecesInTheBox.get(i).getType().equals(type))
+                t = this.piecesInTheBox.get(i);
         }
-        //Set atribute inGame as true
-        t.setInGame(true);
-        //Set token in TokensInGame
-        getTokensInGame().add(t);
-        //Take token from TokensInTheBox
-        getTokensInTheBox().remove(t);
+        //Add piece to piecesInGame
+        getPiecesInGame().add(t);
+        //Delete piece from the box
+        getPiecesInTheBox().remove(t);
         return t;
     }
 
     /**
-     *
+     * Guess if a piece has been played given its id.
      * @param id
      * @return
      */
-    public Token inspectTokenInGame(int id){
-        Token token = new Token();
-        for(int i=0;i<this.tokensInGame.size();i++){
-            if(this.tokensInGame.get(i).getId()==id){
-                token = this.tokensInGame.get(i);
+    public Piece inspectPieceInGame(int id){
+        Piece piece = new Piece();
+        for(int i=0;i<this.piecesInGame.size();i++){
+            if(this.piecesInGame.get(i).getId()==id){
+                piece = this.piecesInGame.get(i);
             }
         }
-        return token;
+        return piece;
     }
 
-    public boolean isTokenInBox(TokenType type){
-        for(int i=0;i<this.getTokensInTheBox().size();i++){
-            if(this.getTokensInTheBox().get(i).getType().equals(type)) return true;
+    /**
+     * Guess if a piece of a determinate type still is in the box.
+     * @param type
+     * @return
+     */
+    public boolean isPieceInBox(PieceType type){
+        for(int i=0;i<this.getPiecesInTheBox().size();i++){
+            if(this.getPiecesInTheBox().get(i).getType().equals(type)) return true;
         }
         return false;
     }

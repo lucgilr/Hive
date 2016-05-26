@@ -1,12 +1,13 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 import android.graphics.Point;
-import android.util.Log;
-
-import lucgilr.inf.uva.hivev2.GameModel.Cube;
-import lucgilr.inf.uva.hivev2.GameModel.Hex;
 
 /**
+ * @author Narek (https://github.com/starwheel)
+ *
+ * Original source for this file:
+ * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Grid.java
+ *
  * *   * *   *
  *   * *   * *
  * *   * *   *
@@ -60,30 +61,30 @@ public class Grid {
         }
     }
 
-    public Point hexToPixel(Hex hex) {
+    public Point hexToPixel(Hexagon hexagon) {
         int x = 0;
         int y = 0;
 
         switch (shape) {
             case HEXAGON_POINTY_TOP:
-                x = (int) (width * (hex.getQ() + 0.5 * hex.getR()));
-                y = (int) (scale * 1.5 * hex.getR());
+                x = (int) (width * (hexagon.getQ() + 0.5 * hexagon.getR()));
+                y = (int) (scale * 1.5 * hexagon.getR());
                 break;
             case RECTANGLE:
                 //oddR alignment
-                x = (int) (width * hex.getQ() + 0.5 * width * (hex.getR()%2));
-                y = (int) (scale * 1.5 * hex.getR());
+                x = (int) (width * hexagon.getQ() + 0.5 * width * (hexagon.getR()%2));
+                y = (int) (scale * 1.5 * hexagon.getR());
                 break;
         }
 
         return new Point(x, y);
     }
 
-    public Hex pixelToHex(float x, float y) {
+    public Hexagon pixelToHex(float x, float y) {
         float q = (float) (Math.sqrt(3)/3 * x - 1/3 * y) / scale;
         float r = (2/3 * y) / scale;
 
-        return new Hex(q, r);
+        return new Hexagon(q, r);
 
         //TODO RECTANGLE
     }
@@ -113,7 +114,7 @@ public class Grid {
 
         for (int q = minQ; q <= maxQ; q++) {
             for (int r = -minR; r <= maxR; r++) {
-                nodes[i++] = new Hex(q,r).oddRHexToCube(); //conversion to cube is different for oddR coordinates
+                nodes[i++] = new Hexagon(q,r).oddRHexToCube(); //conversion to cube is different for oddR coordinates
             }
         }
     }
@@ -125,7 +126,6 @@ public class Grid {
         switch (shape) {
             case HEXAGON_POINTY_TOP:
                 return (int) (3 * Math.pow(radius+1, 2) - 3 * (radius +1) + 1);
-                //return 100;
             case RECTANGLE:
                 return (radius * 2 + 1) * (radius * 2 + 1);
         };

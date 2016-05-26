@@ -1,22 +1,16 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -29,12 +23,13 @@ import java.util.TimerTask;
 
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
+import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Language;
+import lucgilr.inf.uva.hivev2.GameModel.Piece;
+import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
-import lucgilr.inf.uva.hivev2.GameModel.Token;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Grid;
-import lucgilr.inf.uva.hivev2.GameModel.Hex;
 import lucgilr.inf.uva.hivev2.R;
 import pl.polidea.view.ZoomView;
 
@@ -50,11 +45,11 @@ public class GameUI extends AppCompatActivity {
     private GameController controller;
     private Language language;
 
-    ArrayList<Hex> gaps;
+    ArrayList<Hexagon> gaps;
     private Player player;
     private boolean movingToken;
-    private ArrayList<Hex> possibleGaps;
-    private Token token;
+    private ArrayList<Hexagon> possibleGaps;
+    private Piece piece;
     private String displayLanguage;
     private boolean gameover;
 
@@ -106,7 +101,7 @@ public class GameUI extends AppCompatActivity {
         this.movingToken =false;
         possibleGaps = new ArrayList<>();
         gaps = new ArrayList<>();
-        token = new Token();
+        piece = new Piece();
         this.gameover=false;
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
@@ -190,7 +185,7 @@ public class GameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_DOWN:
                             float xPoint = event.getX();
                             float yPoint = event.getY();
-                            //Hex hex = grid.pixelToHex(event.getX(), event.getY()); //This can work on the RelativeLayout grid area
+                            //Hexagon hex = grid.pixelToHex(event.getX(), event.getY()); //This can work on the RelativeLayout grid area
                             boolean isPointOutOfCircle = (grid.centerOffsetX -xPoint)*(grid.centerOffsetX -xPoint) + (grid.centerOffsetY -yPoint)*(grid.centerOffsetY -yPoint) > grid.width * grid.width / 4;
 
                             if (isPointOutOfCircle) return false;
@@ -217,18 +212,18 @@ public class GameUI extends AppCompatActivity {
             };
 
             for(Cube cube : grid.nodes) {
-                Hex hex = null;
+                Hexagon hexagon = null;
                 switch (shape) {
                     case HEXAGON_POINTY_TOP:
-                        hex = cube.toHex();
+                        hexagon = cube.toHex();
                         break;
                     case RECTANGLE:
-                        hex = cube.cubeToOddRHex();
+                        hexagon = cube.cubeToOddRHex();
                         break;
                 }
 
                 CircleImageView view = new CircleImageView(this);
-                view.setHex(hex);
+                view.setHex(hexagon);
 
                 view.setBackgroundResource(R.drawable.orangehex);
                 int size = controller.getBoardSize();
@@ -238,7 +233,7 @@ public class GameUI extends AppCompatActivity {
                     for(int i=0;i<size;i++){
 
                         String hexView = view.getHex().toString2D();
-                        String sol = controller.getBoard().get(i).getCoordinates().toString2D();
+                        String sol = controller.getBoard().get(i).getHexagon().toString2D();
                         String color = controller.getBoard().get(i).getPlayer().getColor();
                         int id = controller.getBoard().get(i).getId();
 
@@ -303,7 +298,7 @@ public class GameUI extends AppCompatActivity {
                 }
 
                 view.setOnTouchListener(gridNodeTouchListener);
-                addViewToLayout(view, hex, grid);
+                addViewToLayout(view, hexagon, grid);
 
             }
             return grid;
@@ -377,16 +372,16 @@ public class GameUI extends AppCompatActivity {
         }
     }
 
-    private boolean checkIfGapAvailable(Hex hex, ArrayList<Hex> gaps) {
+    private boolean checkIfGapAvailable(Hexagon hexagon, ArrayList<Hexagon> gaps) {
         for(int i=0;i<gaps.size();i++){
-            if(hex.getQ()==gaps.get(i).getQ() && hex.getR()==gaps.get(i).getR()){
+            if(hexagon.getQ()==gaps.get(i).getQ() && hexagon.getR()==gaps.get(i).getR()){
                 return true;
             }
         }
         return false;
     }
 
-    private void addViewToLayout(View view, Hex hex, Grid grid) {
+    private void addViewToLayout(View view, Hexagon hexagon, Grid grid) {
         //Add to view
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(grid.width, grid.height);
         params.addRule(RelativeLayout.RIGHT_OF, R.id.centerLayout);
@@ -394,7 +389,7 @@ public class GameUI extends AppCompatActivity {
         mRelativeLayout.addView(view, params);
 
         //Set coordinates
-        Point p = grid.hexToPixel(hex);
+        Point p = grid.hexToPixel(hexagon);
         switch (grid.shape) {
             case HEXAGON_POINTY_TOP:
                 params.leftMargin = -grid.centerOffsetX + p.x;
@@ -412,7 +407,7 @@ public class GameUI extends AppCompatActivity {
      */
     private void nextPlayer(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("You can't make any move or add any token");
+        alert.setMessage("You can't make any move or add any piece");
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -425,42 +420,41 @@ public class GameUI extends AppCompatActivity {
         alert.show();
     }
 
-    private void OnGridHexClick(final Hex hex) {
-        //Toast.makeText(GameUI.this, "OnGridHexClick: " + hex, Toast.LENGTH_SHORT).show();
+    private void OnGridHexClick(final Hexagon hexagon) {
+        //Toast.makeText(GameUI.this, "OnGridHexClick: " + hexagon, Toast.LENGTH_SHORT).show();
 
-        if(this.movingToken && checkIfGapAvailable(hex, gaps)){
-            Hex coords = getRealCoords(hex.getR(),hex.getQ());
-            controller.movetoken(token, coords);
+        if(this.movingToken && checkIfGapAvailable(hexagon, gaps)){
+            Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
+            controller.movetoken(piece, coords);
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingToken=false;
             initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
-        else if(!this.movingToken && checkIfGapAvailable(hex, gaps)) {
-            ArrayList<Token> tokens = controller.getTokensFromBox();
-            if(!tokens.isEmpty()) {
+        else if(!this.movingToken && checkIfGapAvailable(hexagon, gaps)) {
+            ArrayList<Piece> pieces = controller.getTokensFromBox();
+            if(!pieces.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
                 int turn = controller.getPlayerTurn();
                 boolean bee = controller.playerBeeInGame();
-                //final String displayLanguage = Locale.getDefault().getDisplayLanguage();
                 String bug ="";
                 if(turn == 4 && !bee){
-                    for (int i = 0; i < tokens.size(); i++) {
-                        if (tokens.get(i).getId() == 0) {
+                    for (int i = 0; i < pieces.size(); i++) {
+                        if (pieces.get(i).getId() == 0) {
                             if (displayLanguage.equals("English")) {
-                                bug = language.getEnglish(new String(tokens.get(i).getType().toString()));
+                                bug = language.getEnglish(pieces.get(i).getType());
                             } else {
-                                bug = language.getSpanish(new String(tokens.get(i).getType().toString()));
+                                bug = language.getSpanish(pieces.get(i).getType());
                             }
                             t.add(bug);
                         }
                     }
                 } else {
-                    for (int i = 0; i < tokens.size(); i++) {
+                    for (int i = 0; i < pieces.size(); i++) {
                         if (displayLanguage.equals("English")) {
-                            bug = language.getEnglish(new String(tokens.get(i).getType().toString()));
+                            bug = language.getEnglish(pieces.get(i).getType());
                         } else {
-                            bug = language.getSpanish(new String(tokens.get(i).getType().toString()));
+                            bug = language.getSpanish(pieces.get(i).getType());
                         }
                         t.add(bug);
                     }
@@ -469,11 +463,11 @@ public class GameUI extends AppCompatActivity {
                 alert.setItems(t.toArray(new String[t.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        token = new Token();
-                        String bug = language.StringToTokenString(t.get(which));
-                        token = controller.takeTokenByType(bug);
-                        Hex coords = getRealCoords(hex.getR(), hex.getQ());
-                        controller.playToken(token,coords);
+                        piece = new Piece();
+                        PieceType bug = language.stringToPieceString(t.get(which));
+                        piece = controller.takeTokenByType(bug);
+                        Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
+                        controller.playToken(piece,coords);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
                         initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
@@ -482,16 +476,16 @@ public class GameUI extends AppCompatActivity {
                 alert.create();
                 alert.show();
             }
-        }else if(tokenTouched(hex)){
-            token = new Token();
-            token = getTokenFromBoard(hex);
-            possibleGaps = controller.getPossibleMoves(token);
+        }else if(tokenTouched(hexagon)){
+            piece = new Piece();
+            piece = getTokenFromBoard(hexagon);
+            possibleGaps = controller.getPossibleMoves(piece);
             if (!possibleGaps.isEmpty()) {
                 movingToken = true;
                 this.gaps = new ArrayList<>(possibleGaps);
                 initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
-        }else if(!checkIfGapAvailable(hex, gaps)) {
+        }else if(!checkIfGapAvailable(hexagon, gaps)) {
             this.gaps = controller.getPlayerGaps(player);
             //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
@@ -502,14 +496,14 @@ public class GameUI extends AppCompatActivity {
 
     /**
      *
-     * @param hex
+     * @param hexagon
      * @return
      */
-    private Token getTokenFromBoard(Hex hex){
-        ArrayList<Token> board = controller.getBoard();
+    private Piece getTokenFromBoard(Hexagon hexagon){
+        ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
-            if(board.get(i).getCoordinates().getR()==hex.getR()
-                    && board.get(i).getCoordinates().getQ()==hex.getQ()
+            if(board.get(i).getHexagon().getR()== hexagon.getR()
+                    && board.get(i).getHexagon().getQ()== hexagon.getQ()
                     && !board.get(i).isBeetle())
             return board.get(i);
         }
@@ -522,7 +516,7 @@ public class GameUI extends AppCompatActivity {
      * @param q
      * @return
      */
-    private Hex getRealCoords(int r, int q){
+    private Hexagon getRealCoords(int r, int q){
         for(int i=0;i<gaps.size();i++){
             if(gaps.get(i).getQ()==q && gaps.get(i).getR()==r) return gaps.get(i);
         }
@@ -531,14 +525,14 @@ public class GameUI extends AppCompatActivity {
 
     /**
      *
-     * @param hex
+     * @param hexagon
      * @return
      */
-    private boolean tokenTouched(Hex hex){
-        ArrayList<Token> board = controller.getBoard();
+    private boolean tokenTouched(Hexagon hexagon){
+        ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
-            if(board.get(i).getCoordinates().getR()==hex.getR()
-                    && board.get(i).getCoordinates().getQ()==hex.getQ()
+            if(board.get(i).getHexagon().getR()== hexagon.getR()
+                    && board.get(i).getHexagon().getQ()== hexagon.getQ()
                     && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor())
                     && !board.get(i).isBeetle())
                 return true;
