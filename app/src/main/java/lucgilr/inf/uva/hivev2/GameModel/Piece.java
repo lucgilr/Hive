@@ -35,9 +35,9 @@ public class Piece {
      * @param id
      * @param player
      */
-    public Piece(PieceType type, int id, Player player){
+    public Piece(PieceType type, int id, Player player,int value){
         this.type=type;
-        this.value=0;
+        this.value=value;
         this.inGame=false;
         this.hexagon =new Hexagon(100,100,100);
         this.blocked=false;
@@ -208,7 +208,7 @@ public class Piece {
                 + " X: "+this.hexagon.getQ()+" "
                 + " Y: "+this.hexagon.getR()+" "
                 + " Z: "+this.hexagon.getD()+" "
-                + " Blocked: "+this.blocked+" "
+                + " graphid: "+this.getGraphId()+" "
                 + " Beetle: "+this.beetle+"\n";
     }
 

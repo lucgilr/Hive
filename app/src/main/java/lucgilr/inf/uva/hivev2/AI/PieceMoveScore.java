@@ -51,4 +51,8 @@ public class PieceMoveScore {
     public void setScore(int score) {
         this.score = score;
     }
+
+    public String getInfo(){
+        return "piece: "+piece.pieceInfo()+" hexagon: "+hexagon.toString()+" score: "+score;
+    }
 }

@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.jgrapht.UndirectedGraph;
@@ -135,23 +137,9 @@ public final class Hive {
     }
 
     /**
-     * Checks if a piece is on the board
-     * @param hexagon --> position of the piece to look for
-     * @return true if found in the board
-     */
-    private boolean isInBoard(Hexagon hexagon){
-        for(int i=0;i<this.board.size();i++){
-            if(this.board.get(i).getHexagon().toString().equals(hexagon.toString()))
-                return true;
-        }
-        return false;
-    }
-
-    /**
      * Search a piece in the board given its hexagon
      * @param hexagon --> position of the piece to look for
      * @return piece if found
-     * HAY UNA PARECIDA --> LA ANTERIOR
      */
     public Piece searchPiece(Hexagon hexagon){
         for (Piece board1 : this.board) {
@@ -200,32 +188,32 @@ public final class Hive {
         int z = 0;
         Piece[] n = new Piece[6];
         //
-        while(isInBoard(new Hexagon(x+1,y-1,z))) z=z+1;
+        while(searchPiece(new Hexagon(x+1,y-1,z))!=null) z=z+1;
         if(z==0) n[0]= searchPiece(new Hexagon(x + 1, y - 1, z));
         else n[0]= searchPiece(new Hexagon(x + 1, y - 1, z - 1));
         z=0;
         //
-        while(isInBoard(new Hexagon(x+1,y,z))) z=z+1;
+        while(searchPiece(new Hexagon(x+1,y,z))!=null) z=z+1;
         if(z==0) n[1]= searchPiece(new Hexagon(x + 1, y, z));
         else n[1]= searchPiece(new Hexagon(x + 1, y, z - 1));
         z=0;
         //
-        while(isInBoard(new Hexagon(x,y+1,z))) z=z+1;
+        while(searchPiece(new Hexagon(x,y+1,z))!=null) z=z+1;
         if(z==0) n[2]= searchPiece(new Hexagon(x, y + 1, z));
         else n[2]= searchPiece(new Hexagon(x, y + 1, z - 1));
         z=0;
         //
-        while(isInBoard(new Hexagon(x-1,y+1,z))) z=z+1;
+        while(searchPiece(new Hexagon(x-1,y+1,z))!=null) z=z+1;
         if(z==0) n[3]= searchPiece(new Hexagon(x - 1, y + 1, z));
         else n[3]= searchPiece(new Hexagon(x - 1, y + 1, z - 1));
         z=0;
         //
-        while(isInBoard(new Hexagon(x-1,y,z))) z=z+1;
+        while(searchPiece(new Hexagon(x-1,y,z))!=null) z=z+1;
         if(z==0) n[4]= searchPiece(new Hexagon(x - 1, y, z));
         else n[4]= searchPiece(new Hexagon(x - 1, y, z - 1));
         z=0;
         //
-        while(isInBoard(new Hexagon(x,y-1,z))) z=z+1;
+        while(searchPiece(new Hexagon(x,y-1,z))!=null) z=z+1;
         if(z==0) n[5]= searchPiece(new Hexagon(x, y - 1, z));
         else n[5]= searchPiece(new Hexagon(x, y - 1, z - 1));
         z=0;
@@ -274,16 +262,19 @@ public final class Hive {
      */
     public ArrayList<Hexagon> getAvailableHexagonsPlayer(Player player){
         ArrayList<Hexagon> hexagons = new ArrayList<>();
-        for(int i=0;i<this.availableHexagons.size();i++)
+        for(int i=0;i<this.availableHexagons.size();i++) {
             //A piece can only be placed for the first time in the lower level of the hive
-            if(this.availableHexagons.get(i).getD()==0){
-                if(player.getTurn()!=1){
-                    if(checkNeighboursPieceSamePlayer(player, this.getAvailableHexagons().get(i)))
+            if (this.availableHexagons.get(i).getD() == 0) {
+
+                if (player.getTurn() != 1) {
+                    if (checkNeighboursPieceSamePlayer(player, this.getAvailableHexagons().get(i))) {
                         hexagons.add(this.availableHexagons.get(i));
-                }else{
+                    }
+                } else {
                     hexagons.add(this.availableHexagons.get(i));
                 }
             }
+        }
         return hexagons;
     }
 
@@ -299,32 +290,32 @@ public final class Hive {
         int z = 0;
         ArrayList<Hexagon> neighbours = new ArrayList<>();
 
-        while(isInBoard(new Hexagon(x+1,y-1,z)))
+        while(searchPiece(new Hexagon(x+1,y-1,z))!=null)
             z=z+1;
         neighbours.add(new Hexagon(x+1,y-1,z));
         z=0;
 
-        while(isInBoard(new Hexagon(x+1,y,z)))
+        while(searchPiece(new Hexagon(x+1,y,z))!=null)
             z=z+1;
         neighbours.add(new Hexagon(x+1,y,z));
         z=0;
 
-        while(isInBoard(new Hexagon(x,y+1,z)))
+        while(searchPiece(new Hexagon(x,y+1,z))!=null)
             z=z+1;
         neighbours.add(new Hexagon(x,y+1,z));
         z=0;
 
-        while(isInBoard(new Hexagon(x-1,y+1,z)))
+        while(searchPiece(new Hexagon(x-1,y+1,z))!=null)
             z=z+1;
         neighbours.add(new Hexagon(x-1,y+1,z));
         z=0;
 
-        while(isInBoard(new Hexagon(x-1,y,z)))
+        while(searchPiece(new Hexagon(x-1,y,z))!=null)
             z=z+1;
         neighbours.add(new Hexagon(x-1,y,z));
         z=0;
 
-        while(isInBoard(new Hexagon(x,y-1,z)))
+        while(searchPiece(new Hexagon(x,y-1,z))!=null)
             z=z+1;
         neighbours.add(new Hexagon(x,y-1,z));
 
@@ -352,8 +343,9 @@ public final class Hive {
      */
     private boolean checkIfDuplicate(Hexagon hexagon){
         for(int i=0;i < this.availableHexagons.size();i++){
-            if(this.availableHexagons.get(i).toString().equals(hexagon.toString()))
+            if(this.availableHexagons.get(i).toString().equals(hexagon.toString())) {
                 return false;
+            }
         }
         return true;
     }
@@ -367,7 +359,7 @@ public final class Hive {
         ArrayList<Hexagon> newNeighbours = new ArrayList<>();
         newNeighbours = getNeighbourHex(hexagon);
         for(int i=0;i<newNeighbours.size();i++){
-            if(!isInBoard(newNeighbours.get(i)))
+            if(searchPiece(newNeighbours.get(i))==null)
                 if(checkIfDuplicate(newNeighbours.get(i)))
                     this.getAvailableHexagons().add(newNeighbours.get(i));
 
@@ -425,19 +417,18 @@ public final class Hive {
      */
     public void movePiece(Piece piece, Hexagon hexagon, boolean ia){
         Hexagon c = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD());
-        //Check if players bee in game
+        if(!ia) {
             //Check, if the piece is a beetle, if its moving from the top of another piece --> unmark it
             if (piece.getType() == PieceType.BEETLE && piece.getHexagon().getD() != 0) {
-                //Piece t = searchPiece(new Hexagon(piece.getHexagon().getR(),piece.getHexagon().getQ(),piece.getHexagon().getD()-1));
                 Piece t = searchPiece(new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD() - 1));
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
             if (piece.getType() == PieceType.BEETLE && hexagon.getD() != 0) {
-                //Piece t = searchPiece(new Hexagon(hexagon.getR(),hexagon.getQ(),hexagon.getD()-1));
                 Piece t = searchPiece(new Hexagon(hexagon.getQ(), hexagon.getR(), hexagon.getD() - 1));
                 t.setBeetle(true);
             }
+        }
             //Add hexagon to available hexagons list
             this.availableHexagons.add(c);
             //Free hexagon in the board
@@ -446,10 +437,10 @@ public final class Hive {
             deleteAvailableHexagons(c, this.availableHexagons);
             //Update hexagon of the piece of the board
             updateHexagon(piece, hexagon);
-        if(!ia) {
+        //if(!ia) {
             refreshAvailableHexagons(hexagon);
             //Remove hexagon from available
-            removeHexFromAvailable(hexagon, this.availableHexagons);}
+            removeHexFromAvailable(hexagon, this.availableHexagons);//}
 
             //Update graph:
             //Delete vertex from the graph
@@ -460,8 +451,11 @@ public final class Hive {
             //Add piece again
             this.graph.addVertex(piece.getGraphId());
             //Add neighbours to graph
+            //Log.d("Graph move piece","Graph move piece");
+            //Log.d("piece",piece.pieceInfo());
             for (Piece newNeighbour : newNeighbours)
                 if (newNeighbour != null){
+                    //Log.d("neighbour",newNeighbour.pieceInfo());
                     this.graph.addEdge(piece.getGraphId(), newNeighbour.getGraphId());
                 }
     }
@@ -516,12 +510,12 @@ public final class Hive {
         int x = hexagon.getQ();
         int y = hexagon.getR();
 
-        if(!isInBoard(new Hexagon(x+1,y-1,0)) && !isInBoard(new Hexagon(x+1,y,0))) return false;
-        else if(!isInBoard(new Hexagon(x+1,y,0)) && !isInBoard(new Hexagon(x,y+1,0))) return false;
-        else if(!isInBoard(new Hexagon(x,y+1,0)) && !isInBoard(new Hexagon(x-1,y+1,0))) return false;
-        else if(!isInBoard(new Hexagon(x-1,y+1,0)) && !isInBoard(new Hexagon(x-1,y,0))) return false;
-        else if(!isInBoard(new Hexagon(x-1,y,0)) && !isInBoard(new Hexagon(x,y-1,0))) return false;
-        else if(!isInBoard(new Hexagon(x,y-1,0)) && !isInBoard(new Hexagon(x+1,y-1,0))) return false;
+        if(searchPiece(new Hexagon(x+1,y-1,0))==null && searchPiece(new Hexagon(x+1,y,0))==null) return false;
+        else if(searchPiece(new Hexagon(x+1,y,0))==null && searchPiece(new Hexagon(x,y+1,0))==null) return false;
+        else if(searchPiece(new Hexagon(x,y+1,0))==null && searchPiece(new Hexagon(x-1,y+1,0))==null) return false;
+        else if(searchPiece(new Hexagon(x-1,y+1,0))==null && searchPiece(new Hexagon(x-1,y,0))==null) return false;
+        else if(searchPiece(new Hexagon(x-1,y,0))==null && searchPiece(new Hexagon(x,y-1,0))==null) return false;
+        else if(searchPiece(new Hexagon(x,y-1,0))==null && searchPiece(new Hexagon(x+1,y-1,0))==null) return false;
         else return true;
     }
 
@@ -535,8 +529,8 @@ public final class Hive {
         int x = hexagon.getQ();
         int y = hexagon.getR();
 
-        if(!isInBoard(new Hexagon(x,y-1,0)) && !isInBoard(new Hexagon(x+1,y,0)) && !isInBoard(new Hexagon(x-1,y+1,0))) return true;
-        else if(!isInBoard(new Hexagon(x+1,y-1,0)) && !isInBoard(new Hexagon(x,y+1,0)) && !isInBoard(new Hexagon(x-1,y,0))) return true;
+        if(searchPiece(new Hexagon(x,y-1,0))==null && searchPiece(new Hexagon(x+1,y,0))==null && searchPiece(new Hexagon(x-1,y+1,0))==null) return true;
+        else if(searchPiece(new Hexagon(x+1,y-1,0))==null && searchPiece(new Hexagon(x,y+1,0))==null && searchPiece(new Hexagon(x-1,y,0))==null) return true;
         else return false;
     }
 
@@ -578,7 +572,7 @@ public final class Hive {
         //Face 1
         int i=1;
         int j=1;
-        while(isInBoard(new Hexagon(x+i,y-j,0))){
+        while(searchPiece(new Hexagon(x+i,y-j,0))!=null){
 
             i=i+1;
             j=j+1;
@@ -589,7 +583,7 @@ public final class Hive {
         }
         //Face 2
         i=1;
-        while(isInBoard(new Hexagon(x+i,y, 0))){
+        while(searchPiece(new Hexagon(x+i,y,0))!=null){
             i=i+1;
         }
         if(i!=1){
@@ -598,7 +592,7 @@ public final class Hive {
         }
         //Face 3
         j=1;
-        while(isInBoard(new Hexagon(x,y+j, 0))){
+        while(searchPiece(new Hexagon(x,y+j, 0))!=null){
             j=j+1;
         }
         if(j!=1){
@@ -608,7 +602,7 @@ public final class Hive {
         //Face 4
         i=1;
         j=1;
-        while(isInBoard(new Hexagon(x-i,y+j,0))){
+        while(searchPiece(new Hexagon(x-i,y+j,0))!=null){
             i=i+1;
             j= j +1;
         }
@@ -618,7 +612,7 @@ public final class Hive {
         }
         //Face 5
         i=1;
-        while(isInBoard(new Hexagon(x-i,y, 0))){
+        while(searchPiece(new Hexagon(x-i,y, 0))!=null){
             i=i+1;
         }
         if(i!=1){
@@ -627,7 +621,7 @@ public final class Hive {
         }
         //Face 6
         j=1;
-        while(isInBoard(new Hexagon(x,y-j, 0))){
+        while(searchPiece(new Hexagon(x,y-j, 0))!=null){
             j=j+1;
         }
         if(j!=1){
@@ -785,34 +779,34 @@ public final class Hive {
 
 
         if(xc==xt+1 && yc==yt-1){
-            if(!isInBoard(new Hexagon(xc,yc,zc))){
-                if(isInBoard(new Hexagon(xc-1,yc,zc))) n=n+1;
-                if(isInBoard(new Hexagon(xc,yc+1,zc))) n=n+1;
+            if(searchPiece(new Hexagon(xc,yc,zc))==null){
+                if(searchPiece(new Hexagon(xc - 1, yc, zc))!=null) n=n+1;
+                if(searchPiece(new Hexagon(xc, yc + 1, zc))!=null) n=n+1;
             }
         }else if(xc==xt+1 && yc==yt){
-            if(!isInBoard(new Hexagon(xc,yc,zc))){
-                if(isInBoard(new Hexagon(xc,yc-1,zc))) n=n+1;
-                if(isInBoard(new Hexagon(xc-1,yc+1,zc))) n=n+1;
+            if(searchPiece(new Hexagon(xc,yc,zc))==null){
+                if(searchPiece(new Hexagon(xc, yc - 1, zc))!=null) n=n+1;
+                if(searchPiece(new Hexagon(xc - 1, yc + 1, zc))!=null) n=n+1;
             }
         }else if(xc==xt && yc==yt+1){
-            if(!isInBoard(new Hexagon(xc,yc,zc))){
-                if(isInBoard(new Hexagon(xc+1,yc-1,zc))) n=n+1;
-                if(isInBoard(new Hexagon(xc-1,yc,zc))) n=n+1;
+            if(searchPiece(new Hexagon(xc,yc,zc))==null){
+                if(searchPiece(new Hexagon(xc + 1, yc - 1, zc))!=null) n=n+1;
+                if(searchPiece(new Hexagon(xc - 1, yc, zc))!=null) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt+1){
-            if(!isInBoard(new Hexagon(xc,yc,zc))){
-                if(isInBoard(new Hexagon(xc+1,yc,zc))) n=n+1;
-                if(isInBoard(new Hexagon(xc,yc-1,zc))) n=n+1;
+            if(searchPiece(new Hexagon(xc,yc,zc))==null){
+                if(searchPiece(new Hexagon(xc + 1, yc, zc))!=null) n=n+1;
+                if(searchPiece(new Hexagon(xc, yc - 1, zc))!=null) n=n+1;
             }
         }else if(xc==xt-1 && yc==yt){
-            if(!isInBoard(new Hexagon(xc,yc,zc))){
-                if(isInBoard(new Hexagon(xc,yc+1,zc))) n=n+1;
-                if(isInBoard(new Hexagon(xc+1,yc-1,zc))) n=n+1;
+            if(searchPiece(new Hexagon(xc,yc,zc))==null){
+                if(searchPiece(new Hexagon(xc, yc + 1, zc))!=null) n=n+1;
+                if(searchPiece(new Hexagon(xc + 1, yc - 1, zc))!=null) n=n+1;
             }
         }else if(xc==xt && yc==yt-1){
-            if(!isInBoard(new Hexagon(xc,yc,zc))){
-                if(isInBoard(new Hexagon(xc-1,yc+1,zc))) n=n+1;
-                if(isInBoard(new Hexagon(xc+1,yc,zc))) n=n+1;
+            if(searchPiece(new Hexagon(xc,yc,zc))==null){
+                if(searchPiece(new Hexagon(xc - 1, yc + 1, zc))!=null) n=n+1;
+                if(searchPiece(new Hexagon(xc + 1, yc,zc))!=null) n=n+1;
             }
         }
 
@@ -844,19 +838,19 @@ public final class Hive {
         int x = hexagon.getQ();
         int y = hexagon.getR();
 
-        if(isInBoard(new Hexagon(x+1,y-1,0))){
+        if(searchPiece(new Hexagon(x + 1, y - 1, 0))!=null){
             hexagons[0] = new Hexagon(x-1,y,0);
             hexagons[1] = new Hexagon(x,y+1,0);
-        }else if(isInBoard(new Hexagon(x+1,y,0))){
+        }else if(searchPiece(new Hexagon(x + 1, y, 0))!=null){
             hexagons[0] = new Hexagon(x,y-1,0);
             hexagons[1] = new Hexagon(x-1,y+1,0);
-        }else if(isInBoard(new Hexagon(x,y+1,0))){
+        }else if(searchPiece(new Hexagon(x, y + 1, 0))!=null){
             hexagons[0] = new Hexagon(x-1,y,0);
             hexagons[1] = new Hexagon(x+1,y-1,0);
-        }else if(isInBoard(new Hexagon(x-1,y+1,0))){
+        }else if(searchPiece(new Hexagon(x - 1, y + 1, 0))!=null){
             hexagons[0] = new Hexagon(x,y-1,0);
             hexagons[1] = new Hexagon(x+1,y,0);
-        }else if(isInBoard(new Hexagon(x-1,y,0))){
+        }else if(searchPiece(new Hexagon(x-1,y,0))!=null){
             hexagons[0] = new Hexagon(x+1,y-1,0);
             hexagons[1] = new Hexagon(x,y+1,0);
         }else{
@@ -872,12 +866,20 @@ public final class Hive {
      * A piece can be remove if it was placed to test strategics for the AI.
      */
     public void detelePiece(Piece piece){
+        //Save original hexagon
+        Hexagon hex = new Hexagon(piece.getHexagon().getQ(),piece.getHexagon().getR(),piece.getHexagon().getD());
         for(int i=0;i<this.getBoard().size();i++){
             if(this.getBoard().get(i).getHexagon().toString().equals(piece.getHexagon().toString())) {
+                //Add hexagon to available hexagons list
+                this.availableHexagons.add(piece.getHexagon());
+                //Free hexagon from the board
+                deleteHex(piece);
+                //Delete hexagon neighbours if they haven't any neighbour
+                deleteAvailableHexagons(hex, this.availableHexagons);
                 //Delete it from the graph
                 this.graph.removeVertex(this.getBoard().get(i).getGraphId());
                 this.vertex = this.vertex - 1;
-                //Delete it from the board
+                //Remove piece from the board
                 this.getBoard().remove(this.getBoard().get(i));
             }
         }

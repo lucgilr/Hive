@@ -126,17 +126,17 @@ public class Player {
      * @return all possible pieces to the player
      */
     private ArrayList<Piece> setPiecesBox() {
-        this.piecesInTheBox.add(new Piece(PieceType.BEE,0,this));
-        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,1,this));
-        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,2,this));
-        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,3,this));
-        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,4,this));
-        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,5,this));
-        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,6,this));
-        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,7,this));
-        this.piecesInTheBox.add(new Piece(PieceType.ANT,8,this));
-        this.piecesInTheBox.add(new Piece(PieceType.ANT,9,this));
-        this.piecesInTheBox.add(new Piece(PieceType.ANT,10,this));
+        this.piecesInTheBox.add(new Piece(PieceType.BEE,0,this,20));
+        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,1,this,2));
+        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,2,this,2));
+        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,3,this,2));
+        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,4,this,6));
+        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,5,this,6));
+        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,6,this,4));
+        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,7,this,4));
+        this.piecesInTheBox.add(new Piece(PieceType.ANT,8,this,8));
+        this.piecesInTheBox.add(new Piece(PieceType.ANT,9,this,8));
+        this.piecesInTheBox.add(new Piece(PieceType.ANT,10,this,8));
         return this.piecesInTheBox;
     }
 

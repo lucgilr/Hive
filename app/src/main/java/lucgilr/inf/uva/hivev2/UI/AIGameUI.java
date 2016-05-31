@@ -157,14 +157,16 @@ public class AIGameUI extends AppCompatActivity {
             }
 
             //PRINT BOARD
-            Log.d("BOARD PLAYER 1","BOARD PLAYER 1");
+            /*Log.d("BOARD PLAYER 1","BOARD PLAYER 1");
             for(int i=0;i<this.game.getHive().getBoard().size();i++)
-                Log.d("piece...",this.game.getHive().getBoard().get(i).pieceInfo());
+                Log.d("piece...",this.game.getHive().getBoard().get(i).pieceInfo());*/
 
             //PRINT GAPS AVAILABLE
-            Log.d("GAPS SELECTED","GAPS SELECTED");
-            for(int i=0;i<gaps.size();i++)
-                Log.d("Gap...",gaps.get(i).toString());
+            /*if(!gaps.isEmpty()) {
+                Log.d("GAPS SELECTED", "GAPS SELECTED");
+                for (int i = 0; i < gaps.size(); i++)
+                    Log.d("Gap...", gaps.get(i).toString());
+            }*/
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
