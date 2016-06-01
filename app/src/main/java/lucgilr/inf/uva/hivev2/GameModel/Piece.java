@@ -12,9 +12,7 @@ public class Piece {
     private PieceType type;
     private int value;
     private Player player;
-    private boolean inGame;
     private Hexagon hexagon;
-    private boolean blocked;
     private boolean beetle;
     private int graphId;
 
@@ -23,9 +21,7 @@ public class Piece {
      */
     public Piece(){
         this.value=0;
-        this.inGame=false;
         this.hexagon =new Hexagon(-100,-100,-100);
-        this.blocked=false;
         this.beetle=false;
     }
 
@@ -38,9 +34,7 @@ public class Piece {
     public Piece(PieceType type, int id, Player player,int value){
         this.type=type;
         this.value=value;
-        this.inGame=false;
         this.hexagon =new Hexagon(100,100,100);
-        this.blocked=false;
         this.id=id;
         this.player=player;
         this.beetle=false;
@@ -79,40 +73,6 @@ public class Piece {
         this.value = value;
     }
 
-
-    /**
-     * Tells if the piece is on the board o is in the player's box.
-     * @return true if the piece is on the board. Otherwise returns false.
-     */
-    public boolean isInGame() {
-        return inGame;
-    }
-
-    /**
-     * Set the situation of the token.
-     * @param enJuego true if the piece is on board and false if it isn't.
-     */
-    public void setInGame(boolean enJuego) {
-        this.inGame = enJuego;
-    }
-
-
-    /**
-     * If the piece is blocked it can't be moved, so this method allows us to know its blocked condition.
-     * @return true if its blocked and false if the piece can be moved.
-     */
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    /**
-     * Set the blocked situation of the piece.
-     * @param blocked true if it's blocked, false if it isn't.
-     */
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
-
     /**
      * If a piece has a BEETLE on top it can't move, so we can say it's blocked.
      * @return true if the piece has a BEETLE on top, false otherwise.
@@ -127,7 +87,6 @@ public class Piece {
      */
     public void setBeetle(boolean beetle) {
         this.beetle = beetle;
-        setBlocked(true);
     }
 
     /**
@@ -204,7 +163,6 @@ public class Piece {
                 + " Type: "+this.type+" "
                 + " Value: "+this.value+" "
                 + " Player: "+this.player.getColor()+" "
-                + " In GameUI: "+this.inGame+" "
                 + " X: "+this.hexagon.getQ()+" "
                 + " Y: "+this.hexagon.getR()+" "
                 + " Z: "+this.hexagon.getD()+" "

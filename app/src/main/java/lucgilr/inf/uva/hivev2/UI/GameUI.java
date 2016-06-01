@@ -29,7 +29,6 @@ import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
-import lucgilr.inf.uva.hivev2.GameModel.Grid;
 import lucgilr.inf.uva.hivev2.R;
 import pl.polidea.view.ZoomView;
 
@@ -157,7 +156,7 @@ public class GameUI extends AppCompatActivity {
             player = controller.getPlayer();
 
             if(!this.movingToken){
-                gaps = controller.getPlayerGaps(player);
+                gaps = controller.getPlayerHexagons(player);
                 //If there are not gaps and the bee is not in game
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
@@ -425,14 +424,14 @@ public class GameUI extends AppCompatActivity {
 
         if(this.movingToken && checkIfGapAvailable(hexagon, gaps)){
             Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
-            controller.movetoken(piece, coords);
+            controller.movePiece(piece, coords);
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingToken=false;
             initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hexagon, gaps)) {
-            ArrayList<Piece> pieces = controller.getTokensFromBox();
+            ArrayList<Piece> pieces = controller.getPiecesFromBox();
             if(!pieces.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
                 int turn = controller.getPlayerTurn();
@@ -464,10 +463,10 @@ public class GameUI extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         piece = new Piece();
-                        PieceType bug = language.stringToPieceString(t.get(which));
-                        piece = controller.takeTokenByType(bug);
+                        PieceType bug = language.stringToPieceType(t.get(which));
+                        piece = controller.takePieceByType(bug);
                         Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
-                        controller.playToken(piece,coords);
+                        controller.playPiece(piece, coords);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
                         initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
@@ -486,7 +485,7 @@ public class GameUI extends AppCompatActivity {
                 initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         }else if(!checkIfGapAvailable(hexagon, gaps)) {
-            this.gaps = controller.getPlayerGaps(player);
+            this.gaps = controller.getPlayerHexagons(player);
             //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
             initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * It has assigned a color to distinguish itself from the other player.
  * When a new player is set it receives a box with eleven pieces to play
  * and a turn count that increments every time the player makes a move
- * or adds a piece to the board game.
+ * or adds a piece to the board.
  * @author Lucía Gil Román
  */
 public class Player {
@@ -17,7 +17,6 @@ public class Player {
     private int turn;
     private ArrayList<Piece> piecesInGame;
     private ArrayList<Piece> piecesInTheBox;
-    private int playedPieces;
     private boolean beeInGame;
 
     /**
@@ -45,21 +44,6 @@ public class Player {
      */
     public void setColor(String color) {
         this.color=color;
-    }
-
-    /**
-     * @return
-     */
-    public int getPlayedPieces() {
-        return playedPieces;
-    }
-
-    /**
-     *
-     * @param playedPieces
-     */
-    public void setPlayedPieces(int playedPieces) {
-        this.playedPieces = playedPieces;
     }
 
     /**

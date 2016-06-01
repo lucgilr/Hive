@@ -39,7 +39,7 @@ public class Language {
      * @param bug
      * @return
      */
-    public PieceType stringToPieceString(String bug){
+    public PieceType stringToPieceType(String bug){
         if(bug.equals("Bee") || bug.equals("Abeja")) return PieceType.BEE;
         else if(bug.equals("Ant") || bug.equals("Hormiga")) return PieceType.ANT;
         else if(bug.equals("Beetle") || bug.equals("Escarabajo")) return PieceType.BEETLE;

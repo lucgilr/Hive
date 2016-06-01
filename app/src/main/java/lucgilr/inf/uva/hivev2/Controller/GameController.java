@@ -66,7 +66,7 @@ public class GameController {
      * @param player
      * @return
      */
-    public ArrayList<Hexagon> getPlayerGaps(Player player){
+    public ArrayList<Hexagon> getPlayerHexagons(Player player){
         return model.getHive().getAvailableHexagonsPlayer(player);
     }
 
@@ -107,7 +107,7 @@ public class GameController {
      * @param piece
      * @param hexagon
      */
-    public void movetoken(Piece piece, Hexagon hexagon){
+    public void movePiece(Piece piece, Hexagon hexagon){
         model.getHive().movePiece(piece, hexagon, false);
     }
 
@@ -137,7 +137,7 @@ public class GameController {
      *
      * @return
      */
-    public ArrayList<Piece> getTokensFromBox(){
+    public ArrayList<Piece> getPiecesFromBox(){
         return getPlayer().getPiecesInTheBox();
     }
 
@@ -146,17 +146,17 @@ public class GameController {
      * @param type
      * @return
      */
-    public Piece takeTokenByType(PieceType type){
+    public Piece takePieceByType(PieceType type){
         return getPlayer().takePieceByType(type);
     }
 
     /**
      *
      * @param piece
-     * @param coords
+     * @param hexagon
      */
-    public void playToken(Piece piece, Hexagon coords){
-        model.getHive().addPiece(piece, coords, true);
+    public void playPiece(Piece piece, Hexagon hexagon){
+        model.getHive().addPiece(piece, hexagon, true);
     }
 
     /**
@@ -165,7 +165,7 @@ public class GameController {
      * @return
      */
     public ArrayList<Hexagon> getPossibleMoves(Piece piece){
-        return model.getHive().getPossibleHexagon(piece, false);
+        return model.getHive().getPossibleHexagons(piece, false);
     }
 
     /**

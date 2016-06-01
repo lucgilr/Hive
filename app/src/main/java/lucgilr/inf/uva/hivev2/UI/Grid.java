@@ -1,6 +1,9 @@
-package lucgilr.inf.uva.hivev2.GameModel;
+package lucgilr.inf.uva.hivev2.UI;
 
 import android.graphics.Point;
+
+import lucgilr.inf.uva.hivev2.GameModel.Cube;
+import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 
 /**
  * @author Narek (https://github.com/starwheel)

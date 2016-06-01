@@ -1,8 +1,6 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.jgrapht.UndirectedGraph;
@@ -104,7 +102,6 @@ public final class Hive {
      * the new piece.
      * @param piece
      * @param hexagon
-     * CHANGES --> Hexagon to Hexagon
      */
     public void addPiece(Piece piece, Hexagon hexagon, boolean graph){
         //If is a bee --> set the player's bee in game as true
@@ -128,8 +125,6 @@ public final class Hive {
                     this.graph.addEdge(piece.getGraphId(), neighbour.getGraphId());
                 }
         }
-        //Set piece to inGame
-        piece.setInGame(true);
         //Delete hexagon from ArrayList of available hexagons
         removeHexFromAvailable(piece.getHexagon(), this.availableHexagons);
         //add new neighbours if they are not already there and have no piece
@@ -168,7 +163,7 @@ public final class Hive {
      * HAY UNA PARECIDA --> LA ANTERIOR
      * @param piece
      */
-    public void deleteHex(Piece piece){
+    public void deleteHexagon(Piece piece){
         for (Piece board1 : this.board) {
             if (board1.getHexagon().toString().equals(piece.getHexagon().toString())) {
                 board1.setHexagon(new Hexagon(-100, -100, -100));
@@ -387,7 +382,7 @@ public final class Hive {
      * @param piece
      * @return
      */
-    public ArrayList<Hexagon> getPossibleHexagon(Piece piece, boolean ia){
+    public ArrayList<Hexagon> getPossibleHexagons(Piece piece, boolean ia){
         ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
         boolean brokenHive = brokenHive(piece);
         if(ia) brokenHive = false;
@@ -432,7 +427,7 @@ public final class Hive {
             //Add hexagon to available hexagons list
             this.availableHexagons.add(c);
             //Free hexagon in the board
-            deleteHex(piece);
+            deleteHexagon(piece);
             //Delete hexagon neighbours if they haven't any neighbour
             deleteAvailableHexagons(c, this.availableHexagons);
             //Update hexagon of the piece of the board
@@ -744,7 +739,7 @@ public final class Hive {
         if(!checkIfPieceBlocked(piece)){
             //Second: take ant from the board
             //Free hexagon in the board
-            deleteHex(piece);
+            deleteHexagon(piece);
             //Delete hexagon neighbours if they haven't any neighbour
             deleteAvailableHexagons(c, availableHexagonsClon);
             //Third: Get all available hexagons and check if d==0 and then if they are not blocked
@@ -873,7 +868,7 @@ public final class Hive {
                 //Add hexagon to available hexagons list
                 this.availableHexagons.add(piece.getHexagon());
                 //Free hexagon from the board
-                deleteHex(piece);
+                deleteHexagon(piece);
                 //Delete hexagon neighbours if they haven't any neighbour
                 deleteAvailableHexagons(hex, this.availableHexagons);
                 //Delete it from the graph

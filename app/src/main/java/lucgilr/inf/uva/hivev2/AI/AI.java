@@ -200,7 +200,7 @@ public class AI {
             //Get possible moves for the friendly pieces
             for(int i=0;i<friends.size();i++){
                 ArrayList<Hexagon> gaps = new ArrayList<>();
-                gaps = this.game.getHive().getPossibleHexagon(friends.get(i), false);
+                gaps = this.game.getHive().getPossibleHexagons(friends.get(i), false);
                 if(!gaps.isEmpty()){
                     //If gaps is not empty --> evaluate the move
                     for(int j=0;j<gaps.size();j++){
@@ -228,7 +228,7 @@ public class AI {
         ArrayList<PieceMoveScore> moves = new ArrayList<>();
         //Take possible moves for the bee:
         ArrayList<Hexagon> beeMoves = new ArrayList<>();
-        beeMoves = this.game.getHive().getPossibleHexagon(bee, false);
+        beeMoves = this.game.getHive().getPossibleHexagons(bee, false);
         //Inspect the gaps found --> They have less than 3 neighbours?
         for(int i=0;i<beeMoves.size();i++){
             //Get number neighbours of that gap
@@ -296,7 +296,7 @@ public class AI {
             ArrayList<PieceMoveScore> moves = new ArrayList<>();
             //If the piece can't be moved --> Do nothing
             ArrayList<Hexagon> pieceMoves = new ArrayList<>();
-            pieceMoves = this.game.getHive().getPossibleHexagon(player.getPiecesInGame().get(i), false);
+            pieceMoves = this.game.getHive().getPossibleHexagons(player.getPiecesInGame().get(i), false);
             Log.d("MOVES FOR THE PIECE",String.valueOf(pieceMoves.size()));
             if(!pieceMoves.isEmpty()) {
                 Piece[] n = new Piece[6];
@@ -324,7 +324,7 @@ public class AI {
                     int current = evalPosition(player.getPiecesInGame().get(i),player.getPiecesInGame().get(i).getHexagon());
                     PieceMoveScore bestMovePiece = getBetterMove(moves);
                     int bestMove = bestMovePiece.getScore();
-                    Log.d("PIECE ATACKING",player.getPiecesInGame().get(i).pieceInfo());
+                    Log.d("PIECE ATTACKING",player.getPiecesInGame().get(i).pieceInfo());
                     Log.d("CURRENT POSITION: ",String.valueOf(current));
                     Log.d("NEXT MOVE",bestMovePiece.getInfo());
                     if(bestMove>current) bestMoves.add(bestMovePiece);
@@ -486,7 +486,7 @@ public class AI {
             this.game.getHive().addPiece(piece, gaps.get(i), true);
             //Get possible moves from that position
             ArrayList<Hexagon> possibleMoves = new ArrayList<>();
-            possibleMoves = this.game.getHive().getPossibleHexagon(piece, true);
+            possibleMoves = this.game.getHive().getPossibleHexagons(piece, true);
             //Evaluate those moves
             for(int j=0;j<possibleMoves.size();j++){
                 int points = evalPosition(piece,possibleMoves.get(j));
@@ -518,7 +518,7 @@ public class AI {
      * @param list
      * @return
      */
-    public boolean checksIfCoordinateInGivenList(Hexagon hexagon, ArrayList<Hexagon> list){
+    public boolean checksIfHexagonInGivenList(Hexagon hexagon, ArrayList<Hexagon> list){
         for(int i=0;i<list.size();i++){
             if(list.get(i).toString().equals(hexagon.toString())) return true;
         }
