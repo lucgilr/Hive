@@ -99,7 +99,7 @@ public class AI {
             this.random = rand.nextBoolean() ? 0:1;
             //Place Ant (id=8)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(4);
+            t = player.inspectPieceByIdFromBox(8);
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
             game.getHive().addPiece(t, hexagon, true);
@@ -440,13 +440,13 @@ public class AI {
             int type = getRandomPos(0,1);
             if(type==0){
                 //Take beetle
-                if(this.player.isPieceInBox(PieceType.BEETLE))
+                if(this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
                 else
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
             }else{
                 //Take ant
-                if(this.player.isPieceInBox(PieceType.ANT))
+                if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
                 else
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);

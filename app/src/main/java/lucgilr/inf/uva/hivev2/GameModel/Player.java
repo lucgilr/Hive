@@ -152,18 +152,6 @@ public class Player {
     }
 
     /**
-     * Guess if a piece of a determinate type still is in the box.
-     * @param type
-     * @return
-     */
-    public boolean isPieceInBox(PieceType type){
-        for(int i=0;i<this.pieces.size();i++){
-            if(this.pieces.get(i).getType().equals(type) && !this.pieces.get(i).isInGame()) return true;
-        }
-        return false;
-    }
-
-    /**
      *
      * @return
      */
