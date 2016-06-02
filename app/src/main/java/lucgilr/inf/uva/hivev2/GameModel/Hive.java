@@ -110,6 +110,8 @@ public final class Hive {
         piece.setHexagon(hexagon);
         //Place piece on the board
         this.board.add(piece);
+        //Change piece status to inGame
+        piece.setInGame(true);
         //Get neighbours
         Piece[] neighbours = new Piece[6];
         neighbours = pieceNeighbours(piece.getHexagon());

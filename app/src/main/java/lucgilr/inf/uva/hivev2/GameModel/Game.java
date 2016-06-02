@@ -123,8 +123,8 @@ public class Game {
      * @return
      */
     public int beeSurrounded(){
-        Hexagon p1 = this.getPlayer1().getPieceById(0).getHexagon();
-        Hexagon p2 = this.getPlayer2().getPieceById(0).getHexagon();
+        Hexagon p1 = this.getPlayer1().inspectPieceById(0).getHexagon();
+        Hexagon p2 = this.getPlayer2().inspectPieceById(0).getHexagon();
         if(this.getHive().numberOfNeighbours(p1)==6 && this.getHive().numberOfNeighbours(p2)==6)
             return 3;
         else if(this.getHive().numberOfNeighbours(p1)==6) return 2;

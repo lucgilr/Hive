@@ -15,6 +15,7 @@ public class Piece {
     private Hexagon hexagon;
     private boolean beetle;
     private int graphId;
+    private boolean inGame;
 
     /**
      *
@@ -158,6 +159,22 @@ public class Piece {
      *
      * @return
      */
+    public boolean isInGame() {
+        return inGame;
+    }
+
+    /**
+     *
+     * @param inGame
+     */
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
+    }
+
+    /**
+     *
+     * @return
+     */
     public String pieceInfo(){
         return " id #"+this.id+" "
                 + " Type: "+this.type+" "
@@ -167,6 +184,7 @@ public class Piece {
                 + " Y: "+this.hexagon.getR()+" "
                 + " Z: "+this.hexagon.getD()+" "
                 + " graphid: "+this.getGraphId()+" "
+                + " graphid: "+this.inGame+" "
                 + " Beetle: "+this.beetle+"\n";
     }
 

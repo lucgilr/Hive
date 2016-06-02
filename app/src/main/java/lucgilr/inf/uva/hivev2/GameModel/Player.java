@@ -15,8 +15,9 @@ public class Player {
 
     private String color;
     private int turn;
-    private ArrayList<Piece> piecesInGame;
-    private ArrayList<Piece> piecesInTheBox;
+    //private ArrayList<Piece> piecesInGame;
+    //private ArrayList<Piece> piecesInTheBox;
+    private ArrayList<Piece> pieces;
     private boolean beeInGame;
 
     /**
@@ -26,9 +27,11 @@ public class Player {
     public Player(String color){
         this.color=color;
         this.turn=1;
-        this.piecesInTheBox = new ArrayList<>();
-        this.piecesInTheBox = setPiecesBox();
-        this.piecesInGame = new ArrayList<>();
+        this.pieces = new ArrayList<>();
+        this.pieces = setPieces();
+        //this.piecesInTheBox = new ArrayList<>();
+        //this.piecesInTheBox = setPieces();
+        //this.piecesInGame = new ArrayList<>();
     }
 
     /**
@@ -61,34 +64,12 @@ public class Player {
         this.turn = turn;
     }
 
-    /**
-     * @return pieces that are already on the board.
-     */
-    public ArrayList<Piece> getPiecesInGame() {
-        return piecesInGame;
+    public ArrayList<Piece> getPieces() {
+        return pieces;
     }
 
-    /**
-     *
-     * @param piecesInGame
-     */
-    public void setPiecesInGame(ArrayList<Piece> piecesInGame) {
-        this.piecesInGame = piecesInGame;
-    }
-
-    /**
-     * @return pieces that the player has not played yet.
-     */
-    public ArrayList<Piece> getPiecesInTheBox() {
-        return piecesInTheBox;
-    }
-
-    /**
-     *
-     * @param piecesInTheBox
-     */
-    public void setPiecesInTheBox(ArrayList<Piece> piecesInTheBox) {
-        this.piecesInTheBox = piecesInTheBox;
+    public void setPieces(ArrayList<Piece> pieces) {
+        this.pieces = pieces;
     }
 
     /**
@@ -109,19 +90,19 @@ public class Player {
     /**
      * @return all possible pieces to the player
      */
-    private ArrayList<Piece> setPiecesBox() {
-        this.piecesInTheBox.add(new Piece(PieceType.BEE,0,this,20));
-        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,1,this,2));
-        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,2,this,2));
-        this.piecesInTheBox.add(new Piece(PieceType.GRASSHOPPER,3,this,2));
-        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,4,this,6));
-        this.piecesInTheBox.add(new Piece(PieceType.SPIDER,5,this,6));
-        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,6,this,4));
-        this.piecesInTheBox.add(new Piece(PieceType.BEETLE,7,this,4));
-        this.piecesInTheBox.add(new Piece(PieceType.ANT,8,this,8));
-        this.piecesInTheBox.add(new Piece(PieceType.ANT,9,this,8));
-        this.piecesInTheBox.add(new Piece(PieceType.ANT,10,this,8));
-        return this.piecesInTheBox;
+    private ArrayList<Piece> setPieces() {
+        this.pieces.add(new Piece(PieceType.BEE, 0, this, 20));
+        this.pieces.add(new Piece(PieceType.GRASSHOPPER,1,this,2));
+        this.pieces.add(new Piece(PieceType.GRASSHOPPER,2,this,2));
+        this.pieces.add(new Piece(PieceType.GRASSHOPPER,3,this,2));
+        this.pieces.add(new Piece(PieceType.SPIDER,4,this,6));
+        this.pieces.add(new Piece(PieceType.SPIDER,5,this,6));
+        this.pieces.add(new Piece(PieceType.BEETLE,6,this,4));
+        this.pieces.add(new Piece(PieceType.BEETLE,7,this,4));
+        this.pieces.add(new Piece(PieceType.ANT,8,this,8));
+        this.pieces.add(new Piece(PieceType.ANT,9,this,8));
+        this.pieces.add(new Piece(PieceType.ANT,10,this,8));
+        return this.pieces;
     }
 
     /**
@@ -136,31 +117,25 @@ public class Player {
      * @param id
      * @return
      */
-    public Piece getPieceById(int id){
-        for(int i=0;i<this.piecesInTheBox.size();i++){
-            if(this.piecesInTheBox.get(i).getId()==id)
-                return this.piecesInTheBox.get(i);
-        }
-        for(int j=0;j<this.piecesInGame.size();j++){
-            if(this.piecesInGame.get(j).getId()==id)
-                return this.piecesInGame.get(j);
+    public Piece inspectPieceById(int id){
+        for(int i=0;i<this.pieces.size();i++){
+            if(this.pieces.get(i).getId()==id)
+                return this.pieces.get(i);
         }
         return null;
     }
 
     /**
-     * Takes a piece from the box to place on the board.
-     * @param id of the piece to play.
+     * Returns a piece given its id.
+     * @param id
      * @return
      */
-    public Piece takePieceFromTheBox(int id){
-        //Get piece
-        Piece t = getPieceById(id);
-        //Add piece to piecesInGame
-        getPiecesInGame().add(t);
-        //Delete piece from the box
-        getPiecesInTheBox().remove(t);
-        return t;
+    public Piece inspectPieceByIdFromBox(int id){
+        for(int i=0;i<this.pieces.size();i++){
+            if(this.pieces.get(i).getId()==id && !this.pieces.get(i).isInGame())
+                return this.pieces.get(i);
+        }
+        return null;
     }
 
     /**
@@ -168,33 +143,12 @@ public class Player {
      * @param type
      * @return
      */
-    public Piece takePieceByType(PieceType type){
-        Piece t = new Piece();
-        //Get piece
-        for(int i=0;i<this.piecesInTheBox.size();i++){
-            if(this.piecesInTheBox.get(i).getType().equals(type))
-                t = this.piecesInTheBox.get(i);
+    public Piece inspectPieceByTypeFromBox(PieceType type){
+        for(int i=0;i<this.pieces.size();i++){
+            if(this.pieces.get(i).getType().equals(type) && !this.pieces.get(i).isInGame())
+                return this.pieces.get(i);
         }
-        //Add piece to piecesInGame
-        getPiecesInGame().add(t);
-        //Delete piece from the box
-        getPiecesInTheBox().remove(t);
-        return t;
-    }
-
-    /**
-     * Guess if a piece has been played given its id.
-     * @param id
-     * @return
-     */
-    public Piece inspectPieceInGame(int id){
-        Piece piece = new Piece();
-        for(int i=0;i<this.piecesInGame.size();i++){
-            if(this.piecesInGame.get(i).getId()==id){
-                piece = this.piecesInGame.get(i);
-            }
-        }
-        return piece;
+        return null;
     }
 
     /**
@@ -203,10 +157,34 @@ public class Player {
      * @return
      */
     public boolean isPieceInBox(PieceType type){
-        for(int i=0;i<this.getPiecesInTheBox().size();i++){
-            if(this.getPiecesInTheBox().get(i).getType().equals(type)) return true;
+        for(int i=0;i<this.pieces.size();i++){
+            if(this.pieces.get(i).getType().equals(type) && !this.pieces.get(i).isInGame()) return true;
         }
         return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Piece> getPiecesInGame(){
+        ArrayList<Piece> piecesInGame = new ArrayList<>();
+        for(int i=0; i < getPieces().size();i++){
+            if(getPieces().get(i).isInGame()) piecesInGame.add(getPieces().get(i));
+        }
+        return piecesInGame;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Piece> getPiecesInTheBox(){
+        ArrayList<Piece> piecesInGame = new ArrayList<>();
+        for(int i=0; i < getPieces().size();i++){
+            if(!getPieces().get(i).isInGame()) piecesInGame.add(getPieces().get(i));
+        }
+        return piecesInGame;
     }
 
 }
