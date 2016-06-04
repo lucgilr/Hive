@@ -156,7 +156,7 @@ public class GameController {
      * @param hexagon
      */
     public void playPiece(Piece piece, Hexagon hexagon){
-        model.getHive().addPiece(piece, hexagon, true);
+        model.getHive().addPiece(piece, hexagon);
     }
 
     /**

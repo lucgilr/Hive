@@ -94,7 +94,7 @@ public class AI {
             Piece t = new Piece();
             t = player.inspectPieceByIdFromBox(4);
             this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
-            game.getHive().addPiece(t, hexagon, true);
+            game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Ant (id=8)
@@ -102,7 +102,7 @@ public class AI {
             t = player.inspectPieceByIdFromBox(8);
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
-            game.getHive().addPiece(t, hexagon, true);
+            game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==3){
             //Place Bee (id=0)
             Piece t = new Piece();
@@ -114,7 +114,7 @@ public class AI {
             }
             //first: check if there is already a piece in that gap
             if(!game.getHive().checkIfHexagonTaken(this.hexagon))
-                game.getHive().addPiece(t, this.hexagon, true);
+                game.getHive().addPiece(t, this.hexagon);
             else attackOpponent();
         }
     }
@@ -134,7 +134,7 @@ public class AI {
             Piece t = new Piece();
             t = player.inspectPieceByIdFromBox(0);
             this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
-            game.getHive().addPiece(t, hexagon, true);
+            game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Spider (id=4)
@@ -142,7 +142,7 @@ public class AI {
             t = player.inspectPieceByIdFromBox(4);
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
-            game.getHive().addPiece(t, hexagon, true);
+            game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==3){
             //Place Spider (id=5)
             Piece t = new Piece();
@@ -154,7 +154,7 @@ public class AI {
             }
             //first: check if there is already a piece in that gap
             if(!game.getHive().checkIfHexagonTaken(this.hexagon))
-                game.getHive().addPiece(t, this.hexagon, true);
+                game.getHive().addPiece(t, this.hexagon);
             else{
                 beeStatus();
                 if(!this.move) attackOpponent();
@@ -177,9 +177,18 @@ public class AI {
         }else{
             //Second: If the bee is not blocked --> Get number of neighbours
             int n = game.getHive().numberOfNeighbours(bee.getHexagon());
-            //If the bee has more than 2 neighbours --> Move to a safer place.
-            if(n>2){
-                moveBee(bee);
+            //Get enemy's bee
+            Piece enemy = new Piece();
+            enemy = this.game.getPlayer1().inspectPieceById(0);
+            //If the enemy's bee is in game --> get neighbours
+            int n2=0;
+            if(enemy.isInGame()){ n2 = game.getHive().numberOfNeighbours(enemy.getHexagon());}
+            //If enemy' bee in game
+            if(n2!=0) {
+                //If the bee has more than 2 neighbours and the enemy's bee has less than 4 --> Move to a safer place.
+                if (n > 2 && n2<4) {
+                    moveBee(bee);
+                }
             }
         }
     }
@@ -270,7 +279,7 @@ public class AI {
             //Takes a piece from the box
             newPiece = getPiece();
             //Add piece to the board
-            this.game.getHive().addPiece(newPiece, newPiece.getHexagon(), true);
+            this.game.getHive().addPiece(newPiece, newPiece.getHexagon());
             this.move=true;
         }else{
             //Third: No pieces to add...
@@ -482,7 +491,7 @@ public class AI {
 
         for(int i=0;i<gaps.size();i++){
             //Place piece in that gap
-            this.game.getHive().addPiece(piece, gaps.get(i), true);
+            this.game.getHive().addPiece(piece, gaps.get(i));
             //Get possible moves from that position
             ArrayList<Hexagon> possibleMoves = new ArrayList<>();
             possibleMoves = this.game.getHive().getPossibleHexagons(piece, true);
