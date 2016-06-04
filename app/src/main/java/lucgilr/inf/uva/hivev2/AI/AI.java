@@ -266,7 +266,7 @@ public class AI {
         //Array to store the possible moves
         ArrayList<PieceMoveScore> bestMoves = new ArrayList<>();
         //First: Check if a piece is already in the game can be place in a better position
-        bestMoves = movePieceScores();
+        bestMoves = movePieceScores(true);
         //Evaluate the points of the best move
         if(!bestMoves.isEmpty()){
             PieceMoveScore bestmove = getBetterMove(bestMoves);
@@ -283,8 +283,17 @@ public class AI {
             this.move=true;
         }else{
             //Third: No pieces to add...
-            //If not possible moves either --> next player
             //If the player can move a piece --> move it
+            bestMoves = movePieceScores(false);
+            if(!bestMoves.isEmpty()){
+                PieceMoveScore bestMove = getBetterMove(bestMoves);
+                this.game.getHive().movePiece(bestMove.getPiece(), bestMove.getHexagon(), false);
+                this.move = true;
+            }else {
+                //If not possible moves either --> next player
+                Log.d("NEXT PLAYER!!!","NEXT PLAYER!!!");
+            }
+
         }
 
     }
@@ -295,7 +304,7 @@ public class AI {
      * If the piece can't best its current score --> Do nothing.
      * @return list of possible moves and its score.
      */
-    private ArrayList<PieceMoveScore> movePieceScores(){
+    private ArrayList<PieceMoveScore> movePieceScores(boolean evalCurrent){
         //Array to store the possible moves
         ArrayList<PieceMoveScore> bestMoves = new ArrayList<>();
         boolean pieceBlocking = false;
@@ -327,16 +336,23 @@ public class AI {
                     //Evaluate each move
                     for (int j = 0; j < pieceMoves.size(); j++) {
                         int points = evalPosition(player.getPiecesInGame().get(i), pieceMoves.get(j));
+                        Log.d("POINTS 1",String.valueOf(points));
                         moves.add(new PieceMoveScore(player.getPiecesInGame().get(i), pieceMoves.get(j), points));
                     }
-                    //Check if it's current position is better than the new one
-                    int current = evalPosition(player.getPiecesInGame().get(i),player.getPiecesInGame().get(i).getHexagon());
+                    Log.d("MOVES SIZE",String.valueOf(moves.size()));
                     PieceMoveScore bestMovePiece = getBetterMove(moves);
                     int bestMove = bestMovePiece.getScore();
                     Log.d("PIECE ATTACKING",player.getPiecesInGame().get(i).pieceInfo());
-                    Log.d("CURRENT POSITION: ",String.valueOf(current));
-                    Log.d("NEXT MOVE",bestMovePiece.getInfo());
-                    if(bestMove>current) bestMoves.add(bestMovePiece);
+                    //Log.d("NEXT MOVE",bestMovePiece.getInfo());
+                    Log.d("PIECE",bestMovePiece.getPiece().pieceInfo());
+                    Log.d("MOVE",bestMovePiece.getHexagon().toString());
+                    Log.d("SCORE", String.valueOf(bestMovePiece.getScore()));
+                    //Check if it's current position is better than the new one
+                    if(evalCurrent) {
+                        int current = evalPosition(player.getPiecesInGame().get(i), player.getPiecesInGame().get(i).getHexagon());
+                        Log.d("CURRENT POSITION: ",String.valueOf(current));
+                        if(bestMove>current) bestMoves.add(bestMovePiece);
+                    }
                 }
                 pieceBlocking=false;
             }
@@ -352,6 +368,24 @@ public class AI {
      * @return
      */
     private int evalPosition(Piece toMove,Hexagon hexagon) {
+
+        //Exception #1: If the piece is a bee --> If the next move has more neighbours than the current position --> return -100
+        if(toMove.getType().equals(PieceType.BEE)){
+            int now = this.game.getHive().numberOfNeighbours(toMove.getHexagon());
+            int next = this.game.getHive().numberOfNeighbours(hexagon);
+            if(next>now) return -100;
+        }
+
+        //Exception #1: If the piece is a beetle and its moving on top of a piece of the same color --> return -100
+        if(toMove.getType().equals(PieceType.BEETLE) && hexagon.getD()!=0){
+            if(this.game.getHive().searchPiece(new Hexagon(hexagon.getQ(),hexagon.getR(),hexagon.getD()-1)).getPlayer().getColor().equals("Black")) {
+                Log.d("Moving on top of black","Moving on top of a black!");
+                Log.d("Piece",toMove.pieceInfo());
+                Log.d("Position",hexagon.toString());
+                return -100;
+            }
+        }
+
         //Save current piece position
         Hexagon currentPos = new Hexagon(toMove.getHexagon().getQ(),toMove.getHexagon().getR(),toMove.getHexagon().getD());
         //Move piece to the position to evaluate
@@ -444,28 +478,40 @@ public class AI {
             //Work out the best gap to place the spider
             moves = addPieceScores(piece);
             if(!moves.isEmpty()) this.spider=true;
-        }else if(this.player.getTurn()<=12){
-            //Take beetles or ants
-            int type = getRandomPos(0,1);
+        }else{
+            //First take beetles or ants
+            int type = getRandomPos(0,2);
             if(type==0){
                 //Take beetle
                 if(this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
-                else
+                else if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
-            }else{
+                else if(this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER)!=null)
+                    piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
+            }else if(type==1){
                 //Take ant
                 if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
-                else
+                else if(this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER)!=null)
+                    piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
+                else if (this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
+                    piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
+            }else{
+                //Take grasshopper
+                if(this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER)!=null)
+                    piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
+                else if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
+                    piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
+                else if (this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
                     piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
             }
-            moves = addPieceScores(piece);
-        }else if(this.player.getTurn()>12){
-            //Keep hoppers in reserve for end moves
-            //http://www.gen42.com/images/tipspage1.jpg
-            piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
-            moves = addPieceScores(piece);
+            if(piece.getValue()!=0) moves = addPieceScores(piece);
+            else{
+                //If there aren't any beetles or ants to add --> add grasshoppers
+                piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
+                moves = addPieceScores(piece);
+            }
         }
         if(!moves.isEmpty()){
             //Get better move
@@ -583,7 +629,7 @@ public class AI {
      * @return
      */
     public PieceMoveScore getBetterMove(ArrayList<PieceMoveScore> moves){
-        int max = -100;
+        int max = -1000;
         PieceMoveScore chosenOne = new PieceMoveScore();
         for(int i=0;i<moves.size();i++){
             if(moves.get(i).getScore()>max){

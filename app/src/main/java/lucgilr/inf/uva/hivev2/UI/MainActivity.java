@@ -39,7 +39,8 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.main);
 
         mSamples = new Sample[]{new Sample(R.string.game,GameUI.class),
-                                new Sample(R.string.aigame,AIGameUI.class)};
+                                new Sample(R.string.aigame,AIGameUI.class),
+                                new Sample(R.string.dinamicGrid,GameUIDynamicGrid.class)};
 
         setListAdapter(new ArrayAdapter<Sample>(this,
                 android.R.layout.simple_list_item_1,

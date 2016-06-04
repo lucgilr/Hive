@@ -176,6 +176,21 @@ public class GameUI extends AppCompatActivity {
                 gameOver(endgame);
             }
 
+            //PLAYERS TURN
+            Log.d("PLAYER",this.player.getColor());
+
+            //PRINT BOARD
+            Log.d("BOARD PLAYER","BOARD PLAYER");
+            for(int i=0;i<this.game.getHive().getBoard().size();i++)
+                Log.d("piece...", this.game.getHive().getBoard().get(i).pieceInfo());
+
+            //PRINT GAPS AVAILABLE
+            if(!gaps.isEmpty()) {
+                Log.d("GAPS SELECTED", "GAPS SELECTED");
+                for (int i = 0; i < gaps.size(); i++)
+                    Log.d("Gap...", gaps.get(i).toString());
+            }
+
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 

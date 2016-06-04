@@ -12,14 +12,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,8 +30,15 @@ import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.R;
+import pl.polidea.view.ZoomView;
 
-public class AIGameUI extends AppCompatActivity {
+/**
+ * The original code has been modified but it can be found in:
+ * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/ui/MainActivity.java
+ * When a player choose to play a game against other real player
+ * in the same device it will load this Activity.
+ */
+public class GameUIDynamicGrid extends AppCompatActivity {
 
     private Game game;
     private GameController controller;
@@ -45,9 +50,10 @@ public class AIGameUI extends AppCompatActivity {
     private ArrayList<Hexagon> possibleGaps;
     private Piece piece;
     private String displayLanguage;
-    private boolean gameOver;
+    private boolean gameover;
 
     private RelativeLayout mRelativeLayout;
+    private ZoomView zoomView;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
     private static int radius = 7;
@@ -57,6 +63,16 @@ public class AIGameUI extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        //LinearLayout
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
+        //Adding zoom...
+        /*View v = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.game_layout,null,false);
+        v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        zoomView = new ZoomView(this);
+        zoomView.addView(v);
+        mRelativeLayout.addView(zoomView);*/
+
 
         //Center scrolls
         vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
@@ -68,24 +84,16 @@ public class AIGameUI extends AppCompatActivity {
 
             @Override
             public void run() {
-                vScrollView.scrollTo(0, 530);
-                hScrollView.scrollTo(1150, 0);
+                vScrollView.scrollTo(0,530);
+                hScrollView.scrollTo(1150,0);
             }
         }, 100);
 
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
 
-        //Choose which player stars to play
-        Random r = new Random();
-        int p = r.nextInt(((1) + 1) + 0);
-
-        Log.d("P",String.valueOf(p));
-
         //Create new GameUI
-        //game = new Game();
-        game = new Game(p);
-
+        game = new Game();
         controller = new GameController(game,this);
         language = new Language();
 
@@ -93,8 +101,7 @@ public class AIGameUI extends AppCompatActivity {
         possibleGaps = new ArrayList<>();
         gaps = new ArrayList<>();
         piece = new Piece();
-
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
+        this.gameover=false;
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
 
@@ -142,48 +149,46 @@ public class AIGameUI extends AppCompatActivity {
     private Grid setGridNodes(int radius, int scale, Grid.Shape shape) {
         try {
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
+            //final Grid grid = new Grid(radius, scale, shape);
             final Grid grid = new Grid(radius, scale, shape);
 
-            //Check if a bee fully is surrounded
-            int endgame = controller.endGame();
-            if(endgame!=0 && !this.gameOver){
-                //GAME OVER
-                this.gameOver =true;
-                gameOver(endgame);
-            }
-
-            //If the player is black --> AI turn
+            //My stuff
             player = controller.getPlayer();
 
-            if(!this.movingToken && !this.gameOver){
+            if(!this.movingToken){
                 gaps = controller.getPlayerHexagons(player);
                 //If there are not gaps and the bee is not in game
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
-                if(player.getColor().equals("Black")){
-                    if(player.getTurn()==1) controller.initIA(player);
-                    controller.makeAChoice(game);
-                    controller.oneMoreTurn();
-                    controller.oneMoreRound();
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
-                }
             }
 
+            //Check if is Game Over
+            /*if(this.gameover){
+                //Back to main page
+                finish();
+            }*/
 
+            //Check if a bee fully surrounded
+            int endgame = controller.endGame();
+            if(endgame!=0 && !this.gameover){
+                //GAME OVER
+                this.gameover=true;
+                gameOver(endgame);
+            }
 
             //PLAYERS TURN
-            //Log.d("PLAYER",this.player.getColor());
+            Log.d("PLAYER",this.player.getColor());
 
             //PRINT BOARD
-            /*Log.d("BOARD PLAYER","BOARD PLAYER");
+            Log.d("BOARD PLAYER","BOARD PLAYER");
             for(int i=0;i<this.game.getHive().getBoard().size();i++)
-                Log.d("piece...", this.game.getHive().getBoard().get(i).pieceInfo());*/
+                Log.d("piece...", this.game.getHive().getBoard().get(i).pieceInfo());
 
             //PRINT GAPS AVAILABLE
-            /*if(!gaps.isEmpty()) {
+            if(!gaps.isEmpty()) {
                 Log.d("GAPS SELECTED", "GAPS SELECTED");
                 for (int i = 0; i < gaps.size(); i++)
                     Log.d("Gap...", gaps.get(i).toString());
-            }*/
+            }
 
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
@@ -209,7 +214,7 @@ public class AIGameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_SCROLL:
                             break;
                         case MotionEvent.ACTION_UP:
-                            if(!isGameOver()) {
+                            if(!isGameover()) {
                                 v.setSelected(false);
                                 CircleImageView view = (CircleImageView) v;
                                 OnGridHexClick(view.getHex());
@@ -300,7 +305,7 @@ public class AIGameUI extends AppCompatActivity {
 
                 }
 
-                if(!this.gameOver) {
+                if(!this.gameover) {
                     if (checkIfGapAvailable(view.getHex(), gaps)) {
                         view.setBackgroundResource(R.drawable.greyhex);
                     }
@@ -314,10 +319,80 @@ public class AIGameUI extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            Toast.makeText(AIGameUI.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
+            Toast.makeText(GameUIDynamicGrid.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void firstPlayer(){
+        String player = controller.getPlayer().getColor();
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.playerTurn);
+        if(player.equals("Black"))
+            alert.setMessage(R.string.blackStarts);
+        else
+            alert.setMessage(R.string.whiteStarts);
+        alert.setCancelable(true);
+
+        final AlertDialog dlg = alert.create();
+        dlg.show();
+
+        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dlg.dismiss();
+                t.cancel();
+            }
+        },4000); //Shows message for 4 seconds
+    }
+
+    private void gameOver(int player){
+        gaps=null;
+        if(player==1){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.whitePlayer);
+            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
+            });
+            alert.create();
+            alert.show();
+        }else if(player==2){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.blackPlayer);
+            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
+            });
+            alert.create();
+            alert.show();
+        }else if(player==3){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.bothPlayers);
+            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                }
+            });
+            alert.create();
+            alert.show();
+        }
+    }
+
+    private boolean checkIfGapAvailable(Hexagon hexagon, ArrayList<Hexagon> gaps) {
+        for(int i=0;i<gaps.size();i++){
+            if(hexagon.getQ()==gaps.get(i).getQ() && hexagon.getR()==gaps.get(i).getR()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addViewToLayout(View view, Hexagon hexagon, Grid grid) {
@@ -359,45 +434,8 @@ public class AIGameUI extends AppCompatActivity {
         alert.show();
     }
 
-    private void gameOver(int player){
-        gaps=null;
-        if(player==1){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.whitePlayer);
-            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //
-                }
-            });
-            alert.create();
-            alert.show();
-        }else if(player==2){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.blackPlayer);
-            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //
-                }
-            });
-            alert.create();
-            alert.show();
-        }else if(player==3){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.bothPlayers);
-            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //
-                }
-            });
-            alert.create();
-            alert.show();
-        }
-    }
-
     private void OnGridHexClick(final Hexagon hexagon) {
+        //Toast.makeText(GameUI.this, "OnGridHexClick: " + hexagon, Toast.LENGTH_SHORT).show();
 
         if(this.movingToken && checkIfGapAvailable(hexagon, gaps)){
             Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
@@ -442,11 +480,10 @@ public class AIGameUI extends AppCompatActivity {
                         piece = new Piece();
                         PieceType bug = language.stringToPieceType(t.get(which));
                         piece = controller.takePieceByType(bug);
-                        Hexagon hex = getRealCoords(hexagon.getR(), hexagon.getQ());
-                        controller.playPiece(piece, hex);
+                        Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
+                        controller.playPiece(piece, coords);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
-
                         initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                     }
                 });
@@ -456,28 +493,19 @@ public class AIGameUI extends AppCompatActivity {
         }else if(tokenTouched(hexagon)){
             piece = new Piece();
             piece = getTokenFromBoard(hexagon);
-            //If the piece touched is one of yours
-                possibleGaps = controller.getPossibleMoves(piece);
-                if (!possibleGaps.isEmpty()) {
-                    movingToken = true;
-                    this.gaps = new ArrayList<>(possibleGaps);
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
-                }
+            possibleGaps = controller.getPossibleMoves(piece);
+            if (!possibleGaps.isEmpty()) {
+                movingToken = true;
+                this.gaps = new ArrayList<>(possibleGaps);
+                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+            }
         }else if(!checkIfGapAvailable(hexagon, gaps)) {
             this.gaps = controller.getPlayerHexagons(player);
+            //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
             initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
 
-    }
-
-    private boolean checkIfGapAvailable(Hexagon hexagon, ArrayList<Hexagon> gaps) {
-        for(int i=0;i<gaps.size();i++){
-            if(hexagon.toString2D().equals(gaps.get(i).toString2D())){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -488,7 +516,8 @@ public class AIGameUI extends AppCompatActivity {
     private Piece getTokenFromBoard(Hexagon hexagon){
         ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
-            if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
+            if(board.get(i).getHexagon().getR()== hexagon.getR()
+                    && board.get(i).getHexagon().getQ()== hexagon.getQ()
                     && !board.get(i).isBeetle())
             return board.get(i);
         }
@@ -516,7 +545,8 @@ public class AIGameUI extends AppCompatActivity {
     private boolean tokenTouched(Hexagon hexagon){
         ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
-            if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
+            if(board.get(i).getHexagon().getR()== hexagon.getR()
+                    && board.get(i).getHexagon().getQ()== hexagon.getQ()
                     && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor())
                     && !board.get(i).isBeetle())
                 return true;
@@ -524,31 +554,8 @@ public class AIGameUI extends AppCompatActivity {
         return false;
     }
 
-    private void firstPlayer(){
-        String player = controller.getPlayer().getColor();
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(R.string.playerTurn);
-        if(player.equals("Black"))
-            alert.setMessage(R.string.blackStarts);
-        else
-            alert.setMessage(R.string.whiteStarts);
-        alert.setCancelable(true);
-
-        final AlertDialog dlg = alert.create();
-        dlg.show();
-
-        final Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dlg.dismiss();
-                t.cancel();
-            }
-        },4000); //Shows message for 4 seconds
-    }
-
-    private boolean isGameOver(){
-        return this.gameOver;
+    private boolean isGameover(){
+        return this.gameover;
     }
 
 }

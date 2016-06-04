@@ -16,6 +16,7 @@ public class Game {
     private Hive hive;
     private int round;
     private boolean end;
+    private int start;
 
     public Game(){
         player1 = new Player("White");
@@ -23,6 +24,15 @@ public class Game {
         hive = new Hive();
         round = 1;
         end = false;
+    }
+
+    public Game(int start){
+        player1 = new Player("White");
+        player2 = new Player("Black");
+        hive = new Hive();
+        round = 1;
+        end = false;
+        this.start=start;
     }
 
     /**
@@ -100,6 +110,14 @@ public class Game {
         this.end = end;
     }
 
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
     /**
      * Increments a round
      */
@@ -109,10 +127,17 @@ public class Game {
      * @return player who has the turn to play.
      */
     public Player playerTurn(){
-        if(this.round%2==0)
-            return getPlayer2();
-        else
-            return getPlayer1();
+        if(start==0) {
+            if (this.round % 2 == 0)
+                return getPlayer2();
+            else
+                return getPlayer1();
+        }else{
+            if (this.round % 2 == 0)
+                return getPlayer1();
+            else
+                return getPlayer2();
+        }
     }
 
     /**

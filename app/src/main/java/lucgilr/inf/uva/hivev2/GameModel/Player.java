@@ -91,7 +91,7 @@ public class Player {
      * @return all possible pieces to the player
      */
     private ArrayList<Piece> setPieces() {
-        this.pieces.add(new Piece(PieceType.BEE, 0, this, 20));
+        this.pieces.add(new Piece(PieceType.BEE, 0, this, 30));
         this.pieces.add(new Piece(PieceType.GRASSHOPPER,1,this,2));
         this.pieces.add(new Piece(PieceType.GRASSHOPPER,2,this,2));
         this.pieces.add(new Piece(PieceType.GRASSHOPPER,3,this,2));

@@ -13,4 +13,5 @@
     <string name="playerTurn">Players turn</string>
     <string name="blackStarts">Black player starts to play</string>
     <string name="whiteStarts">White player starts to play</string>
+    <string name="dinamicGrid">Dinamic Grid</string>
 </resources>
