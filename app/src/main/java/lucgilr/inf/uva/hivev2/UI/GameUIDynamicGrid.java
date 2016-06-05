@@ -152,7 +152,9 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         // Calculate the scale: the radius of single node.
         //int scale = (int) (displayWidth / ((2*radius + 1) * (Math.sqrt(1))));
         //int scale = (int) (displayWidth / ((6*radius + 1) * (Math.sqrt(1))));
-        int scale = (int) (displayWidth / ((zoom *radius + 1) * (Math.sqrt(1))));
+        //int scale = (int) (displayWidth / ((zoom *radius + 1) * (Math.sqrt(1))));
+        int scale = 100;
+        Log.d("SCALE",String.valueOf(scale));
 
         // Changes the height and width of the grid to the specified *pixels*
         params.width = Grid.getGridWidth(radius, scale, shape);
