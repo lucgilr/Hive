@@ -142,7 +142,8 @@ public class AIGameUI extends AppCompatActivity {
     private Grid setGridNodes(int radius, int scale, Grid.Shape shape) {
         try {
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
-            final Grid grid = new Grid(radius, scale, shape);
+            //QUITAR LISTAS!!!!!!!!!!
+            final Grid grid = new Grid(radius, scale, shape,gaps,this.game.getHive().getBoard());
 
             //Check if a bee fully is surrounded
             int endgame = controller.endGame();

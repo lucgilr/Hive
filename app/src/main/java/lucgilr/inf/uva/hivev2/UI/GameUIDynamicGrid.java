@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -51,12 +52,16 @@ public class GameUIDynamicGrid extends AppCompatActivity {
     private Piece piece;
     private String displayLanguage;
     private boolean gameover;
+    private ArrayList<Hexagon> gridBoard;
 
     private RelativeLayout mRelativeLayout;
+    private LinearLayout linearLayout;
+    private View view;
     private ZoomView zoomView;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
-    private static int radius = 7;
+    private int radius;
+    private int zoom;
 
 
     @Override
@@ -65,6 +70,11 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         setContentView(R.layout.game_layout);
 
         //LinearLayout
+        linearLayout = (LinearLayout) findViewById(R.id.container_layout);
+        //View
+        view = (View) findViewById(R.id.centerLayout);
+
+        //RelativeLayout
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
         //Adding zoom...
         /*View v = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.game_layout,null,false);
@@ -102,22 +112,26 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         gaps = new ArrayList<>();
         piece = new Piece();
         this.gameover=false;
+        this.gridBoard = new ArrayList<>();
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
 
         //Show dialog --> first player
         firstPlayer();
 
-        initGridView(radius, shape);
+        //Init radius
+        this.radius=1;
+        this.zoom=6;
+        Log.d("INIT GRID","INIT GRID");
+        initGridView(radius, shape,zoom);
     }
 
-    private void initGridView(int radius, Grid.Shape shape) {
-        int scale = setGridDimensions(radius, shape);
+    private void initGridView(int radius, Grid.Shape shape, int zoom) {
+        int scale = setGridDimensions(radius, shape, zoom);
         Grid grid = setGridNodes(radius, scale, shape);
-
     }
 
-    private int setGridDimensions(int radius, Grid.Shape shape) {
+    private int setGridDimensions(int radius, Grid.Shape shape, int zoom) {
         // Gets the layout params that will allow to resize the layout
         ViewGroup.LayoutParams params = mRelativeLayout.getLayoutParams();
 
@@ -137,7 +151,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
 
         // Calculate the scale: the radius of single node.
         //int scale = (int) (displayWidth / ((2*radius + 1) * (Math.sqrt(1))));
-        int scale = (int) (displayWidth / ((1*radius + 1) * (Math.sqrt(1))));
+        //int scale = (int) (displayWidth / ((6*radius + 1) * (Math.sqrt(1))));
+        int scale = (int) (displayWidth / ((zoom *radius + 1) * (Math.sqrt(1))));
 
         // Changes the height and width of the grid to the specified *pixels*
         params.width = Grid.getGridWidth(radius, scale, shape);
@@ -146,11 +161,64 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         return scale;
     }
 
+    private void setBoard(){
+
+        //My stuff
+        player = controller.getPlayer();
+
+        if(!this.movingToken){
+            gaps = controller.getPlayerHexagons(player);
+            //If there are not gaps and the bee is not in game
+            if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
+        }
+
+        //Check if Gaps in board
+        boolean hex=true;
+        for(int i=0; i<gaps.size();i++){
+            if(isInBoard(gaps.get(i))){
+                Log.d("OK",gaps.get(i).toString());
+            }else{
+                Log.d("NOT OK",gaps.get(i).toString());
+                hex=false;
+                break;
+            }
+        }
+
+        //PLAYERS TURN
+        //Log.d("PLAYER",this.player.getColor());
+
+        //PRINT BOARD
+        //Log.d("BOARD PLAYER","BOARD PLAYER");
+        /*for(int i=0;i<this.game.getHive().getBoard().size();i++)
+            Log.d("piece...", this.game.getHive().getBoard().get(i).pieceInfo());*/
+
+        //PRINT GAPS AVAILABLE
+        /*if(!gaps.isEmpty()) {
+            Log.d("GAPS SELECTED", "GAPS SELECTED");
+            for (int i = 0; i < gaps.size(); i++)
+                Log.d("Gap...", gaps.get(i).toString());
+        }*/
+
+        if(!hex){
+            radius+=1;
+            if(this.zoom!=2) this.zoom-=2;
+            Log.d("INIT GRID","INIT GRID");
+            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP, zoom);
+        }else {
+            Log.d("INIT GRID","INIT GRID");
+            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
+        }
+
+    }
+
     private Grid setGridNodes(int radius, int scale, Grid.Shape shape) {
         try {
+            //Clear View
+            this.mRelativeLayout.removeAllViewsInLayout();
+            this.mRelativeLayout.scrollTo(-700,-100);
+
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
             //final Grid grid = new Grid(radius, scale, shape);
-            final Grid grid = new Grid(radius, scale, shape);
 
             //My stuff
             player = controller.getPlayer();
@@ -161,11 +229,7 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
 
-            //Check if is Game Over
-            /*if(this.gameover){
-                //Back to main page
-                finish();
-            }*/
+            final Grid grid = new Grid(radius, scale, shape, gaps,this.game.getHive().getBoard());
 
             //Check if a bee fully surrounded
             int endgame = controller.endGame();
@@ -173,21 +237,6 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                 //GAME OVER
                 this.gameover=true;
                 gameOver(endgame);
-            }
-
-            //PLAYERS TURN
-            Log.d("PLAYER",this.player.getColor());
-
-            //PRINT BOARD
-            Log.d("BOARD PLAYER","BOARD PLAYER");
-            for(int i=0;i<this.game.getHive().getBoard().size();i++)
-                Log.d("piece...", this.game.getHive().getBoard().get(i).pieceInfo());
-
-            //PRINT GAPS AVAILABLE
-            if(!gaps.isEmpty()) {
-                Log.d("GAPS SELECTED", "GAPS SELECTED");
-                for (int i = 0; i < gaps.size(); i++)
-                    Log.d("Gap...", gaps.get(i).toString());
             }
 
             //Gird node listener restricted to the node's circular area.
@@ -307,6 +356,7 @@ public class GameUIDynamicGrid extends AppCompatActivity {
 
                 if(!this.gameover) {
                     if (checkIfGapAvailable(view.getHex(), gaps)) {
+                        Log.d("PAINTING",view.getHex().toString());
                         view.setBackgroundResource(R.drawable.greyhex);
                     }
                 }
@@ -356,7 +406,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                    Log.d("INIT GRID","INIT GRID");
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
                 }
             });
             alert.create();
@@ -367,7 +418,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                    Log.d("INIT GRID","INIT GRID");
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
                 }
             });
             alert.create();
@@ -378,7 +430,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                    Log.d("INIT GRID","INIT GRID");
+                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
                 }
             });
             alert.create();
@@ -427,7 +480,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 game.oneMoreRound();
                 player.oneMoreTurn();
-                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                Log.d("INIT GRID", "INIT GRID");
+                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
             }
         });
         alert.create();
@@ -443,7 +497,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingToken=false;
-            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+            setBoard();
+            //initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
         else if(!this.movingToken && checkIfGapAvailable(hexagon, gaps)) {
             ArrayList<Piece> pieces = controller.getPiecesFromBox();
@@ -484,7 +539,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                         controller.playPiece(piece, coords);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
-                        initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                        setBoard();
+                        //initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
                     }
                 });
                 alert.create();
@@ -497,13 +553,14 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             if (!possibleGaps.isEmpty()) {
                 movingToken = true;
                 this.gaps = new ArrayList<>(possibleGaps);
-                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                setBoard();
+                //initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
             }
         }else if(!checkIfGapAvailable(hexagon, gaps)) {
             this.gaps = controller.getPlayerHexagons(player);
-            //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
-            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+            setBoard();
+            //initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
         }
 
     }
@@ -556,6 +613,12 @@ public class GameUIDynamicGrid extends AppCompatActivity {
 
     private boolean isGameover(){
         return this.gameover;
+    }
+
+    public boolean isInBoard(Hexagon hex){
+        for(int i=0;i<this.gridBoard.size();i++)
+            if(this.gridBoard.get(i).toString().equals(hex.toString())) return true;
+        return false;
     }
 
 }

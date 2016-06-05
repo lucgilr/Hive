@@ -151,7 +151,8 @@ public class GameUI extends AppCompatActivity {
         try {
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
             //final Grid grid = new Grid(radius, scale, shape);
-            final Grid grid = new Grid(radius, scale, shape);
+            //QUITAR LISTASSSSS!!!!
+            final Grid grid = new Grid(radius, scale, shape,gaps,this.game.getHive().getBoard());
 
             //My stuff
             player = controller.getPlayer();

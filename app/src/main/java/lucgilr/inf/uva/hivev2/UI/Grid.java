@@ -1,9 +1,13 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.graphics.Point;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
+import lucgilr.inf.uva.hivev2.GameModel.Piece;
 
 /**
  * @author Narek (https://github.com/starwheel)
@@ -19,6 +23,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
  * A grid of hex nodes with axial coordinates.
  */
 public class Grid {
+
     public enum Shape {
         RECTANGLE,
         HEXAGON_POINTY_TOP
@@ -36,13 +41,16 @@ public class Grid {
 
     public Cube[] nodes;
 
+    //Added by Lucía Gil --> ArrayList of Hex generated
+    ArrayList<Hexagon> board;
+
     /**
      * Construing a Grid with a set of cubes, scale, and shape
      * @param radius The count of rings around the central node
      * @param scale The radius of the hexagon in pixels
      * @param shape The shape of the hexagon
      */
-    public Grid(int radius, int scale, Shape shape) {
+    public Grid(int radius, int scale, Shape shape, ArrayList<Hexagon> gaps, ArrayList<Piece> board) {
         this.radius = radius;
         this.scale = scale;
         this.shape = shape;
@@ -53,15 +61,32 @@ public class Grid {
         centerOffsetX = width/2;
         centerOffsetY = height/2;
 
+        //Init ArrayList
+        this.board = new ArrayList<>();
+
         //Init nodes
         switch (shape) {
             case HEXAGON_POINTY_TOP:
-                generateHexagonalShape(radius);
+                generateHexagonalShape(radius,gaps,board);
                 break;
             case RECTANGLE:
                 generateRectangleShape(radius);
                 break;
         }
+    }
+
+    public ArrayList<Hexagon> getBoard() {
+        return board;
+    }
+
+    public void setBoard(ArrayList<Hexagon> board) {
+        this.board = board;
+    }
+
+    public boolean isInBoard(Hexagon hex){
+        for(int i=0;i<getBoard().size();i++)
+            if(getBoard().get(i).toString().equals(hex.toString())) return true;
+        return false;
     }
 
     public Point hexToPixel(Hexagon hexagon) {
@@ -92,18 +117,37 @@ public class Grid {
         //TODO RECTANGLE
     }
 
-    private void generateHexagonalShape(int radius) throws ArrayIndexOutOfBoundsException {
-        nodes = new Cube[getNumberOfNodesInGrid(radius, shape)];
+    private void generateHexagonalShape(int radius, ArrayList<Hexagon> gaps, ArrayList<Piece> board) throws ArrayIndexOutOfBoundsException {
+        //nodes = new Cube[getNumberOfNodesInGrid(radius, shape)];
+        int hex = gaps.size();
+        int pieces = board.size();
+        nodes = new Cube[hex+pieces];
         int i = 0;
 
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
                 int z = -x-y;
                 if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
-                    nodes[i++] = new Cube(x, y, z);
+                    if(isInWhatever(gaps,new Cube(x,y,z)) || isInWhatever2(board,new Cube(x,y,z)))
+                        nodes[i++] = new Cube(x, y, z);
+                    this.board.add(new Cube(x,y,z).toHex());
                 }
             }
         }
+    }
+
+    private boolean isInWhatever(ArrayList<Hexagon> gaps, Cube cube){
+        for(int i=0;i<gaps.size();i++){
+            if(gaps.get(i).toString().equals(cube.toHex().toString())) return true;
+        }
+        return false;
+    }
+
+    private boolean isInWhatever2(ArrayList<Piece> gaps, Cube cube){
+        for(int i=0;i<gaps.size();i++){
+            if(gaps.get(i).getHexagon().toString().equals(cube.toHex().toString())) return true;
+        }
+        return false;
     }
 
     private void generateRectangleShape(int radius) {
