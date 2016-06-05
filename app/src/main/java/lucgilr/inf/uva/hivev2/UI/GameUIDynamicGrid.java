@@ -55,6 +55,7 @@ public class GameUIDynamicGrid extends AppCompatActivity {
     private ArrayList<Hexagon> gridBoard;
 
     private RelativeLayout mRelativeLayout;
+    private RelativeLayout mainLayout;
     private LinearLayout linearLayout;
     private View view;
     private ZoomView zoomView;
@@ -73,6 +74,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.container_layout);
         //View
         view = (View) findViewById(R.id.centerLayout);
+        //
+        mainLayout = (RelativeLayout) findViewById(R.id.main_Layout);
 
         //RelativeLayout
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
@@ -217,7 +220,16 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         try {
             //Clear View
             this.mRelativeLayout.removeAllViewsInLayout();
-            this.mRelativeLayout.scrollTo(-700,-100);
+            Log.d("RADIUS", String.valueOf(this.radius));
+            int height = mRelativeLayout.getMeasuredHeight();
+            Log.d("HEIGHT",String.valueOf(height));
+            int width = mRelativeLayout.getMeasuredWidth();
+            Log.d("WIDTH",String.valueOf(width));
+            this.mRelativeLayout.removeAllViews();
+            if(radius==1) this.mRelativeLayout.scrollTo(-650,-300);
+            if(radius==2) this.mRelativeLayout.scrollTo(-800,-400);
+            if(radius==3) this.mRelativeLayout.scrollTo(-1000,-600);
+            //ADD CENTER SCROLLS!!!
 
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
             //final Grid grid = new Grid(radius, scale, shape);
@@ -453,6 +465,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
     private void addViewToLayout(View view, Hexagon hexagon, Grid grid) {
         //Add to view
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(grid.width, grid.height);
+        Log.d("GRID WIDTH",String.valueOf(grid.width));
+        Log.d("GRID HEIGHT",String.valueOf(grid.height));
         params.addRule(RelativeLayout.RIGHT_OF, R.id.centerLayout);
         params.addRule(RelativeLayout.BELOW, R.id.centerLayout);
         mRelativeLayout.addView(view, params);
