@@ -4,6 +4,10 @@ import android.graphics.Point;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
@@ -43,6 +47,37 @@ public class Grid {
 
     //Added by Lucía Gil --> ArrayList of Hex generated
     ArrayList<Hexagon> board;
+
+    /**
+     * Construing a Grid with a set of cubes, scale, and shape
+     * @param radius The count of rings around the central node
+     * @param scale The radius of the hexagon in pixels
+     * @param shape The shape of the hexagon
+     */
+    public Grid(int radius, int scale, Shape shape) {
+        this.radius = radius;
+        this.scale = scale;
+        this.shape = shape;
+
+        //Init derived node properties
+        width = (int) (Math.sqrt(3) * scale);
+        height = 2 * scale;
+        centerOffsetX = width/2;
+        centerOffsetY = height/2;
+
+        //Init ArrayList
+        this.board = new ArrayList<>();
+
+        //Init nodes
+        switch (shape) {
+            case HEXAGON_POINTY_TOP:
+                generateHexagonalShape(radius);
+                break;
+            case RECTANGLE:
+                generateRectangleShape(radius);
+                break;
+        }
+    }
 
     /**
      * Construing a Grid with a set of cubes, scale, and shape
@@ -117,11 +152,32 @@ public class Grid {
         //TODO RECTANGLE
     }
 
+    private void generateHexagonalShape(int radius) throws ArrayIndexOutOfBoundsException {
+        nodes = new Cube[getNumberOfNodesInGrid(radius, shape)];
+        int i = 0;
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                int z = -x-y;
+                if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
+                        nodes[i++] = new Cube(x, y, z);
+                }
+            }
+        }
+    }
+
     private void generateHexagonalShape(int radius, ArrayList<Hexagon> gaps, ArrayList<Piece> board) throws ArrayIndexOutOfBoundsException {
         //nodes = new Cube[getNumberOfNodesInGrid(radius, shape)];
+
         int hex = gaps.size();
         int pieces = board.size();
-        nodes = new Cube[hex+pieces];
+        //Log.d("GAPS SIZE",String.valueOf(gaps.size()));
+        //Log.d("BOARD SIZE",String.valueOf(board.size()));
+        int size = getNodesSize(gaps,board);
+        //Log.d("SIZE",String.valueOf(size));
+
+        //nodes = new Cube[hex+pieces];
+        nodes = new Cube[size+board.size()];
         int i = 0;
 
         for (int x = -radius; x <= radius; x++) {
@@ -134,6 +190,44 @@ public class Grid {
                 }
             }
         }
+    }
+
+    private int getNodesSize(ArrayList<Hexagon> gaps,ArrayList<Piece> board){
+        int size = 0;
+        /*ArrayList<Hexagon> newBoard = new ArrayList<>();
+        for(int i=0;i<board.size();i++)
+            newBoard.add(board.get(i).getHexagon());
+
+        Set<Hexagon> newList = new HashSet<>(gaps);
+        for(Hexagon gap : newBoard){
+            if(newList.contains(gap)){
+                size+=1;
+            }
+        }*/
+
+        //Log.d("GAPS SIZE",String.valueOf(gaps.size()));
+        //Log.d("BOARD SIZE",String.valueOf(board.size()));
+
+        boolean repeated = false;
+        for(int i=0;i<gaps.size();i++){
+            //Log.d("CHECKING GAP",gaps.get(i).toString2D());
+            for(int j=0;j<board.size();j++){
+                //Log.d("CHECKING BOARD",board.get(j).getHexagon().toString2D());
+                if(gaps.get(i).toString2D().equals(board.get(j).getHexagon().toString2D())){
+                    //Log.d("REPEATED",gaps.get(i).toString2D());
+                    repeated=true;
+                    break;
+                }
+            }
+            //Log.d("BOOLEAN",String.valueOf(repeated));
+            if(!repeated){
+                size +=1;
+                //Log.d("SIZE VALUE",String.valueOf(size));
+            }
+            repeated = false;
+            //Log.d("BOOLEAN",String.valueOf(repeated));
+        }
+        return size;
     }
 
     private boolean isInWhatever(ArrayList<Hexagon> gaps, Cube cube){

@@ -79,14 +79,25 @@ public class GameUI extends AppCompatActivity {
         vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
         hScrollView = (HorizontalScrollView)findViewById(R.id.horizontal_scroll);
 
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        Log.d("X SCREEN",String.valueOf(size.x));
+        Log.d("Y SCREEN",String.valueOf(size.y));
+        final int x = size.x;
+        final int y = size.y;
+
         Handler h = new Handler();
 
         h.postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                vScrollView.scrollTo(0,530);
-                hScrollView.scrollTo(1150,0);
+                vScrollView.scrollTo(0,y-270);
+                hScrollView.scrollTo(x-130,0);
+                //vScrollView.scrollTo(0,530);
+                //hScrollView.scrollTo(1150,0);
             }
         }, 100);
 
@@ -152,7 +163,7 @@ public class GameUI extends AppCompatActivity {
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
             //final Grid grid = new Grid(radius, scale, shape);
             //QUITAR LISTASSSSS!!!!
-            final Grid grid = new Grid(radius, scale, shape,gaps,this.game.getHive().getBoard());
+            final Grid grid = new Grid(radius, scale, shape);
 
             //My stuff
             player = controller.getPlayer();
