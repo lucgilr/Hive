@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">HiveV2</string>
-    <string name="game">Game</string>
-    <string name="aigame">AI Game</string>
+    <string name="app_name" translatable="false">UVaHive</string>
+    <string name="game">Player VS Player</string>
+    <string name="aigame">Player VS Machine</string>
     <string name="howto">How to Play</string>
     <string name="bee">Bee</string>
     <string name="beetle">Beetle</string>
@@ -38,5 +38,32 @@
     <string name="paragraph_6">"La abeja de la imagen sólo puede desplazarse a los dos huecos sombreados.\n\n"
                                 "MOVIMIENTOS DEL ESCARABAJO\n\n"
                                 "El escarabajo, al igual que la abeja reina, sólo puede desplazarse un espacio por turno, la única diferencia es que esta puede subirse encima de otras fichas bloqueando así su movimiento. Por lo tanto el escarabajo podrá desplazarse tanto rodeando la colmena como por encima de ella y llegando incluso a huecos que estén completamente rodeados por otras fichas. La única forma de bloquear un escarabajo es poniendo otro encima (No hay límite de colocación de escarabajos unos encima de otros, el único límite lo pone el número de escarabajos que pueden estar en juego, 4). A la hora de colocar una ficha en juego si un escarabajo está encima de otra ficha prevalecerá el color del escarabajo.\n"</string>
-    
+    <string name="paragraph_7">Imagen 1.</string>
+    <string name="paragraph_8">"Imagen 2.\n"
+                                "En la imagen 1 podemos observar la situación actual del juego siendo el turno del jugador blanco. En la imagen 2 se pueden ver sombreados los huecos en los que puede colocarse el escarabajo, tanto deslizándose al lado de una ficha como situándose encima suyo.\n\n"
+                                "MOVIMIENTOS DEL SALTAMONTES\n\n"
+                                "Los saltamontes se desplazan únicamente saltando por encima de otras fichas y en cualquier dirección, dándole la ventaja de llegar a huecos totalmente rodeados, al igual que al escarabajo. No podrán saltar sobre espacios vacíos.\n"</string>
+    <string name="paragraph_9">"El saltamontes solo podrá desplazarse a una de las dos zonas sombreadas, por encima de las abejas o por encima de la araña.\n\n"
+                                "MOVIMIENTOS DE LA ARAÑA\n\n"
+                                "Las arañas puede desplazarse exactamente 3 posiciones, no podrán desplazarse ni más ni menos, en el mismo sentido y sin poder retroceder.\n\n"</string>
+    <string name="paragraph_10">"La araña podrá desplazarse a cualquiera de los dos huecos sombreados, pues están exactamente a tres huecos de distancia.\n\n"
+                                "MOVIMIENTOS DE LA HORMIGA\n\n"
+                                "La hormiga es, después de la abeja, la ficha más valiosa del juego pues puede desplazarse rodeando la colmena a cualquier posición.\n"</string>
+    <string name="paragraph_11">"La hormiga puede desplazarse en cualquiera de los huecos grises de la imagen.\n\n"
+                                "RESTRICCIONES\n"
+                                "REGLA DE UNA COLMENA\n\n"
+                                "Las fichas del juego deberán estar conectadas entre sí en todo momento, no se podrá mover una ficha que provoque la ruptura de la colmena.\n"</string>
+    <string name="paragraph_12">"Si intentamos mover cualquiera de las dos abejas de la imagen romperíamos la colmena, sin embargo, no pasaría lo mismo si movemos el saltamontes o la araña.\n\n"
+                                "LIBERTAD DE MOVIMIENTO\n\n"
+                                "Todos los insectos, salvo los saltamontes, deberán desplazarse deslizándose, es decir, si una ficha está rodeada de tal forma que no podría moverse sin deslizarse o quiere ir a una posición a la que no puede acceder sin deslizarse, dicha ficha no podrá moverse y/o acceder a esa posición.\n"</string>
+    <string name="paragraph_13">"En esta imagen la abeja no puede desplazarse, al intentar hacerlo desplazaría físicamente el resto de fichas."</string>
+    <string name="paragraph_14">"Sin embargo en esta otra la hormiga negra puede desplazarse a todos los hexágonos sombrados menos al verde del centro pues no podría desplazarse hacia el.\n\n"
+                                "NO SE PUEDE MOVER O COLOCAR\n\n"
+                                "Cuando un jugador no puede ni colocar una ficha (porque ya tiene todas en juego o no puede colocarla de modo que no toque fichas del enemigo) ni mover una que tenga en juego pierde su turno. El juego continúa de esta forma hasta que el jugador pueda realizar una acción o una abeja quede completamente rodeada.\n"
+                                "FINAL DEL JUEGO\n\n"
+                                "El juego termina cuando una de las dos abejas queda rodeada por completo independientemente del color de las fichas que la rodean. el jugador cuya abeja queda completamente rodeada pierde la partida.\n"
+                                "Empate: Se puede producir de dos formas:\n"
+                                "Cuando se coloca una ficha que provoca que las dos abejas queden a la vez completamente rodeadas por otras fichas.\n"
+                                "Cuando los dos jugadores llegan al punto en que sólo mueven dos piezas para pasar de turno sin afectar al desarrollo del juego.\n"</string>
+    <string name="paragraph_15">COMO MOVER LAS FICHAS!!!!!! O PONERLO EN ALGUNO ANTERIOR???</string>
 </resources>

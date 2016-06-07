@@ -42,6 +42,36 @@ public class HowToPlay extends AppCompatActivity {
         TextView fourth_paragraph = (TextView) this.findViewById(R.id.fourth_paragraph);
         fourth_paragraph.setText(R.string.paragraph_4);
 
+        TextView fifth_paragraph = (TextView) this.findViewById(R.id.fifth_paragraph);
+        fifth_paragraph.setText(R.string.paragraph_5);
+
+        TextView sixth_paragraph = (TextView) this.findViewById(R.id.sixth_paragraph);
+        sixth_paragraph.setText(R.string.paragraph_6);
+
+        TextView seventh_paragraph = (TextView) this.findViewById(R.id.seventh_paragraph);
+        seventh_paragraph.setText(R.string.paragraph_7);
+
+        TextView eighth_paragraph = (TextView) this.findViewById(R.id.eighth_paragraph);
+        eighth_paragraph.setText(R.string.paragraph_8);
+
+        TextView ninth_paragraph = (TextView) this.findViewById(R.id.ninth_paragraph);
+        ninth_paragraph.setText(R.string.paragraph_9);
+
+        TextView tenth_paragraph = (TextView) this.findViewById(R.id.tenth_paragraph);
+        tenth_paragraph.setText(R.string.paragraph_10);
+
+        TextView eleventh_paragraph = (TextView) this.findViewById(R.id.eleventh_paragraph);
+        eleventh_paragraph.setText(R.string.paragraph_11);
+
+        TextView twelfth_paragraph = (TextView) this.findViewById(R.id.twelfth_paragraph);
+        twelfth_paragraph.setText(R.string.paragraph_12);
+
+        TextView thirtieth_paragraph = (TextView) this.findViewById(R.id.thirtieth_paragraph);
+        thirtieth_paragraph.setText(R.string.paragraph_13);
+
+        TextView fourteenth_paragraph = (TextView) this.findViewById(R.id.fourteenth_paragraph);
+        fourteenth_paragraph.setText(R.string.paragraph_14);
+
     }
 
 }

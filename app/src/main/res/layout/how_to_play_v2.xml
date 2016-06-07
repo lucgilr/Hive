@@ -83,6 +83,15 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_4"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/fifth_paragraph"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,6 +100,15 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/sixth_paragraph"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -101,6 +119,15 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_6"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/seventh_paragraph"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,6 +136,15 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_7"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/eighth_paragraph"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -119,6 +155,15 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_8"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/ninth_paragraph"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,6 +172,15 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_9"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/tenth_paragraph"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -137,6 +191,15 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_10"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/eleventh_paragraph"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -145,6 +208,15 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_11"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/twelfth_paragraph"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -155,6 +227,15 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_12"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/thirtieth_paragraph"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,6 +244,15 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/image_13"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20dp"
+            android:id="@+id/fourteenth_paragraph"/>
 
 
 </LinearLayout>
