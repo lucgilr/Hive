@@ -18,9 +18,7 @@
 "Empate: Cuando se coloca una ficha que provoca que las dos abejas queden a la vez completamente rodeadas por otras fichas.\n\n"                       </string>
     <string name="whiteStarts">Empiezan blancas</string>
     <string name="playerTurn">Turno del jugador</string>
-    <string name="paragraph_9">"El saltamontes solo podrá desplazarse a una de las dos zonas sombreadas, por encima de las abejas o por encima de la araña.\n\n"
-"MOVIMIENTOS DE LA ARAÑA\n\n"
-"Las arañas puede desplazarse exactamente 3 posiciones, no podrán desplazarse ni más ni menos, en el mismo sentido y sin poder retroceder.\n\n"</string>
+    <string name="paragraph_9">"El saltamontes solo podrá desplazarse a una de las dos zonas sombreadas, por encima de las abejas o por encima de la araña.\n\n"                                 "MOVIMIENTOS DE LA ARAÑA\n\n"                                 "Las arañas puede desplazarse exactamente 3 posiciones, no podrán desplazarse ni más ni menos, en el mismo sentido y sin poder retroceder.\n\n"</string>
     <string name="paragraph_8">"Imagen 2.\n"
 "En la imagen 1 podemos observar la situación actual del juego siendo el turno del jugador blanco. En la imagen 2 se pueden ver sombreados los huecos en los que puede colocarse el escarabajo, tanto deslizándose al lado de una ficha como situándose encima suyo.\n\n"
 "MOVIMIENTOS DEL SALTAMONTES\n\n"
