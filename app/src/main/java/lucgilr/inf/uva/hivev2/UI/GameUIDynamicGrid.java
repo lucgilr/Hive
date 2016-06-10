@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -381,8 +382,10 @@ public class GameUIDynamicGrid extends AppCompatActivity {
 
     private void firstPlayer(){
         String player = controller.getPlayer().getColor();
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        //AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         alert.setTitle(R.string.playerTurn);
+
         if(player.equals("Black"))
             alert.setMessage(R.string.blackStarts);
         else
