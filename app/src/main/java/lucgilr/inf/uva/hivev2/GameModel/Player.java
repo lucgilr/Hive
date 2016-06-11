@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 /**
- * A player is the person/AI who plays the GameUI.
+ * A player is the person/AI who plays the game.
  * It has assigned a color to distinguish itself from the other player.
  * When a new player is set it receives a box with eleven pieces to play
  * and a turn count that increments every time the player makes a move

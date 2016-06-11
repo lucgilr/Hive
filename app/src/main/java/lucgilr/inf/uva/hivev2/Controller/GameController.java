@@ -11,7 +11,6 @@ import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.UI.AIGameUI;
 import lucgilr.inf.uva.hivev2.UI.GameUI;
-import lucgilr.inf.uva.hivev2.UI.GameUIDynamicGrid;
 
 /**
  * A Controller is used as middleman between the UI and the Game Model.
@@ -22,29 +21,18 @@ import lucgilr.inf.uva.hivev2.UI.GameUIDynamicGrid;
 public class GameController {
 
     private Game model;
-    private GameUI view;
-    private GameUIDynamicGrid viewGrid;
-    private AIGameUI aiView;
+    private GameUI viewGrid;
+    private AIGameUI viewAIGrid;
     private AI ai;
 
     /**
-     *
+     * PRUEBA
      * @param model
      * @param view
      */
     public GameController(Game model, GameUI view){
         this.model=model;
-        this.view=view;
-    }
-
-    /**
-     *
-     * @param model
-     * @param view
-     */
-    public GameController(Game model, AIGameUI view){
-        this.model=model;
-        this.aiView=view;
+        this.viewGrid=view;
     }
 
     /**
@@ -52,9 +40,9 @@ public class GameController {
      * @param model
      * @param view
      */
-    public GameController(Game model, GameUIDynamicGrid view){
+    public GameController(Game model, AIGameUI view){
         this.model=model;
-        this.viewGrid=view;
+        this.viewAIGrid=view;
     }
 
     /**

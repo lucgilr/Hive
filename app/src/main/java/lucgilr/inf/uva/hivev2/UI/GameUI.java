@@ -2,36 +2,35 @@ package lucgilr.inf.uva.hivev2.UI;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import lucgilr.inf.uva.hivev2.Controller.GameController;
+import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Language;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
-import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.R;
-import pl.polidea.view.ZoomView;
 
 /**
  * The original code has been modified but it can be found in:
@@ -45,66 +44,39 @@ public class GameUI extends AppCompatActivity {
     private GameController controller;
     private Language language;
 
-    ArrayList<Hexagon> gaps;
+    private ArrayList<Hexagon> gaps;
     private Player player;
     private boolean movingToken;
+    private boolean deselect;
     private ArrayList<Hexagon> possibleGaps;
     private Piece piece;
     private String displayLanguage;
     private boolean gameover;
+    private ArrayList<Hexagon> gridBoard;
+    private boolean boardReady;
 
     private RelativeLayout mRelativeLayout;
-    private ZoomView zoomView;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
-    private static int radius = 7;
-
+    private final int radius = 22;
+    private final int scale = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
 
-        //LinearLayout
+        //RelativeLayout
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
-        //Adding zoom...
-        /*View v = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.game_layout,null,false);
-        v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-        zoomView = new ZoomView(this);
-        zoomView.addView(v);
-        mRelativeLayout.addView(zoomView);*/
 
-
-        //Center scrolls
+        //Scrolls
         vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
         hScrollView = (HorizontalScrollView)findViewById(R.id.horizontal_scroll);
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        Log.d("X SCREEN",String.valueOf(size.x));
-        Log.d("Y SCREEN",String.valueOf(size.y));
-        final int x = size.x;
-        final int y = size.y;
-
-        Handler h = new Handler();
-
-        h.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                vScrollView.scrollTo(0,y-270);
-                hScrollView.scrollTo(x-130,0);
-                //vScrollView.scrollTo(0,530);
-                //hScrollView.scrollTo(1150,0);
-            }
-        }, 100);
 
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
 
-        //Create new GameUI
+        //Create new Game
         game = new Game();
         controller = new GameController(game,this);
         language = new Language();
@@ -114,24 +86,94 @@ public class GameUI extends AppCompatActivity {
         gaps = new ArrayList<>();
         piece = new Piece();
         this.gameover=false;
+        this.gridBoard = new ArrayList<>();
+        this.deselect=false;
+        this.boardReady=false;
 
-        Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
+        initGridView();
 
         //Show dialog --> first player
         firstPlayer();
-
-        initGridView(radius, shape);
     }
 
-    private void initGridView(int radius, Grid.Shape shape) {
-        int scale = setGridDimensions(radius, shape);
-        Grid grid = setGridNodes(radius, scale, shape);
+    /**
+     * Scrolls to the middle of the RelativeLayout when rotating the screen
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            scrollWhenLandscape();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            scrollWhenPortrait();
+
+        }
     }
 
-    private int setGridDimensions(int radius, Grid.Shape shape) {
+    /**
+     * Scrolls to the middle of the RelativeLayout when Device in Portrait mode
+     */
+    public void scrollWhenPortrait(){
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                vScrollView.scrollTo(0, mRelativeLayout.getHeight() / 2 - 600);
+                hScrollView.scrollTo(mRelativeLayout.getWidth() / 2 - 400, 0);
+            }
+        }, 100);
+    }
+
+    /**
+     * Scrolls to the middle of the RelativeLayout when Device in Landscape mode
+     */
+    public void scrollWhenLandscape(){
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                vScrollView.scrollTo(0, mRelativeLayout.getHeight() / 2 - 350);
+                hScrollView.scrollTo(mRelativeLayout.getWidth() / 2 - 600, 0);
+            }
+        }, 100);
+    }
+
+    /**
+     * Init the Grid
+     */
+    private void initGridView() {
+
+        if(this.boardReady){
+            //Center Scrolls
+            Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+            int orientation = display.getRotation();
+            if(orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270){
+                //Landscape
+                scrollWhenLandscape();
+            }else if(orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180){
+                //Portrait
+                scrollWhenPortrait();
+            }
+        }
+        setGridDimensions();
+        Grid grid = setGridNodes();
+    }
+
+    /**
+     * Sets Grid dimensions
+     * @return
+     */
+    private void setGridDimensions() {
+
         // Gets the layout params that will allow to resize the layout
-        ViewGroup.LayoutParams params = mRelativeLayout.getLayoutParams();
+        final ViewGroup.LayoutParams params = mRelativeLayout.getLayoutParams();
 
         //Get display metrics
         Display display = getWindowManager().getDefaultDisplay();
@@ -144,26 +186,22 @@ public class GameUI extends AppCompatActivity {
         if(displayWidth > displayHeight) displayWidth = displayHeight;
 
         int horizontalPadding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-        //int horizontalPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontalPaddingInDp, getResources().getDisplayMetrics());
         displayWidth -= 2 * horizontalPadding;
 
-        // Calculate the scale: the radius of single node.
-        //int scale = (int) (displayWidth / ((2*radius + 1) * (Math.sqrt(1))));
-        int scale = (int) (displayWidth / ((1*radius + 1) * (Math.sqrt(1))));
-
         // Changes the height and width of the grid to the specified *pixels*
-        params.width = Grid.getGridWidth(radius, scale, shape);
-        params.height = Grid.getGridHeight(radius, scale, shape);
+        params.width = Grid.getGridWidth(radius, scale);
+        params.height = Grid.getGridHeight(radius, scale);
 
-        return scale;
     }
 
-    private Grid setGridNodes(int radius, int scale, Grid.Shape shape) {
+    /**
+     * Prepares which hexagons to draw
+     * @return
+     */
+    private Grid setGridNodes() {
         try {
-            //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
-            //final Grid grid = new Grid(radius, scale, shape);
-            //QUITAR LISTASSSSS!!!!
-            final Grid grid = new Grid(radius, scale, shape);
+            //Clear View
+            this.mRelativeLayout.removeAllViewsInLayout();
 
             //My stuff
             player = controller.getPlayer();
@@ -174,11 +212,7 @@ public class GameUI extends AppCompatActivity {
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
             }
 
-            //Check if is Game Over
-            /*if(this.gameover){
-                //Back to main page
-                finish();
-            }*/
+            final Grid grid = new Grid(radius, scale, gaps,this.game.getHive().getBoard());
 
             //Check if a bee fully surrounded
             int endgame = controller.endGame();
@@ -186,21 +220,6 @@ public class GameUI extends AppCompatActivity {
                 //GAME OVER
                 this.gameover=true;
                 gameOver(endgame);
-            }
-
-            //PLAYERS TURN
-            Log.d("PLAYER",this.player.getColor());
-
-            //PRINT BOARD
-            Log.d("BOARD PLAYER","BOARD PLAYER");
-            for(int i=0;i<this.game.getHive().getBoard().size();i++)
-                Log.d("piece...", this.game.getHive().getBoard().get(i).pieceInfo());
-
-            //PRINT GAPS AVAILABLE
-            if(!gaps.isEmpty()) {
-                Log.d("GAPS SELECTED", "GAPS SELECTED");
-                for (int i = 0; i < gaps.size(); i++)
-                    Log.d("Gap...", gaps.get(i).toString());
             }
 
             //Gird node listener restricted to the node's circular area.
@@ -212,7 +231,6 @@ public class GameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_DOWN:
                             float xPoint = event.getX();
                             float yPoint = event.getY();
-                            //Hexagon hex = grid.pixelToHex(event.getX(), event.getY()); //This can work on the RelativeLayout grid area
                             boolean isPointOutOfCircle = (grid.centerOffsetX -xPoint)*(grid.centerOffsetX -xPoint) + (grid.centerOffsetY -yPoint)*(grid.centerOffsetY -yPoint) > grid.width * grid.width / 4;
 
                             if (isPointOutOfCircle) return false;
@@ -227,7 +245,7 @@ public class GameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_SCROLL:
                             break;
                         case MotionEvent.ACTION_UP:
-                            if(!isGameover()) {
+                            if(!isGameOver()) {
                                 v.setSelected(false);
                                 CircleImageView view = (CircleImageView) v;
                                 OnGridHexClick(view.getHex());
@@ -240,19 +258,11 @@ public class GameUI extends AppCompatActivity {
 
             for(Cube cube : grid.nodes) {
                 Hexagon hexagon = null;
-                switch (shape) {
-                    case HEXAGON_POINTY_TOP:
-                        hexagon = cube.toHex();
-                        break;
-                    case RECTANGLE:
-                        hexagon = cube.cubeToOddRHex();
-                        break;
-                }
+                hexagon = cube.toHex();
 
                 CircleImageView view = new CircleImageView(this);
                 view.setHex(hexagon);
 
-                view.setBackgroundResource(R.drawable.orangehex);
                 int size = controller.getBoardSize();
 
                 if(size!=0) {
@@ -319,7 +329,7 @@ public class GameUI extends AppCompatActivity {
                 }
 
                 if(!this.gameover) {
-                    if (checkIfGapAvailable(view.getHex(), gaps)) {
+                    if (checkIfHexagonAvailable(view.getHex(), gaps)) {
                         view.setBackgroundResource(R.drawable.greyhex);
                     }
                 }
@@ -328,6 +338,7 @@ public class GameUI extends AppCompatActivity {
                 addViewToLayout(view, hexagon, grid);
 
             }
+
             return grid;
 
 
@@ -338,127 +349,62 @@ public class GameUI extends AppCompatActivity {
         return null;
     }
 
-    private void firstPlayer(){
-        String player = controller.getPlayer().getColor();
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(R.string.playerTurn);
-        if(player.equals("Black"))
-            alert.setMessage(R.string.blackStarts);
-        else
-            alert.setMessage(R.string.whiteStarts);
-        alert.setCancelable(true);
-
-        final AlertDialog dlg = alert.create();
-        dlg.show();
-
-        final Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dlg.dismiss();
-                t.cancel();
-            }
-        },4000); //Shows message for 4 seconds
-    }
-
-    private void gameOver(int player){
-        gaps=null;
-        if(player==1){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.whitePlayer);
-            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
-                }
-            });
-            alert.create();
-            alert.show();
-        }else if(player==2){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.blackPlayer);
-            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
-                }
-            });
-            alert.create();
-            alert.show();
-        }else if(player==3){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.bothPlayers);
-            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
-                }
-            });
-            alert.create();
-            alert.show();
-        }
-    }
-
-    private boolean checkIfGapAvailable(Hexagon hexagon, ArrayList<Hexagon> gaps) {
-        for(int i=0;i<gaps.size();i++){
-            if(hexagon.getQ()==gaps.get(i).getQ() && hexagon.getR()==gaps.get(i).getR()){
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Add hexagon View to Layout
+     * @param view
+     * @param hexagon
+     * @param grid
+     */
     private void addViewToLayout(View view, Hexagon hexagon, Grid grid) {
+
         //Add to view
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(grid.width, grid.height);
         params.addRule(RelativeLayout.RIGHT_OF, R.id.centerLayout);
         params.addRule(RelativeLayout.BELOW, R.id.centerLayout);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        final Point size = new Point();
+        display.getSize(size);
+
+        if(mRelativeLayout.getWidth()==0){
+            mRelativeLayout.setScrollX(-size.x/2);
+        }else {
+            mRelativeLayout.setScrollX(-mRelativeLayout.getWidth()/2);
+        }
+
+        if(mRelativeLayout.getHeight()==0){
+            mRelativeLayout.setScrollY(-size.y/2);
+        }else {
+            mRelativeLayout.setScrollY(-mRelativeLayout.getHeight()/2);
+        }
+
         mRelativeLayout.addView(view, params);
 
         //Set coordinates
         Point p = grid.hexToPixel(hexagon);
-        switch (grid.shape) {
-            case HEXAGON_POINTY_TOP:
-                params.leftMargin = -grid.centerOffsetX + p.x;
-                params.topMargin = -grid.centerOffsetY + p.y;
-                break;
-            case RECTANGLE:
-                params.leftMargin = -grid.width * grid.radius -grid.centerOffsetX + p.x;
-                params.topMargin = (int) (-1.5 * grid.scale * grid.radius -grid.centerOffsetY + p.y);
-                break;
-        }
+        params.leftMargin = -grid.centerOffsetX + p.x;
+        params.topMargin = -grid.centerOffsetY + p.y;
     }
 
     /**
-     *
+     * Choose which action to execute when board touched
+     * @param hexagon
      */
-    private void nextPlayer(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("You can't make any move or add any piece");
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                game.oneMoreRound();
-                player.oneMoreTurn();
-                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
-            }
-        });
-        alert.create();
-        alert.show();
-    }
-
     private void OnGridHexClick(final Hexagon hexagon) {
-        //Toast.makeText(GameUI.this, "OnGridHexClick: " + hexagon, Toast.LENGTH_SHORT).show();
 
-        if(this.movingToken && checkIfGapAvailable(hexagon, gaps)){
-            Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
-            controller.movePiece(piece, coords);
+        if(this.movingToken && checkIfHexagonAvailable(hexagon, gaps)){
+            //Moving piece
+            Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
+            controller.movePiece(piece, hex);
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingToken=false;
-            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+            this.deselect=false;
+            initGridView();
         }
-        else if(!this.movingToken && checkIfGapAvailable(hexagon, gaps)) {
+        else if(!this.movingToken && checkIfHexagonAvailable(hexagon, gaps)) {
+            //Adding a piece to the board
+            this.deselect=false;
             ArrayList<Piece> pieces = controller.getPiecesFromBox();
             if(!pieces.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
@@ -493,44 +439,61 @@ public class GameUI extends AppCompatActivity {
                         piece = new Piece();
                         PieceType bug = language.stringToPieceType(t.get(which));
                         piece = controller.takePieceByType(bug);
-                        Hexagon coords = getRealCoords(hexagon.getR(), hexagon.getQ());
-                        controller.playPiece(piece, coords);
+                        Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
+                        controller.playPiece(piece, hex);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
-                        initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                        initGridView();
                     }
                 });
                 alert.create();
                 alert.show();
             }
-        }else if(tokenTouched(hexagon)){
+        }else if(pieceTouched(hexagon)){
+            //Piece touched by the correct player
             piece = new Piece();
-            piece = getTokenFromBoard(hexagon);
+            piece = getPieceFromBoard(hexagon);
             possibleGaps = controller.getPossibleMoves(piece);
             if (!possibleGaps.isEmpty()) {
                 movingToken = true;
                 this.gaps = new ArrayList<>(possibleGaps);
-                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+                this.deselect=false;
+                initGridView();
             }
-        }else if(!checkIfGapAvailable(hexagon, gaps)) {
+        }else if(!checkIfHexagonAvailable(hexagon, gaps)) {
+            //Deselect pieces moves
             this.gaps = controller.getPlayerHexagons(player);
-            //Log.d("gaps size",String.valueOf(gaps.size()));
             this.movingToken=false;
-            initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP);
+            this.deselect=true;
+            initGridView();
         }
 
     }
 
     /**
-     *
+     * Returns true if the hexagon is free
+     * @param hexagon
+     * @param gaps
+     * @return
+     */
+    private boolean checkIfHexagonAvailable(Hexagon hexagon, ArrayList<Hexagon> gaps) {
+        for(int i=0;i<gaps.size();i++){
+            if(hexagon.toString2D().equals(gaps.get(i).toString2D())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets a piece from the board if it hasn't a beetle on top
      * @param hexagon
      * @return
      */
-    private Piece getTokenFromBoard(Hexagon hexagon){
+    private Piece getPieceFromBoard(Hexagon hexagon){
         ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
-            if(board.get(i).getHexagon().getR()== hexagon.getR()
-                    && board.get(i).getHexagon().getQ()== hexagon.getQ()
+            if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
                     && !board.get(i).isBeetle())
             return board.get(i);
         }
@@ -538,12 +501,15 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     *
+     * Returns the real hexagon for a piece.
+     * This method is necessary because the board is represented in 2D,
+     * but the piece representation is in 3D because a piece can be on
+     * top of another.
      * @param r
      * @param q
      * @return
      */
-    private Hexagon getRealCoords(int r, int q){
+    private Hexagon getRealHexagon(int r, int q){
         for(int i=0;i<gaps.size();i++){
             if(gaps.get(i).getQ()==q && gaps.get(i).getR()==r) return gaps.get(i);
         }
@@ -551,15 +517,17 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     *
+     * Checks if the piece touched can be moved.
+     * Reasons it can't be moved:
+     * - The player color doesn't match the piece color
+     * - The piece has a beetle on top
      * @param hexagon
      * @return
      */
-    private boolean tokenTouched(Hexagon hexagon){
+    private boolean pieceTouched(Hexagon hexagon){
         ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
-            if(board.get(i).getHexagon().getR()== hexagon.getR()
-                    && board.get(i).getHexagon().getQ()== hexagon.getQ()
+            if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
                     && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor())
                     && !board.get(i).isBeetle())
                 return true;
@@ -567,8 +535,99 @@ public class GameUI extends AppCompatActivity {
         return false;
     }
 
-    private boolean isGameover(){
+    /**
+     * Checks if the game is over
+     * @return
+     */
+    private boolean isGameOver(){
         return this.gameover;
+    }
+
+    //DIALOGS
+
+    /**
+     * Shows dialog that explains to the player that he can't make a move in this turn
+     */
+    private void nextPlayer(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("You can't make any move or add any piece");
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                game.oneMoreRound();
+                player.oneMoreTurn();
+                initGridView();
+            }
+        });
+        alert.create();
+        alert.show();
+    }
+
+    /**
+     * Dialog showing which player has won
+     * @param player
+     */
+    private void gameOver(int player){
+        gaps=null;
+        if(player==1){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.whitePlayer);
+            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    initGridView();
+                }
+            });
+            alert.create();
+            alert.show();
+        }else if(player==2){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.blackPlayer);
+            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    initGridView();
+                }
+            });
+            alert.create();
+            alert.show();
+        }else if(player==3){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.bothPlayers);
+            alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    initGridView();
+                }
+            });
+            alert.create();
+            alert.show();
+        }
+    }
+
+    /**
+     * Shows dialos saying which player starts to play
+     */
+    private void firstPlayer(){
+        //Init board ok
+        this.boardReady=true;
+        String player = controller.getPlayer().getColor();
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        alert.setTitle(R.string.playerTurn);
+
+        if(player.equals("Black"))
+            alert.setMessage(R.string.blackStarts);
+        else
+            alert.setMessage(R.string.whiteStarts);
+        alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                initGridView();
+            }
+        });
+        alert.create();
+        alert.show();
+
     }
 
 }
