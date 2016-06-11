@@ -65,8 +65,10 @@ public class GameUIDynamicGrid extends AppCompatActivity {
     private ZoomView zoomView;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
-    private int radius;
+    private final int radius = 22;
+    private final int scale = 100;
     private int zoom;
+    private boolean boardReady = false;
 
 
     @Override
@@ -113,24 +115,55 @@ public class GameUIDynamicGrid extends AppCompatActivity {
 
         Grid.Shape shape = Grid.Shape.HEXAGON_POINTY_TOP;
 
+        //Init radius
+        //this.radius=1;
+        this.zoom=6;
+        initGridView(radius, shape, zoom);
+
         //Show dialog --> first player
         firstPlayer();
-
-        //Init radius
-        this.radius=1;
-        this.zoom=6;
-        Log.d("INIT GRID","INIT GRID");
-        initGridView(radius, shape,zoom);
     }
 
     private void initGridView(int radius, Grid.Shape shape, int zoom) {
+        if(this.boardReady){
+            //Center scroll
+            Log.d("HOLAAAAAA3","HOLAAAAA3");
+            Log.d("WIDTH", String.valueOf(mRelativeLayout.getWidth()));
+            Log.d("HEIGHT", String.valueOf(mRelativeLayout.getHeight()));
+
+            // Center scrolls
+            Handler h = new Handler();
+
+            h.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    //vScrollView.scrollTo(0, -mRelativeLayout.getWidth()/2);
+                    //hScrollView.scrollTo(-mRelativeLayout.getHeight()/2, 0);
+                    //vScrollView.scrollTo(0,6800/2-350);
+                    //hScrollView.scrollTo(13500/2-600,0);
+                    vScrollView.scrollTo(0,mRelativeLayout.getHeight()/2-350);
+                    hScrollView.scrollTo(mRelativeLayout.getWidth()/2-600,0);
+                }
+            }, 100);
+        }
+        Log.d("HOLAAAAAA","HOLAAAAA");
+        Log.d("WIDTH",String.valueOf(mRelativeLayout.getWidth()));
+        Log.d("HEIGHT", String.valueOf(mRelativeLayout.getHeight()));
         int scale = setGridDimensions(radius, shape, zoom);
         Grid grid = setGridNodes(radius, scale, shape);
+        Log.d("HOLAAAAAA2","HOLAAAAA2");
+        Log.d("WIDTH",String.valueOf(mRelativeLayout.getWidth()));
+        Log.d("HEIGHT", String.valueOf(mRelativeLayout.getHeight()));
+
     }
 
     private int setGridDimensions(int radius, Grid.Shape shape, int zoom) {
+
+        //Log.d("SETGRIDDIMENSIONS","SETGRIDDIMENSIONS");
+
         // Gets the layout params that will allow to resize the layout
-        ViewGroup.LayoutParams params = mRelativeLayout.getLayoutParams();
+        final ViewGroup.LayoutParams params = mRelativeLayout.getLayoutParams();
 
         //Get display metrics
         Display display = getWindowManager().getDefaultDisplay();
@@ -150,11 +183,29 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         //int scale = (int) (displayWidth / ((2*radius + 1) * (Math.sqrt(1))));
         //int scale = (int) (displayWidth / ((6*radius + 1) * (Math.sqrt(1))));
         //int scale = (int) (displayWidth / ((zoom *radius + 1) * (Math.sqrt(1))));
-        int scale = 100;
+        //int scale = 100;
+        //if(radius!=1) this.radius = 22;
 
         // Changes the height and width of the grid to the specified *pixels*
         params.width = Grid.getGridWidth(radius, scale, shape);
         params.height = Grid.getGridHeight(radius, scale, shape);
+        /*Log.d("RADIUS",String.valueOf(radius));
+        Log.d("WIDTH",String.valueOf(params.width));
+        Log.d("HEIGHT",String.valueOf(params.height));*/
+
+        // Center scrolls
+        /*Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                vScrollView.scrollTo(0, params.width/2);
+                hScrollView.scrollTo(params.height/2, 0);
+                //vScrollView.scrollTo(0,530);
+                //hScrollView.scrollTo(1150,0);
+            }
+        }, 100);*/
 
         return scale;
     }
@@ -202,7 +253,7 @@ public class GameUIDynamicGrid extends AppCompatActivity {
          */
         Log.d("DESELECT",String.valueOf(this.deselect));
         if(!hex){
-            radius+=1;
+            //radius+=1;
             if(this.zoom!=2) this.zoom-=2;
             Log.d("RADIUS",String.valueOf(radius));
             initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP, zoom);
@@ -217,9 +268,13 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         try {
             //Clear View
             this.mRelativeLayout.removeAllViewsInLayout();
+            /*Log.d("SETGRIDNODES", "SETGRIDNODES");
+            Log.d("RADIUS",String.valueOf(radius));*/
 
             //StorageMap storageMap = new StorageMap(radius, shape, DemoObjects.squareMap);
             //final Grid grid = new Grid(radius, scale, shape);
+
+
 
             //My stuff
             player = controller.getPlayer();
@@ -235,6 +290,7 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                 updateGridboard(gaps.get(i));
 
             final Grid grid = new Grid(radius, scale, shape, gaps,this.game.getHive().getBoard());
+
 
             //Check if a bee fully surrounded
             int endgame = controller.endGame();
@@ -279,9 +335,9 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                 }
             };
 
-            Log.d("GRIDS SIZE",String.valueOf(grid.nodes.length));
+            //Log.d("GRIDS SIZE",String.valueOf(grid.nodes.length));
             for(Cube cube : grid.nodes) {
-                Log.d("CUBE TO HEX",cube.toHex().toString());
+                //Log.d("CUBE TO HEX",cube.toHex().toString());
                 Hexagon hexagon = null;
                 switch (shape) {
                     case HEXAGON_POINTY_TOP:
@@ -370,6 +426,7 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                 addViewToLayout(view, hexagon, grid);
 
             }
+
             return grid;
 
 
@@ -381,6 +438,8 @@ public class GameUIDynamicGrid extends AppCompatActivity {
     }
 
     private void firstPlayer(){
+        //Initi board ok
+        this.boardReady=true;
         String player = controller.getPlayer().getColor();
         //AlertDialog.Builder alert = new AlertDialog.Builder(this);
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
@@ -390,19 +449,24 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setMessage(R.string.blackStarts);
         else
             alert.setMessage(R.string.whiteStarts);
-        alert.setCancelable(true);
+        alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP, zoom);
+            }
+        });
+        alert.create();
+        alert.show();
 
-        final AlertDialog dlg = alert.create();
-        dlg.show();
-
-        final Timer t = new Timer();
+        /*final Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override
             public void run() {
                 dlg.dismiss();
                 t.cancel();
             }
-        },2000); //Shows message for 2 seconds
+        },2000); //Shows message for 2 seconds*/
+
     }
 
     private void gameOver(int player){
@@ -413,7 +477,6 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d("INIT GRID","INIT GRID");
                     initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
                 }
             });
@@ -425,7 +488,6 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d("INIT GRID","INIT GRID");
                     initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
                 }
             });
@@ -437,7 +499,6 @@ public class GameUIDynamicGrid extends AppCompatActivity {
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d("INIT GRID","INIT GRID");
                     initGridView(radius, Grid.Shape.HEXAGON_POINTY_TOP,zoom);
                 }
             });
@@ -456,17 +517,24 @@ public class GameUIDynamicGrid extends AppCompatActivity {
     }
 
     private void addViewToLayout(View view, Hexagon hexagon, Grid grid) {
+
+        Log.d("ADDVIEWTOLAYOUT","ADDVIEWTOLAYOUT");
+
         //Add to view
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(grid.width, grid.height);
+        //RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(Grid.getGridWidth(radius,scale), Grid.getGridHeight(radius,scale));
+
         params.addRule(RelativeLayout.RIGHT_OF, R.id.centerLayout);
         params.addRule(RelativeLayout.BELOW, R.id.centerLayout);
-        mRelativeLayout.addView(view, params);
-
-        //Log.d("PLACING...",hexagon.toString());
 
         Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
+        final Point size = new Point();
         display.getSize(size);
+
+        Log.d("DISPLAY X",String.valueOf(size.x));
+        Log.d("DISPLAY Y",String.valueOf(size.y));
+        Log.d("WIDTH",String.valueOf(mRelativeLayout.getWidth()));
+        Log.d("HEIGHT", String.valueOf(mRelativeLayout.getHeight()));
 
         if(mRelativeLayout.getWidth()==0){
             mRelativeLayout.setScrollX(-size.x/2);
@@ -479,13 +547,11 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         }else {
             mRelativeLayout.setScrollY(-mRelativeLayout.getHeight()/2);
         }
-        //
-        //Log.d("RELATIVELAYOUT WIDTH", String.valueOf(mRelativeLayout.getWidth()));
-        //Log.d("RELATIVELAYOUT HEIGHT", String.valueOf(mRelativeLayout.getHeight()));
-        //
-        //Log.d("SCROLL X RELATIVELAYOUT", String.valueOf(mRelativeLayout.getScrollX()));
-        //Log.d("SCROLL Y RELATIVELAYOUT", String.valueOf(mRelativeLayout.getScrollY()));
-        ///
+
+        Log.d("SCROLL X RELATIVELAYOUT", String.valueOf(mRelativeLayout.getScrollX()));
+        Log.d("SCROLL Y RELATIVELAYOUT", String.valueOf(mRelativeLayout.getScrollY()));
+
+        mRelativeLayout.addView(view, params);
 
         //Set coordinates
         Point p = grid.hexToPixel(hexagon);

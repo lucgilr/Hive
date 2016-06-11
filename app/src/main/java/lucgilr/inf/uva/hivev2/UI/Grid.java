@@ -285,6 +285,10 @@ public class Grid {
         return 0;
     }
 
+    public static int getGridWidth(int radius, int scale) {
+                return (int) ((2*radius + 1) * Math.sqrt(9) * scale);
+    }
+
     public static int getGridHeight(int radius, int scale, Shape shape) {
         switch (shape) {
             case HEXAGON_POINTY_TOP:
@@ -294,6 +298,10 @@ public class Grid {
         };
 
         return 0;
+    }
+
+    public static int getGridHeight(int radius, int scale) {
+        return (int) (scale * ((2 * radius + 1) * 1.5 + 0.5));
     }
 }
 
