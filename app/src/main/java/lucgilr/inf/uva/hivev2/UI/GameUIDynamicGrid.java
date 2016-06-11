@@ -1,8 +1,10 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,8 +14,10 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -124,15 +128,81 @@ public class GameUIDynamicGrid extends AppCompatActivity {
         firstPlayer();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+            scrollWhenLandscape();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            scrollWhenPortrait();
+
+        }
+    }
+
+    public void scrollWhenPortrait(){
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                //vScrollView.scrollTo(0, -mRelativeLayout.getWidth()/2);
+                //hScrollView.scrollTo(-mRelativeLayout.getHeight()/2, 0);
+                //vScrollView.scrollTo(0,6800/2-350);
+                //hScrollView.scrollTo(13500/2-600,0);
+                vScrollView.scrollTo(0, mRelativeLayout.getHeight() / 2 - 600);
+                hScrollView.scrollTo(mRelativeLayout.getWidth() / 2 - 400, 0);
+            }
+        }, 100);
+    }
+
+    public void scrollWhenLandscape(){
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                //vScrollView.scrollTo(0, -mRelativeLayout.getWidth()/2);
+                //hScrollView.scrollTo(-mRelativeLayout.getHeight()/2, 0);
+                //vScrollView.scrollTo(0,6800/2-350);
+                //hScrollView.scrollTo(13500/2-600,0);
+                vScrollView.scrollTo(0, mRelativeLayout.getHeight() / 2 - 350);
+                hScrollView.scrollTo(mRelativeLayout.getWidth() / 2 - 600, 0);
+            }
+        }, 100);
+    }
+
     private void initGridView(int radius, Grid.Shape shape, int zoom) {
+
         if(this.boardReady){
+            Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+            int orientation = display.getRotation();
+
+            Log.d("ORIENTATION",String.valueOf(orientation));
+            Log.d("90",String.valueOf(Surface.ROTATION_90));
+            Log.d("270",String.valueOf(Surface.ROTATION_270));
+            Log.d("0",String.valueOf(Surface.ROTATION_0));
+            Log.d("180",String.valueOf(Surface.ROTATION_180));
+            if(orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270){
+                //Landscape
+                scrollWhenLandscape();
+            }else if(orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180){
+                //Portrait
+                scrollWhenPortrait();
+            }
+
             //Center scroll
             Log.d("HOLAAAAAA3","HOLAAAAA3");
             Log.d("WIDTH", String.valueOf(mRelativeLayout.getWidth()));
             Log.d("HEIGHT", String.valueOf(mRelativeLayout.getHeight()));
 
             // Center scrolls
-            Handler h = new Handler();
+            /*Handler h = new Handler();
 
             h.postDelayed(new Runnable() {
 
@@ -142,10 +212,10 @@ public class GameUIDynamicGrid extends AppCompatActivity {
                     //hScrollView.scrollTo(-mRelativeLayout.getHeight()/2, 0);
                     //vScrollView.scrollTo(0,6800/2-350);
                     //hScrollView.scrollTo(13500/2-600,0);
-                    vScrollView.scrollTo(0,mRelativeLayout.getHeight()/2-350);
-                    hScrollView.scrollTo(mRelativeLayout.getWidth()/2-600,0);
+                    vScrollView.scrollTo(0, mRelativeLayout.getHeight() / 2 - 350);
+                    hScrollView.scrollTo(mRelativeLayout.getWidth() / 2 - 600, 0);
                 }
-            }, 100);
+            }, 100);*/
         }
         Log.d("HOLAAAAAA","HOLAAAAA");
         Log.d("WIDTH",String.valueOf(mRelativeLayout.getWidth()));
