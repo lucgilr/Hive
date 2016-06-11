@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="aigame">Jugador VS Maquina</string>
+    <string name="aigame">Jugador VS Máquina</string>
     <string name="ant">Hormiga</string>
     <string name="bee">Abeja</string>
     <string name="beetle">Escarabajo</string>

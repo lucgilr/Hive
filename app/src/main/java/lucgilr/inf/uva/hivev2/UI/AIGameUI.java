@@ -209,8 +209,17 @@ public class AIGameUI extends AppCompatActivity {
      */
     private Grid setGridNodes() {
         try {
+
             //Clear View
             this.mRelativeLayout.removeAllViewsInLayout();
+
+            //Check if a bee fully surrounded
+            int endgame = controller.endGame();
+            if(endgame!=0 && !this.gameover){
+                //GAME OVER
+                this.gameover=true;
+                gameOver(endgame);
+            }
 
             //My stuff
             player = controller.getPlayer();
@@ -228,16 +237,12 @@ public class AIGameUI extends AppCompatActivity {
                 }
             }
 
-            final Grid grid = new Grid(radius, scale, gaps,this.game.getHive().getBoard());
-
-            //Check if a bee fully surrounded
-            int endgame = controller.endGame();
-            if(endgame!=0 && !this.gameover){
-                //GAME OVER
-                this.gameover=true;
-                gameOver(endgame);
+            final Grid grid;
+            if(!this.gameover) {
+                grid = new Grid(radius, scale, gaps, this.game.getHive().getBoard());
+            }else{
+                grid = new Grid(radius, scale,this.game.getHive().getBoard());
             }
-
             //Gird node listener restricted to the node's circular area.
             View.OnTouchListener gridNodeTouchListener = new View.OnTouchListener() {
 

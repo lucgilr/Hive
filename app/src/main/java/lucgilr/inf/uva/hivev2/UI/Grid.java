@@ -98,6 +98,24 @@ public class Grid {
         generateHexagonalShape(radius,gaps,board);
     }
 
+    public Grid(int radius, int scale, ArrayList<Piece> board) {
+        this.radius = radius;
+        this.scale = scale;
+        this.shape = Grid.Shape.HEXAGON_POINTY_TOP;
+
+        //Init derived node properties
+        width = (int) (Math.sqrt(3) * scale);
+        height = 2 * scale;
+        centerOffsetX = width/2;
+        centerOffsetY = height/2;
+
+        //Init ArrayList
+        this.board = new ArrayList<>();
+
+        //Init nodes
+        generateHexagonalShape(radius,board);
+    }
+
     public ArrayList<Hexagon> getBoard() {
         return board;
     }
@@ -158,6 +176,25 @@ public class Grid {
                 int z = -x-y;
                 if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
                     if(isInPossibleGaps(gaps, new Cube(x, y, z)) || isOnBoard(board, new Cube(x, y, z)))
+                        nodes[i++] = new Cube(x, y, z);
+                    this.board.add(new Cube(x,y,z).toHex());
+                }
+            }
+        }
+    }
+
+    private void generateHexagonalShape(int radius, ArrayList<Piece> board) throws ArrayIndexOutOfBoundsException {
+
+        int notFirstDimension = checkBeetles(board);
+
+        nodes = new Cube[board.size()-notFirstDimension];
+        int i = 0;
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                int z = -x-y;
+                if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
+                    if(isOnBoard(board, new Cube(x, y, z)))
                         nodes[i++] = new Cube(x, y, z);
                     this.board.add(new Cube(x,y,z).toHex());
                 }
