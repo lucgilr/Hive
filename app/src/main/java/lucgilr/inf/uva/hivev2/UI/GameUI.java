@@ -432,7 +432,7 @@ public class GameUI extends AppCompatActivity {
                         t.add(bug);
                     }
                 }
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
                 alert.setItems(t.toArray(new String[t.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -549,7 +549,7 @@ public class GameUI extends AppCompatActivity {
      * Shows dialog that explains to the player that he can't make a move in this turn
      */
     private void nextPlayer(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         alert.setMessage("You can't make any move or add any piece");
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -568,9 +568,9 @@ public class GameUI extends AppCompatActivity {
      * @param player
      */
     private void gameOver(int player){
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         gaps=null;
         if(player==1){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setMessage(R.string.whitePlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
@@ -581,7 +581,6 @@ public class GameUI extends AppCompatActivity {
             alert.create();
             alert.show();
         }else if(player==2){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setMessage(R.string.blackPlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
@@ -592,7 +591,6 @@ public class GameUI extends AppCompatActivity {
             alert.create();
             alert.show();
         }else if(player==3){
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setMessage(R.string.bothPlayers);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
