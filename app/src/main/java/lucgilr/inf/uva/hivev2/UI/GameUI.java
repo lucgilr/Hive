@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
@@ -76,8 +77,12 @@ public class GameUI extends AppCompatActivity {
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
 
+        //Choose which player stars to play
+        Random r = new Random();
+        int p = r.nextInt(((1) + 1) + 0);
+
         //Create new Game
-        game = new Game();
+        game = new Game(p);
         controller = new GameController(game,this);
         language = new Language();
 

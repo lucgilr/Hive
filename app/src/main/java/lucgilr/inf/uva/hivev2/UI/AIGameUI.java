@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
@@ -76,8 +78,12 @@ public class AIGameUI extends AppCompatActivity {
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
 
+        //Choose which player stars to play
+        Random r = new Random();
+        int p = r.nextInt(((1) + 1) + 0);
+
         //Create new Game
-        game = new Game();
+        game = new Game(p);
         controller = new GameController(game,this);
         language = new Language();
 
@@ -90,10 +96,13 @@ public class AIGameUI extends AppCompatActivity {
         this.deselect=false;
         this.boardReady=false;
 
+        //First player to play
+        Player firstPlayer = controller.getPlayer();
+
         initGridView();
 
         //Show dialog --> first player
-        firstPlayer();
+        firstPlayer(firstPlayer);
     }
 
     /**
@@ -611,17 +620,17 @@ public class AIGameUI extends AppCompatActivity {
     }
 
     /**
-     * Shows dialos saying which player starts to play
+     * Shows dialog saying which player starts to play
      */
-    private void firstPlayer(){
+    private void firstPlayer(Player player){
         //Init board ok
         this.boardReady=true;
-        String player = controller.getPlayer().getColor();
+        String color = player.getColor();
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         alert.setTitle(R.string.playerTurn);
 
-        if(player.equals("Black"))
-            alert.setMessage(R.string.blackStarts);
+        if(color.equals("Black"))
+            alert.setMessage(R.string.aiTurn);
         else
             alert.setMessage(R.string.whiteStarts);
         alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
