@@ -17,6 +17,7 @@
     <string name="dinamicGrid">Dinamic Grid</string>
     <string name="aIdinamicGrid"> AI Dinamic Grid</string>
     <string name="aiTurn">AI starts to play</string>
+    <string name="playerStarts">Player starts to play</string>
     <string name="emptyBox">The box is empty, all the pieces are in the game</string>
     <string name="leavingActivity">Are you sure you want to leave the game?</string>
     <string name="yes">Yes</string>

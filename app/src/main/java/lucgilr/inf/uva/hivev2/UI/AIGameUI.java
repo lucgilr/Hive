@@ -646,17 +646,17 @@ public class AIGameUI extends AppCompatActivity {
         String color = player.getColor();
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         alert.setTitle(R.string.playerTurn);
-
         if(color.equals("Black"))
             alert.setMessage(R.string.aiTurn);
         else
-            alert.setMessage(R.string.whiteStarts);
+            alert.setMessage(R.string.playerStarts);
         alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 initGridView();
             }
         });
+        alert.setCancelable(false);
         alert.create();
         alert.show();
 

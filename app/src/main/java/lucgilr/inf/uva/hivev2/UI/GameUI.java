@@ -642,6 +642,7 @@ public class GameUI extends AppCompatActivity {
                 initGridView();
             }
         });
+        alert.setCancelable(false);
         alert.create();
         alert.show();
 

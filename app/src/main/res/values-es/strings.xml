@@ -64,8 +64,9 @@
     <string name="howto">Como jugar</string>
     <string name="dinamicGrid">Red Dinámica</string>
     <string name="blackStarts">Empiezan negras</string>
-    <string name="aiTurn">La IA empieza primero</string>
+    <string name="aiTurn">La Máquina empieza primero</string>
     <string name="emptyBox">La caja esta vacía, todas las fichas están en juego</string>
     <string name="leavingActivity">¿Seguro que quieres abandonar la partida?</string>
     <string name="yes">Sí</string>
+    <string name="playerStarts">El jugador empieza primero</string>
 </resources>
