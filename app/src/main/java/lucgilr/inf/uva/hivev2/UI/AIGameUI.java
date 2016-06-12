@@ -662,5 +662,20 @@ public class AIGameUI extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        alert.setMessage(R.string.leavingActivity);
+        alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+
+        });
+        alert.setNegativeButton("No", null);
+        alert.show();
+    }
+
 }
 
