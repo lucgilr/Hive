@@ -600,7 +600,7 @@ public class GameUI extends AppCompatActivity {
             alert.create();
             alert.show();
         }else if(player==2){
-            alert.setMessage(R.string.blackPlayer);
+            alert.setMessage(R.string.aiWins);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
