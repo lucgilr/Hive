@@ -65,4 +65,5 @@
     <string name="dinamicGrid">Red Dinámica</string>
     <string name="blackStarts">Empiezan negras</string>
     <string name="aiTurn">La IA empieza primero</string>
+    <string name="emptyBox">La caja esta vacía, todas las fichas están en juego</string>
 </resources>

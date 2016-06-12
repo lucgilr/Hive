@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
+import lucgilr.inf.uva.hivev2.BoardSettings.CircleImageView;
+import lucgilr.inf.uva.hivev2.BoardSettings.Grid;
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
@@ -448,6 +450,18 @@ public class GameUI extends AppCompatActivity {
                         controller.playPiece(piece, hex);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
+                        initGridView();
+                    }
+                });
+                alert.create();
+                alert.show();
+            }else{
+                //No pieces in the box!
+                AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+                alert.setMessage(R.string.emptyBox);
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         initGridView();
                     }
                 });

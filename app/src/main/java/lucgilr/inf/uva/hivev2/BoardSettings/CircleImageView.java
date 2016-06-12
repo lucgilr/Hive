@@ -1,4 +1,4 @@
-package lucgilr.inf.uva.hivev2.UI;
+package lucgilr.inf.uva.hivev2.BoardSettings;
 
 
 import android.content.Context;

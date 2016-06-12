@@ -1,7 +1,6 @@
-package lucgilr.inf.uva.hivev2.UI;
+package lucgilr.inf.uva.hivev2.BoardSettings;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import java.util.ArrayList;
 

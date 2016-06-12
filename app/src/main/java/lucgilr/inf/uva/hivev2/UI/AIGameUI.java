@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -24,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
+import lucgilr.inf.uva.hivev2.BoardSettings.CircleImageView;
+import lucgilr.inf.uva.hivev2.BoardSettings.Grid;
 import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
@@ -464,6 +465,18 @@ public class AIGameUI extends AppCompatActivity {
                         controller.playPiece(piece, hex);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
+                        initGridView();
+                    }
+                });
+                alert.create();
+                alert.show();
+            }else{
+                //No pieces in the box!
+                AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+                alert.setMessage(R.string.emptyBox);
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         initGridView();
                     }
                 });
