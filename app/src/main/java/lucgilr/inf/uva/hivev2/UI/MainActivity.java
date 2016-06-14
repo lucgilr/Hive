@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -38,9 +39,13 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mSamples = new Sample[]{new Sample(R.string.game,GameUI.class),
+        /*mSamples = new Sample[]{new Sample(R.string.game,GameUI.class),
                                 new Sample(R.string.aigame,AIGameUI.class),
-                                new Sample(R.string.howto,HowToPlay.class)};
+                                new Sample(R.string.howto,HowToPlay.class)};*/
+
+        mSamples = new Sample[]{new Sample(R.string.game,GameUI.class),
+                new Sample(R.string.aigame,GameUI.class),
+                new Sample(R.string.howto,HowToPlay.class)};
 
         setListAdapter(new ArrayAdapter<Sample>(this,
                 android.R.layout.simple_list_item_1,
@@ -51,7 +56,18 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView listView, View view, int position, long id) {
         // Launch the sample associated with this list position.
-        startActivity(new Intent(MainActivity.this, mSamples[position].activityClass));
+        Intent intent = new Intent(MainActivity.this, mSamples[position].activityClass);
+        Log.d("POSITION",String.valueOf(position));
+        //If the user clicked the second option --> Game against the AI
+        if(position==1) {
+            Log.d("ADDING BUNDLE","TRUE");
+            Bundle b = new Bundle();
+            b.putBoolean("AI", true); //Your id
+            intent.putExtras(b); //Put your id to your next Intent
+        }
+        startActivity(intent);
+        //finish();
+        //startActivity(new Intent(MainActivity.this, mSamples[position].activityClass));
     }
 
 }

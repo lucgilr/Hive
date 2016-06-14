@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -57,6 +58,7 @@ public class GameUI extends AppCompatActivity {
     private boolean gameover;
     private ArrayList<Hexagon> gridBoard;
     private boolean boardReady;
+    private boolean ai;
 
     private RelativeLayout mRelativeLayout;
     private ScrollView vScrollView;
@@ -68,6 +70,13 @@ public class GameUI extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        //Get the type of game we are going to play
+        Bundle b = getIntent().getExtras();
+        ai = false; // or other values
+        if(b != null)
+            ai = b.getBoolean("AI");
+        Log.d("AI?",String.valueOf(ai));
 
         //RelativeLayout
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
@@ -97,10 +106,13 @@ public class GameUI extends AppCompatActivity {
         this.deselect=false;
         this.boardReady=false;
 
+        //First player to play
+        Player firstPlayer = controller.getPlayer();
+
         initGridView();
 
         //Show dialog --> first player
-        firstPlayer();
+        firstPlayer(firstPlayer);
     }
 
     /**
@@ -207,19 +219,9 @@ public class GameUI extends AppCompatActivity {
      */
     private Grid setGridNodes() {
         try {
+
             //Clear View
             this.mRelativeLayout.removeAllViewsInLayout();
-
-            //My stuff
-            player = controller.getPlayer();
-
-            if(!this.movingToken){
-                gaps = controller.getPlayerHexagons(player);
-                //If there are not gaps and the bee is not in game
-                if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
-            }
-
-            final Grid grid = new Grid(radius, scale, gaps,this.game.getHive().getBoard());
 
             //Check if a bee fully surrounded
             int endgame = controller.endGame();
@@ -227,6 +229,35 @@ public class GameUI extends AppCompatActivity {
                 //GAME OVER
                 this.gameover=true;
                 gameOver(endgame);
+            }
+
+            //My stuff
+            player = controller.getPlayer();
+
+            if(!this.movingToken && !isGameOver()){
+                gaps = controller.getPlayerHexagons(player);
+                //If there are not gaps and the bee is not in game --> next player
+                if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
+                //If all the players pieces are in the game and the player can't move any piece --> next player
+                if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
+                if(ai){
+                    if(player.getColor().equals("Black")){
+
+                        if(player.getTurn()==1) controller.initIA(player);
+                        controller.makeAChoice(game);
+                        controller.oneMoreTurn();
+                        controller.oneMoreRound();
+                        initGridView();
+
+                    }
+                }
+            }
+
+            final Grid grid;
+            if(!this.gameover) {
+                grid = new Grid(radius, scale, gaps, this.game.getHive().getBoard());
+            }else{
+                grid = new Grid(radius, scale,this.game.getHive().getBoard());
             }
 
             //Gird node listener restricted to the node's circular area.
@@ -600,7 +631,8 @@ public class GameUI extends AppCompatActivity {
             alert.create();
             alert.show();
         }else if(player==2){
-            alert.setMessage(R.string.aiWins);
+            if(this.ai)alert.setMessage(R.string.aiWins);
+            else alert.setMessage(R.string.blackPlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -623,19 +655,21 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     * Shows dialos saying which player starts to play
+     * Shows dialog saying which player starts to play
      */
-    private void firstPlayer(){
+    private void firstPlayer(Player player){
         //Init board ok
         this.boardReady=true;
-        String player = controller.getPlayer().getColor();
+        String color = player.getColor();
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         alert.setTitle(R.string.playerTurn);
 
-        if(player.equals("Black"))
-            alert.setMessage(R.string.blackStarts);
+        if(color.equals("Black"))
+            if(this.ai) alert.setMessage(R.string.aiTurn);
+            else alert.setMessage(R.string.blackStarts);
         else
-            alert.setMessage(R.string.whiteStarts);
+            if(this.ai) alert.setMessage(R.string.playerStarts);
+            else alert.setMessage(R.string.whiteStarts);
         alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

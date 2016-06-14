@@ -85,10 +85,6 @@ public class AIGameUI extends AppCompatActivity {
         vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
         hScrollView = (HorizontalScrollView)findViewById(R.id.horizontal_scroll);
 
-        //Loading Spinning Wheel
-        loading = (ProgressBar) findViewById(R.id.loading);
-        loading.setVisibility(View.GONE);
-
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
 
