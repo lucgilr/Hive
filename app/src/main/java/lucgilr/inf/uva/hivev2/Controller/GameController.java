@@ -1,5 +1,10 @@
 package lucgilr.inf.uva.hivev2.Controller;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import lucgilr.inf.uva.hivev2.AI.AI;
@@ -183,5 +188,7 @@ public class GameController {
     public void initIA(Player player){
         this.ai = new AI(player);
     }
+
+
 
 }

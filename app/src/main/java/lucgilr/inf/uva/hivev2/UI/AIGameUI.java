@@ -1,12 +1,16 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -15,14 +19,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
+import lucgilr.inf.uva.hivev2.AI.AI;
 import lucgilr.inf.uva.hivev2.BoardSettings.CircleImageView;
 import lucgilr.inf.uva.hivev2.BoardSettings.Grid;
 import lucgilr.inf.uva.hivev2.Controller.GameController;
@@ -61,6 +69,7 @@ public class AIGameUI extends AppCompatActivity {
     private RelativeLayout mRelativeLayout;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
+    private ProgressBar loading;
     private final int radius = 22;
     private final int scale = 100;
 
@@ -75,6 +84,10 @@ public class AIGameUI extends AppCompatActivity {
         //Scrolls
         vScrollView = (ScrollView) findViewById(R.id.vertical_scroll);
         hScrollView = (HorizontalScrollView)findViewById(R.id.horizontal_scroll);
+
+        //Loading Spinning Wheel
+        loading = (ProgressBar) findViewById(R.id.loading);
+        loading.setVisibility(View.GONE);
 
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
@@ -227,14 +240,18 @@ public class AIGameUI extends AppCompatActivity {
 
             if(!this.movingToken && !isGameOver()){
                 gaps = controller.getPlayerHexagons(player);
-                //If there are not gaps and the bee is not in game
+                //If there are not gaps and the bee is not in game --> next player
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
+                //If all the players pieces are in the game and the player can't move any piece --> next player
+                if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
                 if(player.getColor().equals("Black")){
+
                     if(player.getTurn()==1) controller.initIA(player);
                     controller.makeAChoice(game);
                     controller.oneMoreTurn();
                     controller.oneMoreRound();
                     initGridView();
+
                 }
             }
 
@@ -650,7 +667,7 @@ public class AIGameUI extends AppCompatActivity {
             alert.setMessage(R.string.aiTurn);
         else
             alert.setMessage(R.string.playerStarts);
-        alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 initGridView();
@@ -676,6 +693,43 @@ public class AIGameUI extends AppCompatActivity {
         alert.setNegativeButton("No", null);
         alert.show();
     }
+
+    //
+    //
+    private class CallAI extends AsyncTask<Void, Void, Void> {
+
+        private Game game;
+        private ProgressDialog progress;
+
+        public CallAI(Game game) {
+            this.game=game;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //loading.setVisibility(View.VISIBLE);
+            progress = ProgressDialog.show(AIGameUI.this, "dialog title",
+                    "dialog message", true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                controller.makeAChoice(game);
+            } catch (Exception e) {
+                Log.e(AIGameUI.class.toString(), e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            //loading.setVisibility(View.GONE);
+            progress.dismiss();
+        }
+
+    }
+
 
 }
 

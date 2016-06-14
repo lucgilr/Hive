@@ -929,6 +929,18 @@ public final class Hive {
         return false;
     }
 
+    /**
+     * Returns true if the player can't move any piece on the board
+     * @param player
+     * @return
+     */
+    public boolean noMoves(Player player){
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for(int i=0;i<pieces.size();i++){
+            if(getPossibleHexagons(pieces.get(i),false).size()!=0) return false;
+        }
+        return true;
+    }
 
 }
 

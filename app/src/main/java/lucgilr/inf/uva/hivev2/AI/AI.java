@@ -1,5 +1,6 @@
 package lucgilr.inf.uva.hivev2.AI;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import lucgilr.inf.uva.hivev2.GameModel.PieceType;
  *
  * Created by Lucía Gil Román on 11/05/16.
  */
-public class AI {
+public class AI{
 
     private Game game;
     //AI is player2
