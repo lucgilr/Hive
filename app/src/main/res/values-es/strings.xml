@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="aigame">Jugador VS Máquina</string>
+    <string name="aiGame">Jugador VS Máquina</string>
     <string name="ant">Hormiga</string>
     <string name="bee">Abeja</string>
     <string name="beetle">Escarabajo</string>
     <string name="game">Jugador VS Jugador</string>
     <string name="grasshopper">Saltamontes</string>
     <string name="spider">Araña</string>
-    <string name="blackPlayer">¡Gana el Jugador Negro!</string>
+    <string name="blackPlayer">¡Gana Negras!</string>
     <string name="bothPlayers">Empate...</string>
-    <string name="whitePlayer">¡Gana el Jugador Blanco!</string>
+    <string name="whitePlayer">¡Ganan blancas!</string>
     <string name="paragraph_14">"Sin embargo en esta otra la hormiga negra puede desplazarse a todos los hexágonos sombrados menos al verde del centro pues no podría desplazarse hacia el.\n\n"
 "NO SE PUEDE MOVER O COLOCAR\n\n"
 "Cuando un jugador no puede colocar una ficha (porque ya tiene todas en juego o no puede colocarla de modo que no toque fichas del enemigo) ni mover una que tenga en juego pierde su turno. El juego continúa de esta forma hasta que el jugador pueda realizar una acción o una abeja quede completamente rodeada.\n"
@@ -61,13 +61,14 @@
 "La hormiga es, después de la abeja, la ficha más valiosa del juego pues puede desplazarse rodeando la colmena a cualquier posición.\n"</string>
     <string name="paragraph_1">"“Hive” (Colmena) es un juego diseñado por John Yianni y publicado en 2001 por la compañía de juegos de mesa Gen42 Games.\n"
 "Es un juego de mesa para 2 jugadores en el que cada uno de ellos tiene las mismas fichas: 11 piezas hexagonales que representan diferentes insectos: 1 abeja, 3 hormigas, 3 saltamontes, 2 escarabajos y 2 arañas.\n\n"</string>
-    <string name="howto">Como jugar</string>
+    <string name="howTo">Como jugar</string>
     <string name="dinamicGrid">Red Dinámica</string>
     <string name="blackStarts">Empiezan negras</string>
     <string name="aiTurn">La Máquina empieza primero</string>
     <string name="emptyBox">La caja esta vacía, todas las fichas están en juego</string>
     <string name="leavingActivity">¿Seguro que quieres abandonar la partida?</string>
     <string name="yes">Sí</string>
-    <string name="playerStarts">El jugador empieza primero</string>
+    <string name="playerStarts">El usuario empieza primero</string>
     <string name="aiWins">La Máquina ha gandado la partida</string>
+    <string name="playAgain">¿Quieres echar otra partida?</string>
 </resources>

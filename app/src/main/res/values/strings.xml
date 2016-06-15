@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">UVaHive</string>
     <string name="game">Player VS Player</string>
-    <string name="aigame">Player VS Machine</string>
-    <string name="howto">How to Play</string>
+    <string name="aiGame">Player VS Machine</string>
+    <string name="howTo">How to Play</string>
     <string name="bee">Bee</string>
     <string name="beetle">Beetle</string>
     <string name="ant">Ant</string>
@@ -14,14 +14,14 @@
     <string name="playerTurn">Players turn</string>
     <string name="blackStarts">Black player starts to play</string>
     <string name="whiteStarts">White player starts to play</string>
-    <string name="dinamicGrid">Dinamic Grid</string>
-    <string name="aIdinamicGrid"> AI Dinamic Grid</string>
     <string name="aiTurn">AI starts to play</string>
     <string name="aiWins">AI Wins...</string>
-    <string name="playerStarts">Player starts to play</string>
+    <string name="playerStarts">User starts to play</string>
     <string name="emptyBox">The box is empty, all the pieces are in the game</string>
     <string name="leavingActivity">Are you sure you want to leave the game?</string>
     <string name="yes">Yes</string>
+    <string name="no" translatable="false">No</string>
+    <string name="playAgain">Do yo want to play again?</string>
     <string name="paragraph_1">"“Hive” is a game designed by John Yianni and published in 2001 by GameBoard Company Gen42 Games.\n"
                  "Is a boardgame for 2 players who have the same pieces: 11 hexagonal pieces that represent insects: 1 bee, 3 ants, 3 grasshoppers, 2 beetles y 2 spiders.\n\n"</string>
     <string name="paragraph_2">"The pieces will be placed on an imaginary board made by the own pieces, that is, the pieces will be the ones to form the hive in which they will slide to achieve its aim.\n\n"
@@ -74,5 +74,4 @@
 "The game ends when one of the bees or both are fully surrounded by other pieces no matter the color. The player whose bee is fully surrounded lose the game.\n"
 "Draw: It can happen in two ways:\n"
 "When a piece is placed in a way that will fully surround both bees at once.\n\n"</string>
-    <string name="paragraph_15">COMO MOVER LAS FICHAS!!!!!! O PONERLO EN ALGUNO ANTERIOR???</string>
 </resources>

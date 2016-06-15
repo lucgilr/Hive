@@ -30,7 +30,6 @@ import lucgilr.inf.uva.hivev2.Controller.GameController;
 import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
-import lucgilr.inf.uva.hivev2.GameModel.Language;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
@@ -47,15 +46,13 @@ public class GameUI extends AppCompatActivity {
     private Game game;
     private GameController controller;
 
-    private ArrayList<Hexagon> gaps;
+    private ArrayList<Hexagon> hexagons;
     private Player player;
-    private boolean movingToken;
-    private boolean deselect;
-    private ArrayList<Hexagon> possibleGaps;
+    private ArrayList<Hexagon> possibleHexagons;
     private Piece piece;
     private String displayLanguage;
-    private boolean gameover;
-    private ArrayList<Hexagon> gridBoard;
+    private boolean movingPiece;
+    private boolean gameOver;
     private boolean boardReady;
     private boolean ai;
 
@@ -95,13 +92,11 @@ public class GameUI extends AppCompatActivity {
         game = new Game(p);
         controller = new GameController(game,this);
 
-        this.movingToken =false;
-        possibleGaps = new ArrayList<>();
-        gaps = new ArrayList<>();
+        this.movingPiece =false;
+        possibleHexagons = new ArrayList<>();
+        hexagons = new ArrayList<>();
         piece = new Piece();
-        this.gameover=false;
-        this.gridBoard = new ArrayList<>();
-        this.deselect=false;
+        this.gameOver =false;
         this.boardReady=false;
 
         //First player to play
@@ -127,6 +122,41 @@ public class GameUI extends AppCompatActivity {
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             scrollWhenPortrait();
 
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
+        if(!isGameOver()) {
+            alert.setMessage(R.string.leavingActivity);
+            alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+
+            });
+            alert.setNegativeButton(R.string.no, null);
+            alert.show();
+        }else{
+            alert.setMessage(R.string.playAgain);
+            alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+
+            });
+            alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                    startActivity(getIntent());
+                }
+
+            });
+            alert.show();
         }
     }
 
@@ -223,19 +253,19 @@ public class GameUI extends AppCompatActivity {
 
             //Check if a bee fully surrounded
             int endgame = controller.endGame();
-            if(endgame!=0 && !this.gameover){
+            if(endgame!=0 && !this.gameOver){
                 //GAME OVER
-                this.gameover=true;
+                this.gameOver =true;
                 gameOver(endgame);
             }
 
             //My stuff
             player = controller.getPlayer();
 
-            if(!this.movingToken && !isGameOver()){
-                gaps = controller.getPlayerHexagons(player);
-                //If there are not gaps and the bee is not in game --> next player
-                if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
+            if(!this.movingPiece && !isGameOver()){
+                hexagons = controller.getPlayerHexagons(player);
+                //If there are no hexagons and the bee is not in game --> next player
+                if(hexagons.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
                 //If all the players pieces are in the game and the player can't move any piece --> next player
                 //if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
                 if(ai){
@@ -252,8 +282,8 @@ public class GameUI extends AppCompatActivity {
             }
 
             final Grid grid;
-            if(!this.gameover) {
-                grid = new Grid(radius, scale, gaps, this.game.getHive().getBoard());
+            if(!this.gameOver) {
+                grid = new Grid(radius, scale, hexagons, this.game.getHive().getBoard());
             }else{
                 grid = new Grid(radius, scale,this.game.getHive().getBoard());
             }
@@ -364,8 +394,8 @@ public class GameUI extends AppCompatActivity {
 
                 }
 
-                if(!this.gameover) {
-                    if (checkIfHexagonAvailable(view.getHex(), gaps)) {
+                if(!this.gameOver) {
+                    if (checkIfHexagonAvailable(view.getHex(), hexagons)) {
                         view.setBackgroundResource(R.drawable.greyhex);
                     }
                 }
@@ -428,19 +458,17 @@ public class GameUI extends AppCompatActivity {
      */
     private void OnGridHexClick(final Hexagon hexagon) {
 
-        if(this.movingToken && checkIfHexagonAvailable(hexagon, gaps)){
+        if(this.movingPiece && checkIfHexagonAvailable(hexagon, hexagons)){
             //Moving piece
             Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
             controller.movePiece(piece, hex);
             controller.oneMoreTurn();
             controller.oneMoreRound();
-            this.movingToken=false;
-            this.deselect=false;
+            this.movingPiece =false;
             initGridView();
         }
-        else if(!this.movingToken && checkIfHexagonAvailable(hexagon, gaps)) {
+        else if(!this.movingPiece && checkIfHexagonAvailable(hexagon, hexagons)) {
             //Adding a piece to the board
-            this.deselect=false;
             ArrayList<Piece> pieces = controller.getPiecesFromBox();
             if(!pieces.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
@@ -501,18 +529,16 @@ public class GameUI extends AppCompatActivity {
             //Piece touched by the correct player
             piece = new Piece();
             piece = getPieceFromBoard(hexagon);
-            possibleGaps = controller.getPossibleMoves(piece);
-            if (!possibleGaps.isEmpty()) {
-                movingToken = true;
-                this.gaps = new ArrayList<>(possibleGaps);
-                this.deselect=false;
+            possibleHexagons = controller.getPossibleMoves(piece);
+            if (!possibleHexagons.isEmpty()) {
+                movingPiece = true;
+                this.hexagons = new ArrayList<>(possibleHexagons);
                 initGridView();
             }
-        }else if(!checkIfHexagonAvailable(hexagon, gaps)) {
+        }else if(!checkIfHexagonAvailable(hexagon, hexagons)) {
             //Deselect pieces moves
-            this.gaps = controller.getPlayerHexagons(player);
-            this.movingToken=false;
-            this.deselect=true;
+            this.hexagons = controller.getPlayerHexagons(player);
+            this.movingPiece =false;
             initGridView();
         }
 
@@ -534,7 +560,7 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     * Gets a piece from the board if it hasn't a beetle on top
+     * Gets a piece from the board to move it if it hasn't a beetle on top
      * @param hexagon
      * @return
      */
@@ -558,8 +584,8 @@ public class GameUI extends AppCompatActivity {
      * @return
      */
     private Hexagon getRealHexagon(int r, int q){
-        for(int i=0;i<gaps.size();i++){
-            if(gaps.get(i).getQ()==q && gaps.get(i).getR()==r) return gaps.get(i);
+        for(int i=0;i< hexagons.size();i++){
+            if(hexagons.get(i).getQ()==q && hexagons.get(i).getR()==r) return hexagons.get(i);
         }
         return null;
     }
@@ -588,7 +614,7 @@ public class GameUI extends AppCompatActivity {
      * @return
      */
     private boolean isGameOver(){
-        return this.gameover;
+        return this.gameOver;
     }
 
     //DIALOGS
@@ -617,7 +643,7 @@ public class GameUI extends AppCompatActivity {
      */
     private void gameOver(int player){
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        gaps=null;
+        hexagons =null;
         if(player==1){
             alert.setMessage(R.string.whitePlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
@@ -668,7 +694,7 @@ public class GameUI extends AppCompatActivity {
         else
             if(this.ai) alert.setMessage(R.string.playerStarts);
             else alert.setMessage(R.string.whiteStarts);
-        alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 initGridView();
@@ -680,20 +706,6 @@ public class GameUI extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        alert.setMessage(R.string.leavingActivity);
-        alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-
-        });
-        alert.setNegativeButton("No", null);
-        alert.show();
-    }
 
 }
 
