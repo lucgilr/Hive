@@ -1,20 +1,15 @@
 package lucgilr.inf.uva.hivev2.Controller;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import lucgilr.inf.uva.hivev2.AI.AI;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Hive;
+import lucgilr.inf.uva.hivev2.GameModel.Language;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
-import lucgilr.inf.uva.hivev2.UI.AIGameUI;
 import lucgilr.inf.uva.hivev2.UI.GameUI;
 
 /**
@@ -27,8 +22,8 @@ public class GameController {
 
     private Game model;
     private GameUI viewGrid;
-    private AIGameUI viewAIGrid;
     private AI ai;
+    private Language language;
 
     /**
      * PRUEBA
@@ -38,16 +33,7 @@ public class GameController {
     public GameController(Game model, GameUI view){
         this.model=model;
         this.viewGrid=view;
-    }
-
-    /**
-     * PRUEBA
-     * @param model
-     * @param view
-     */
-    public GameController(Game model, AIGameUI view){
-        this.model=model;
-        this.viewAIGrid=view;
+        this.language = new Language();
     }
 
     /**
@@ -189,6 +175,18 @@ public class GameController {
         this.ai = new AI(player);
     }
 
+
+    public String getEnglish(PieceType type){
+        return language.getEnglish(type);
+    }
+
+    public String getSpanish(PieceType type){
+        return language.getSpanish(type);
+    }
+
+    public PieceType stringToPieceType(String bug){
+        return language.stringToPieceType(bug);
+    }
 
 
 }

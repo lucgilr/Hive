@@ -46,7 +46,6 @@ public class GameUI extends AppCompatActivity {
 
     private Game game;
     private GameController controller;
-    private Language language;
 
     private ArrayList<Hexagon> gaps;
     private Player player;
@@ -95,7 +94,6 @@ public class GameUI extends AppCompatActivity {
         //Create new Game
         game = new Game(p);
         controller = new GameController(game,this);
-        language = new Language();
 
         this.movingToken =false;
         possibleGaps = new ArrayList<>();
@@ -239,7 +237,7 @@ public class GameUI extends AppCompatActivity {
                 //If there are not gaps and the bee is not in game --> next player
                 if(gaps.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
                 //If all the players pieces are in the game and the player can't move any piece --> next player
-                if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
+                //if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
                 if(ai){
                     if(player.getColor().equals("Black")){
 
@@ -453,9 +451,9 @@ public class GameUI extends AppCompatActivity {
                     for (int i = 0; i < pieces.size(); i++) {
                         if (pieces.get(i).getId() == 0) {
                             if (displayLanguage.equals("English")) {
-                                bug = language.getEnglish(pieces.get(i).getType());
+                                bug = controller.getEnglish(pieces.get(i).getType());
                             } else {
-                                bug = language.getSpanish(pieces.get(i).getType());
+                                bug = controller.getSpanish(pieces.get(i).getType());
                             }
                             t.add(bug);
                         }
@@ -463,9 +461,9 @@ public class GameUI extends AppCompatActivity {
                 } else {
                     for (int i = 0; i < pieces.size(); i++) {
                         if (displayLanguage.equals("English")) {
-                            bug = language.getEnglish(pieces.get(i).getType());
+                            bug = controller.getEnglish(pieces.get(i).getType());
                         } else {
-                            bug = language.getSpanish(pieces.get(i).getType());
+                            bug = controller.getSpanish(pieces.get(i).getType());
                         }
                         t.add(bug);
                     }
@@ -475,7 +473,7 @@ public class GameUI extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         piece = new Piece();
-                        PieceType bug = language.stringToPieceType(t.get(which));
+                        PieceType bug = controller.stringToPieceType(t.get(which));
                         piece = controller.takePieceByType(bug);
                         Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
                         controller.playPiece(piece, hex);

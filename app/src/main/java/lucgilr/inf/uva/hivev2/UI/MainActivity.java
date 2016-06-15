@@ -39,10 +39,6 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        /*mSamples = new Sample[]{new Sample(R.string.game,GameUI.class),
-                                new Sample(R.string.aigame,AIGameUI.class),
-                                new Sample(R.string.howto,HowToPlay.class)};*/
-
         mSamples = new Sample[]{new Sample(R.string.game,GameUI.class),
                 new Sample(R.string.aigame,GameUI.class),
                 new Sample(R.string.howto,HowToPlay.class)};
