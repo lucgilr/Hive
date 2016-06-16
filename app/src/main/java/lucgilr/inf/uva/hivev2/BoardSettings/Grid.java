@@ -151,7 +151,7 @@ public class Grid {
     private int checkBeetles(ArrayList<Piece> board){
         int count = 0;
         for(int i=0; i<board.size();i++){
-            if(board.get(i).getHexagon().getD()!=0) count += 1;
+            if(board.get(i).getHexagon().getL()!=0) count += 1;
         }
         return count;
     }

@@ -138,7 +138,7 @@ public class GameController {
      * @return
      */
     public Piece takePieceByType(PieceType type){
-        return getPlayer().inspectPieceByTypeFromBox(type);
+        return getPlayer().inspectPieceFromBox(type);
     }
 
     /**

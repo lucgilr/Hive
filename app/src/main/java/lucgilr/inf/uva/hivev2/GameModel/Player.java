@@ -91,17 +91,17 @@ public class Player {
      * @return all possible pieces to the player
      */
     private ArrayList<Piece> setPieces() {
-        this.pieces.add(new Piece(PieceType.BEE, 0, this, 30));
-        this.pieces.add(new Piece(PieceType.GRASSHOPPER,1,this,2));
-        this.pieces.add(new Piece(PieceType.GRASSHOPPER,2,this,2));
-        this.pieces.add(new Piece(PieceType.GRASSHOPPER,3,this,2));
-        this.pieces.add(new Piece(PieceType.SPIDER,4,this,6));
-        this.pieces.add(new Piece(PieceType.SPIDER,5,this,6));
-        this.pieces.add(new Piece(PieceType.BEETLE,6,this,4));
-        this.pieces.add(new Piece(PieceType.BEETLE,7,this,4));
-        this.pieces.add(new Piece(PieceType.ANT,8,this,8));
-        this.pieces.add(new Piece(PieceType.ANT,9,this,8));
-        this.pieces.add(new Piece(PieceType.ANT,10,this,8));
+        this.pieces.add(new Piece(PieceType.BEE, this, 30));
+        this.pieces.add(new Piece(PieceType.GRASSHOPPER,this,2));
+        this.pieces.add(new Piece(PieceType.GRASSHOPPER,this,2));
+        this.pieces.add(new Piece(PieceType.GRASSHOPPER,this,2));
+        this.pieces.add(new Piece(PieceType.SPIDER,this,6));
+        this.pieces.add(new Piece(PieceType.SPIDER,this,6));
+        this.pieces.add(new Piece(PieceType.BEETLE,this,4));
+        this.pieces.add(new Piece(PieceType.BEETLE,this,4));
+        this.pieces.add(new Piece(PieceType.ANT,this,8));
+        this.pieces.add(new Piece(PieceType.ANT,this,8));
+        this.pieces.add(new Piece(PieceType.ANT,this,8));
         return this.pieces;
     }
 
@@ -113,26 +113,13 @@ public class Player {
     }
 
     /**
-     * Returns a piece given its id.
-     * @param id
+     * Returns a piece given its type.
+     * @param type
      * @return
      */
-    public Piece inspectPieceById(int id){
+    public Piece inspectPiece(PieceType type){
         for(int i=0;i<this.pieces.size();i++){
-            if(this.pieces.get(i).getId()==id)
-                return this.pieces.get(i);
-        }
-        return null;
-    }
-
-    /**
-     * Returns a piece given its id.
-     * @param id
-     * @return
-     */
-    public Piece inspectPieceByIdFromBox(int id){
-        for(int i=0;i<this.pieces.size();i++){
-            if(this.pieces.get(i).getId()==id && !this.pieces.get(i).isInGame())
+            if(this.pieces.get(i).getType().equals(type))
                 return this.pieces.get(i);
         }
         return null;
@@ -143,7 +130,7 @@ public class Player {
      * @param type
      * @return
      */
-    public Piece inspectPieceByTypeFromBox(PieceType type){
+    public Piece inspectPieceFromBox(PieceType type){
         for(int i=0;i<this.pieces.size();i++){
             if(this.pieces.get(i).getType().equals(type) && !this.pieces.get(i).isInGame())
                 return this.pieces.get(i);

@@ -1,6 +1,5 @@
 package lucgilr.inf.uva.hivev2.AI;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -93,21 +92,24 @@ public class AI{
             this.random = rand.nextInt((size - 1) + 1);
             //Place spider (id=4)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(4);
+            //t = player.inspectPieceByIdFromBox(4);
+            t = player.inspectPieceFromBox(PieceType.SPIDER);
             this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
             game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Ant (id=8)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(8);
+            //t = player.inspectPieceByIdFromBox(8);
+            t = player.inspectPieceFromBox(PieceType.ANT);
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
             game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==3){
             //Place Bee (id=0)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(0);
+            //t = player.inspectPieceByIdFromBox(0);
+            t = player.inspectPieceFromBox(PieceType.BEE);
             if(random==0){
                 hexagon = opening[1];
             }else{
@@ -133,21 +135,24 @@ public class AI{
             this.random = rand.nextInt((size - 1) + 1);
             //Place Bee (id=0)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(0);
+            //t = player.inspectPieceByIdFromBox(0);
+            t = player.inspectPieceFromBox(PieceType.BEE);
             this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
             game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Spider (id=4)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(4);
+            //t = player.inspectPieceByIdFromBox(4);
+            t = player.inspectPieceFromBox(PieceType.SPIDER);
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
             game.getHive().addPiece(t, hexagon);
         }else if(player.getTurn()==3){
             //Place Spider (id=5)
             Piece t = new Piece();
-            t = player.inspectPieceByIdFromBox(5);
+            //t = player.inspectPieceByIdFromBox(5);
+            t = player.inspectPieceFromBox(PieceType.SPIDER);
             if(random==0){
                 hexagon = opening[1];
             }else{
@@ -171,7 +176,8 @@ public class AI{
      */
     private void beeStatus(){
         Piece bee = new Piece();
-        bee = this.player.inspectPieceById(0);
+        //bee = this.player.inspectPieceById(0);
+        bee = this.player.inspectPiece(PieceType.BEE);
         //First: if the bee is blocked --> Try to move one of its friendly neighbours
         if(this.game.getHive().checkIfPieceBlocked(bee)){
             saveBee(bee);
@@ -180,7 +186,8 @@ public class AI{
             int n = game.getHive().numberOfNeighbours(bee.getHexagon());
             //Get enemy's bee
             Piece enemy = new Piece();
-            enemy = this.game.getPlayer1().inspectPieceById(0);
+            //enemy = this.game.getPlayer1().inspectPieceById(0);
+            enemy = this.game.getPlayer1().inspectPiece(PieceType.BEE);
             //If the enemy's bee is in game --> get neighbours
             int n2=0;
             if(enemy.isInGame()){ n2 = game.getHive().numberOfNeighbours(enemy.getHexagon());}
@@ -378,8 +385,8 @@ public class AI{
         }
 
         //Exception #1: If the piece is a beetle and its moving on top of a piece of the same color --> return -100
-        if(toMove.getType().equals(PieceType.BEETLE) && hexagon.getD()!=0){
-            if(this.game.getHive().searchPiece(new Hexagon(hexagon.getQ(),hexagon.getR(),hexagon.getD()-1)).getPlayer().getColor().equals("Black")) {
+        if(toMove.getType().equals(PieceType.BEETLE) && hexagon.getL()!=0){
+            if(this.game.getHive().searchPiece(new Hexagon(hexagon.getQ(),hexagon.getR(),hexagon.getL()-1)).getPlayer().getColor().equals("Black")) {
                 Log.d("Moving on top of black","Moving on top of a black!");
                 Log.d("Piece",toMove.pieceInfo());
                 Log.d("Position",hexagon.toString());
@@ -388,7 +395,7 @@ public class AI{
         }
 
         //Save current piece position
-        Hexagon currentPos = new Hexagon(toMove.getHexagon().getQ(),toMove.getHexagon().getR(),toMove.getHexagon().getD());
+        Hexagon currentPos = new Hexagon(toMove.getHexagon().getQ(),toMove.getHexagon().getR(),toMove.getHexagon().getL());
         //Move piece to the position to evaluate
         this.game.getHive().movePiece(toMove, hexagon, true);
 
@@ -444,7 +451,7 @@ public class AI{
         //If the piece in the given gap is already bloked
         if(game.getHive().checkIfPieceBlocked(toCheck)) {
             //Save actual piece coordinates
-            Hexagon currentPos = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getD());
+            Hexagon currentPos = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getL());
             //Change coordinates of the piece to move --> Hexagon outside the board
             this.game.getHive().movePiece(piece, new Hexagon(piece.getHexagon().getQ()+10, piece.getHexagon().getR()+10, 10), true);
             //Check if the piece is now blocked
@@ -475,7 +482,8 @@ public class AI{
         //If the opening used was the first one, the AI has a spider in the box
         //Following a tip from the authors game we will bring the spiders early in the game: http://gen42.com/images/tipspage1.jpg
         if(this.randomOp==0 && !spider){
-            piece = this.player.inspectPieceByIdFromBox(5);
+            //piece = this.player.inspectPieceByIdFromBox(5);
+            piece = this.player.inspectPieceFromBox(PieceType.SPIDER);
             //Work out the best gap to place the spider
             moves = addPieceScores(piece);
             if(!moves.isEmpty()) this.spider=true;
@@ -484,33 +492,33 @@ public class AI{
             int type = getRandomPos(0,2);
             if(type==0){
                 //Take beetle
-                if(this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
-                else if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
-                else if(this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
+                if(this.player.inspectPieceFromBox(PieceType.BEETLE)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.BEETLE);
+                else if(this.player.inspectPieceFromBox(PieceType.ANT)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.ANT);
+                else if(this.player.inspectPieceFromBox(PieceType.GRASSHOPPER)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.GRASSHOPPER);
             }else if(type==1){
                 //Take ant
-                if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
-                else if(this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
-                else if (this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
+                if(this.player.inspectPieceFromBox(PieceType.ANT)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.ANT);
+                else if(this.player.inspectPieceFromBox(PieceType.GRASSHOPPER)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.GRASSHOPPER);
+                else if (this.player.inspectPieceFromBox(PieceType.BEETLE)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.BEETLE);
             }else{
                 //Take grasshopper
-                if(this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
-                else if(this.player.inspectPieceByTypeFromBox(PieceType.ANT)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.ANT);
-                else if (this.player.inspectPieceByTypeFromBox(PieceType.BEETLE)!=null)
-                    piece = this.player.inspectPieceByTypeFromBox(PieceType.BEETLE);
+                if(this.player.inspectPieceFromBox(PieceType.GRASSHOPPER)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.GRASSHOPPER);
+                else if(this.player.inspectPieceFromBox(PieceType.ANT)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.ANT);
+                else if (this.player.inspectPieceFromBox(PieceType.BEETLE)!=null)
+                    piece = this.player.inspectPieceFromBox(PieceType.BEETLE);
             }
             if(piece.getValue()!=0) moves = addPieceScores(piece);
             else{
                 //If there aren't any beetles or ants to add --> add grasshoppers
-                piece = this.player.inspectPieceByTypeFromBox(PieceType.GRASSHOPPER);
+                piece = this.player.inspectPieceFromBox(PieceType.GRASSHOPPER);
                 moves = addPieceScores(piece);
             }
         }
@@ -603,7 +611,8 @@ public class AI{
      */
     public ArrayList<Hexagon> getBeeEmptyNeighbours(Player player){
         Piece bee = new Piece();
-        bee = player.inspectPieceByIdFromBox(0);
+        //bee = player.inspectPieceByIdFromBox(0);
+        bee = player.inspectPieceFromBox(PieceType.BEE);
         ArrayList<Hexagon> n = new ArrayList<>();
         Piece[] nb = new Piece[6];
         nb = game.getHive().pieceNeighbours(bee.getHexagon());

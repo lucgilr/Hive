@@ -137,20 +137,6 @@ public class CircleImageView extends ImageView {
         mHexagon = hexagon;
     }
 
-    public int getBorderColor() {
-        return mBorderColor;
-    }
-
-    public void setBorderColor(int borderColor) {
-        if (borderColor == mBorderColor) {
-            return;
-        }
-
-        mBorderColor = borderColor;
-        mBorderPaint.setColor(mBorderColor);
-        invalidate();
-    }
-
     public void setSelected(boolean selected) {
         //super.setSelected(selected);
 
@@ -161,10 +147,6 @@ public class CircleImageView extends ImageView {
             mBorderColor = DEFAULT_BORDER_COLOR;
             setBorderWidth(DEFAULT_BORDER_WIDTH);
         }
-    }
-
-    public int getBorderWidth() {
-        return mBorderWidth;
     }
 
     public void setBorderWidth(int borderWidth) {

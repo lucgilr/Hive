@@ -338,51 +338,52 @@ public class GameUI extends AppCompatActivity {
                         String hexView = view.getHex().toString2D();
                         String sol = controller.getBoard().get(i).getHexagon().toString2D();
                         String color = controller.getBoard().get(i).getPlayer().getColor();
-                        int id = controller.getBoard().get(i).getId();
+                        //int id = controller.getBoard().get(i).getId();
+                        PieceType type = controller.getBoard().get(i).getType();
 
                         if(hexView.equals(sol)) {
                             if(!controller.getBoard().get(i).isBeetle()){
                                 if(displayLanguage.equals("English")) {
                                     if (color.equals("White")) {
-                                        if (id == 0)
+                                        if (type.equals(PieceType.BEE))
                                             view.setBackgroundResource(R.drawable.whitebee);
-                                        else if (id == 1 || id == 2 || id == 3)
+                                        else if (type.equals(PieceType.GRASSHOPPER))
                                             view.setBackgroundResource(R.drawable.whitegrass);
-                                        else if (id == 4 || id == 5)
+                                        else if (type.equals(PieceType.SPIDER))
                                             view.setBackgroundResource(R.drawable.whitespider);
-                                        else if (id == 6 || id == 7)
+                                        else if (type.equals(PieceType.BEETLE))
                                             view.setBackgroundResource(R.drawable.whitebeetle);
                                         else view.setBackgroundResource(R.drawable.whiteant);
                                     } else {
-                                        if (id == 0)
+                                        if (type.equals(PieceType.BEE))
                                             view.setBackgroundResource(R.drawable.blackbee);
-                                        else if (id == 1 || id == 2 || id == 3)
+                                        else if (type.equals(PieceType.GRASSHOPPER))
                                             view.setBackgroundResource(R.drawable.blackgrass);
-                                        else if (id == 4 || id == 5)
+                                        else if (type.equals(PieceType.SPIDER))
                                             view.setBackgroundResource(R.drawable.blackspider);
-                                        else if (id == 6 || id == 7)
+                                        else if (type.equals(PieceType.BEETLE))
                                             view.setBackgroundResource(R.drawable.blackbeetle);
                                         else view.setBackgroundResource(R.drawable.blackant);
                                     }
                                 }else{
                                     if (color.equals("White")) {
-                                        if (id == 0)
+                                        if (type.equals(PieceType.BEE))
                                             view.setBackgroundResource(R.drawable.abejablanca);
-                                        else if (id == 1 || id == 2 || id == 3)
+                                        else if (type.equals(PieceType.GRASSHOPPER))
                                             view.setBackgroundResource(R.drawable.saltamblanco);
-                                        else if (id == 4 || id == 5)
+                                        else if (type.equals(PieceType.SPIDER))
                                             view.setBackgroundResource(R.drawable.aranablanca);
-                                        else if (id == 6 || id == 7)
+                                        else if (type.equals(PieceType.BEETLE))
                                             view.setBackgroundResource(R.drawable.escarblanco);
                                         else view.setBackgroundResource(R.drawable.hormigablanca);
                                     } else {
-                                        if (id == 0)
+                                        if (type.equals(PieceType.BEE))
                                             view.setBackgroundResource(R.drawable.abejanegra);
-                                        else if (id == 1 || id == 2 || id == 3)
+                                        else if (type.equals(PieceType.GRASSHOPPER))
                                             view.setBackgroundResource(R.drawable.saltamnegro);
-                                        else if (id == 4 || id == 5)
+                                        else if (type.equals(PieceType.SPIDER))
                                             view.setBackgroundResource(R.drawable.arananegra);
-                                        else if (id == 6 || id == 7)
+                                        else if (type.equals(PieceType.BEETLE))
                                             view.setBackgroundResource(R.drawable.escarnegro);
                                         else view.setBackgroundResource(R.drawable.hormiganegra);
                                     }
@@ -477,7 +478,7 @@ public class GameUI extends AppCompatActivity {
                 String bug ="";
                 if(turn == 4 && !bee){
                     for (int i = 0; i < pieces.size(); i++) {
-                        if (pieces.get(i).getId() == 0) {
+                        if (pieces.get(i).getType().equals(PieceType.BEE)) {
                             if (displayLanguage.equals("English")) {
                                 bug = controller.getEnglish(pieces.get(i).getType());
                             } else {

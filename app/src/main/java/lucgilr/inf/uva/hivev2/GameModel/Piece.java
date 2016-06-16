@@ -8,7 +8,6 @@ package lucgilr.inf.uva.hivev2.GameModel;
  */
 public class Piece {
 
-    private int id;
     private PieceType type;
     private int value;
     private Player player;
@@ -29,14 +28,12 @@ public class Piece {
     /**
      *
      * @param type
-     * @param id
      * @param player
      */
-    public Piece(PieceType type, int id, Player player,int value){
+    public Piece(PieceType type, Player player,int value){
         this.type=type;
         this.value=value;
         this.hexagon =new Hexagon(100,100,100);
-        this.id=id;
         this.player=player;
         this.beetle=false;
     }
@@ -88,22 +85,6 @@ public class Piece {
      */
     public void setBeetle(boolean beetle) {
         this.beetle = beetle;
-    }
-
-    /**
-     * Gets the Unique Identification number for a player's piece.
-     * @return
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets an ID for a player's piece.
-     * @param id
-     */
-    public void setId(int id) {
-        this.id = id;
     }
 
     /**
@@ -176,13 +157,12 @@ public class Piece {
      * @return
      */
     public String pieceInfo(){
-        return " id #"+this.id+" "
-                + " Type: "+this.type+" "
+        return " Type: "+this.type+" "
                 + " Value: "+this.value+" "
                 + " Player: "+this.player.getColor()+" "
                 + " X: "+this.hexagon.getQ()+" "
                 + " Y: "+this.hexagon.getR()+" "
-                + " Z: "+this.hexagon.getD()+" "
+                + " Z: "+this.hexagon.getL()+" "
                 + " graphid: "+this.getGraphId()+" "
                 + " graphid: "+this.inGame+" "
                 + " Beetle: "+this.beetle+"\n";

@@ -8,14 +8,14 @@ package lucgilr.inf.uva.hivev2.GameModel;
  * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Hex.java
  * Non-cube hex coordinates (q, r)
  *
- * An Hexagon is identified by 3 coordinates: Column (q), Row (r) and a 3rd Dimension (d)
+ * An Hexagon is identified by 3 coordinates: Column (q), Row (r) and a level (l)
  *
  */
 public class Hexagon {
 
     private int q; //column
     private int r; //row
-    private int d; //3rd dimension
+    private int l; //level
 
     /**
      * The initial values of the coordinates are (0,0,0)
@@ -23,7 +23,7 @@ public class Hexagon {
     public Hexagon(){
         this.q=0;
         this.r=0;
-        this.d=0;
+        this.l=0;
     }
 
     /**
@@ -34,19 +34,19 @@ public class Hexagon {
     public Hexagon(int q, int r) {
         this.q = q;
         this.r = r;
-        this.d = 0;
+        this.l = 0;
     }
 
     /**
      * Constructor for a 3 dimension coordinate,
      * @param q //Column
      * @param r //Row
-     * @param d //3rd dimension
+     * @param l //level
      */
-    public Hexagon(int q, int r, int d){
+    public Hexagon(int q, int r, int l){
         this.q=q;
         this.r=r;
-        this.d=d;
+        this.l=l;
     }
 
     public Hexagon(float q, float r) {
@@ -69,7 +69,7 @@ public class Hexagon {
 
         this.q = rx;
         this.r = ry;
-        this.d = 0;
+        this.l = 0;
     }
 
     public Cube toCube() {
@@ -85,7 +85,7 @@ public class Hexagon {
     }
 
     public String toString() {
-        return q + ":" + r + ":" + d;
+        return q + ":" + r + ":" + l;
     }
 
     public String toString2D(){
@@ -108,11 +108,11 @@ public class Hexagon {
         this.r = r;
     }
 
-    public int getD() {
-        return d;
+    public int getL() {
+        return l;
     }
 
-    public void setD(int d) {
-        this.d = d;
+    public void setL(int l) {
+        this.l = l;
     }
 }
