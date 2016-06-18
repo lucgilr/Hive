@@ -27,7 +27,7 @@ import java.util.Random;
 import lucgilr.inf.uva.hivev2.BoardSettings.CircleImageView;
 import lucgilr.inf.uva.hivev2.BoardSettings.Grid;
 import lucgilr.inf.uva.hivev2.Controller.GameController;
-import lucgilr.inf.uva.hivev2.GameModel.Cube;
+import lucgilr.inf.uva.hivev2.BoardSettings.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
@@ -646,7 +646,8 @@ public class GameUI extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
         hexagons =null;
         if(player==1){
-            alert.setMessage(R.string.whitePlayer);
+            if(this.ai)alert.setMessage(R.string.aiWins);
+            else alert.setMessage(R.string.blackPlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -656,8 +657,7 @@ public class GameUI extends AppCompatActivity {
             alert.create();
             alert.show();
         }else if(player==2){
-            if(this.ai)alert.setMessage(R.string.aiWins);
-            else alert.setMessage(R.string.blackPlayer);
+            alert.setMessage(R.string.whitePlayer);
             alert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

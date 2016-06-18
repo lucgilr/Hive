@@ -21,9 +21,9 @@ public class Hexagon {
      * The initial values of the coordinates are (0,0,0)
      */
     public Hexagon(){
-        this.q=0;
-        this.r=0;
-        this.l=0;
+        this.q=-100;
+        this.r=-100;
+        this.l=-100;
     }
 
     /**
@@ -47,41 +47,6 @@ public class Hexagon {
         this.q=q;
         this.r=r;
         this.l=l;
-    }
-
-    public Hexagon(float q, float r) {
-        float x = q;
-        float y = -q-r;
-        float z = r;
-
-        int rx = Math.round(x);
-        int ry = Math.round(y);
-        int rz = Math.round(z);
-
-        float x_diff = Math.abs(rx - x);
-        float y_diff = Math.abs(ry - y);
-        float z_diff = Math.abs(rz - z);
-
-        if (x_diff > y_diff && x_diff > z_diff)
-            rx = -ry-rz;
-        else if (y_diff > z_diff)
-            ry = -rx-rz;
-
-        this.q = rx;
-        this.r = ry;
-        this.l = 0;
-    }
-
-    public Cube toCube() {
-        return new Cube(q, -q-r, r);
-    }
-
-    public Cube oddRHexToCube() {
-        int x = q - (r - (r&1)) / 2;
-        int z = r;
-        int y = -x-z;
-
-        return new Cube(x, -x-z, z);
     }
 
     public String toString() {

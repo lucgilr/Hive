@@ -21,7 +21,7 @@ public class Piece {
      */
     public Piece(){
         this.value=0;
-        this.hexagon =new Hexagon(-100,-100,-100);
+        this.hexagon =new Hexagon();
         this.beetle=false;
     }
 
@@ -33,7 +33,7 @@ public class Piece {
     public Piece(PieceType type, Player player,int value){
         this.type=type;
         this.value=value;
-        this.hexagon =new Hexagon(100,100,100);
+        this.hexagon =new Hexagon();
         this.player=player;
         this.beetle=false;
     }
@@ -164,7 +164,7 @@ public class Piece {
                 + " Y: "+this.hexagon.getR()+" "
                 + " Z: "+this.hexagon.getL()+" "
                 + " graphid: "+this.getGraphId()+" "
-                + " graphid: "+this.inGame+" "
+                + " inGame: "+this.inGame+" "
                 + " Beetle: "+this.beetle+"\n";
     }
 

@@ -11,9 +11,9 @@ import org.jgrapht.alg.BlockCutpointGraph;
 
 /**
  * @author Lucía Gil Román
- *         <p/>
- *         Representation of the Hive.
- *         The Hive has a fictional board, it is made by putting together pieces.
+ *
+ * Representation of the Hive.
+ * The Hive has a fictional board, it is made by putting together pieces.
  */
 public final class Hive {
 
@@ -23,7 +23,7 @@ public final class Hive {
     private int vertex;
 
     /**
-     *
+     * Creates a new hive where the only available gap will be (0,0,0), just in the middle.
      */
     public Hive() {
         this.board = new ArrayList<>();
@@ -108,7 +108,7 @@ public final class Hive {
         piece.setInGame(true);
         //Get neighbours
         Piece[] neighbours = new Piece[6];
-        neighbours = pieceNeighbours(piece.getHexagon());
+        neighbours = hexagonNeighbours(piece.getHexagon());
         //Set piece a graph id
         piece.setGraphId(this.vertex);
         this.vertex = this.vertex + 1;
@@ -121,18 +121,18 @@ public final class Hive {
             }
 
         //Delete hexagon from ArrayList of available hexagons
-        removeHexFromAvailable(piece.getHexagon(), this.availableHexagons);
+        removeHexFromList(piece.getHexagon(), this.availableHexagons);
         //add new neighbours if they are not already there and have no piece
-        refreshAvailableHexagons(piece.getHexagon());
+        updateAvailableHexagons(piece.getHexagon());
     }
 
     /**
-     * returns the neighbours of a piece from a given hexagon.
+     * returns the neighbours of a given hexagon.
      *
      * @param hexagon
      * @return
      */
-    public Piece[] pieceNeighbours(Hexagon hexagon) {
+    public Piece[] hexagonNeighbours(Hexagon hexagon) {
 
         int x = hexagon.getQ();
         int y = hexagon.getR();
@@ -192,7 +192,7 @@ public final class Hive {
      *
      * @param hexagon
      */
-    public void removeHexFromAvailable(Hexagon hexagon, ArrayList<Hexagon> list) {
+    private void removeHexFromList(Hexagon hexagon, ArrayList<Hexagon> list) {
         Iterator<Hexagon> it = list.iterator();
         while (it.hasNext()) {
             Hexagon c = it.next();
@@ -208,7 +208,7 @@ public final class Hive {
      *
      * @param hexagon
      */
-    private void refreshAvailableHexagons(Hexagon hexagon) {
+    private void updateAvailableHexagons(Hexagon hexagon) {
         ArrayList<Hexagon> newNeighbours = new ArrayList<>();
         newNeighbours = getNeighbourHex(hexagon);
         for (int i = 0; i < newNeighbours.size(); i++) {
@@ -251,9 +251,9 @@ public final class Hive {
      * @param hexagon
      * @return
      */
-    public boolean checkNeighboursPieceSamePlayer(Player player, Hexagon hexagon) {
+    private boolean checkNeighboursPieceSamePlayer(Player player, Hexagon hexagon) {
         Piece[] n = new Piece[6];
-        n = pieceNeighbours(hexagon);
+        n = hexagonNeighbours(hexagon);
         for (Piece n1 : n) {
             if (n1 != null) {
                 if (!n1.getPlayer().getColor().equals(player.getColor())) {
@@ -270,7 +270,7 @@ public final class Hive {
      * @param hexagon
      * @return
      */
-    public ArrayList<Hexagon> getNeighbourHex(Hexagon hexagon) {
+    private ArrayList<Hexagon> getNeighbourHex(Hexagon hexagon) {
 
         int x = hexagon.getQ();
         int y = hexagon.getR();
@@ -339,7 +339,7 @@ public final class Hive {
         for (int i = 0; i < oldNeighbours.size(); i++) {
             //If this neighbours has no neighbours --> delete from AvailableHexagons
             if (numberOfNeighbours(oldNeighbours.get(i)) == 0)
-                removeHexFromAvailable(oldNeighbours.get(i), list);
+                removeHexFromList(oldNeighbours.get(i), list);
         }
     }
 
@@ -352,7 +352,7 @@ public final class Hive {
     public int numberOfNeighbours(Hexagon hexagon) {
         int n = 0;
         Piece[] nb = new Piece[6];
-        nb = pieceNeighbours(hexagon);
+        nb = hexagonNeighbours(hexagon);
         for (int i = 0; i < nb.length; i++) {
             if (nb[i] != null) n = n + 1;
         }
@@ -362,7 +362,7 @@ public final class Hive {
     /**
      * Returns a list of hexagons where a given piece can be moved.
      * the piece is already in game.
-     * IA -->
+     * IA --> COMENTAR!!!!!!!!
      *
      * @param piece
      * @return
@@ -419,27 +419,24 @@ public final class Hive {
         //Add hexagon to available hexagons list
         this.availableHexagons.add(c);
         //Free hexagon in the board
-        deleteHexagon(piece);
+        updateHexagon(piece,new Hexagon(-100,-100,-100));
         //Delete hexagon neighbours if they haven't any neighbour
         deleteAvailableHexagons(c, this.availableHexagons);
         //Update hexagon of the piece of the board
         updateHexagon(piece, hexagon);
-        //if(!ia) {
-        refreshAvailableHexagons(hexagon);
-        //Remove hexagon from available
-        removeHexFromAvailable(hexagon, this.availableHexagons);//}
 
+        updateAvailableHexagons(hexagon);
+        //Remove hexagon from available
+        removeHexFromList(hexagon, this.availableHexagons);
         //Update graph:
         //Delete vertex from the graph
         this.graph.removeVertex(piece.getGraphId());
         //If the destination hexagon is in level 0
         //Get new neighbours
-        Piece[] newNeighbours = pieceNeighbours(piece.getHexagon());
+        Piece[] newNeighbours = hexagonNeighbours(piece.getHexagon());
         //Add piece again
         this.graph.addVertex(piece.getGraphId());
         //Add neighbours to graph
-        //Log.d("Graph move piece","Graph move piece");
-        //Log.d("piece",piece.pieceInfo());
         for (Piece newNeighbour : newNeighbours)
             if (newNeighbour != null) {
                 //Log.d("neighbour",newNeighbour.pieceInfo());
@@ -448,26 +445,12 @@ public final class Hive {
     }
 
     /**
-     * "Moves" the piece to the reserve hexagon. The reserve hexagon has the coordinates (-100,-100,-100)
-     * HAY UNA PARECIDA --> LA ANTERIOR
-     *
-     * @param piece
-     */
-    public void deleteHexagon(Piece piece) {
-        for (Piece board1 : this.board) {
-            if (board1.getHexagon().toString().equals(piece.getHexagon().toString())) {
-                board1.setHexagon(new Hexagon(-100, -100, -100));
-            }
-        }
-    }
-
-    /**
-     * Moves piece to a new hexagon
+     * Assigns a piece from the board a new hexagon
      *
      * @param piece   to update
      * @param hexagon new hexagon
      */
-    public void updateHexagon(Piece piece, Hexagon hexagon) {
+    private void updateHexagon(Piece piece, Hexagon hexagon) {
         for (Piece board1 : this.board) {
             if (board1.getHexagon().toString().equals(piece.getHexagon().toString())) {
                 board1.setHexagon(hexagon);
@@ -503,7 +486,7 @@ public final class Hive {
      * @param hexagon
      * @return
      */
-    public boolean checkIfHexagonBlocked(Hexagon hexagon) {
+    private boolean checkIfHexagonBlocked(Hexagon hexagon) {
         //Second: If number of neighbours more than 4;
         if (numberOfNeighbours(hexagon) > 4) return true;
         //Third: If it has at less 2 consecutive neighbours free --> Not blocked
@@ -775,7 +758,7 @@ public final class Hive {
         if (!checkIfPieceBlocked(piece)) {
             //Second: take ant from the board
             //Free hexagon in the board
-            deleteHexagon(piece);
+            updateHexagon(piece,new Hexagon(-100,-100,-100));
             //Delete hexagon neighbours if they haven't any neighbour
             deleteAvailableHexagons(c, availableHexagonsClon);
             //Third: Get all available hexagons and check if d==0 and then if they are not blocked
@@ -793,7 +776,7 @@ public final class Hive {
     /**
      * Checks if a piece could go in a hexagon
      * 1st checks that the hexagon is empty
-     * 2nd checks if it has neighbours. If it has 2 the piece can't slide to it.
+     * 2nd checks if it has neighbours. If it has 2 blocking its entry the piece can't slide to it.
      *
      * @param piece
      * @param hexagon
@@ -849,7 +832,7 @@ public final class Hive {
      * @param piece
      * @return
      */
-    public boolean brokenHive(Piece piece) {
+    private boolean brokenHive(Piece piece) {
         //If the destination hexagon is in level 0
         if (piece.getHexagon().getL() == 0) {
             BlockCutpointGraph bcg = new BlockCutpointGraph(this.graph);
@@ -895,7 +878,7 @@ public final class Hive {
      * Deletes a piece from the board game.
      * A piece can be remove if it was placed to test strategics for the AI.
      */
-    public void detelePiece(Piece piece) {
+    public void deletePiece(Piece piece) {
         //Save original hexagon
         Hexagon hex = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getL());
         for (int i = 0; i < this.getBoard().size(); i++) {
@@ -903,7 +886,7 @@ public final class Hive {
                 //Add hexagon to available hexagons list
                 this.availableHexagons.add(piece.getHexagon());
                 //Free hexagon from the board
-                deleteHexagon(piece);
+                updateHexagon(piece,new Hexagon(-100,-100,-100));
                 //Delete hexagon neighbours if they haven't any neighbour
                 deleteAvailableHexagons(hex, this.availableHexagons);
                 //Delete it from the graph

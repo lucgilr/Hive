@@ -4,7 +4,6 @@ import android.graphics.Point;
 
 import java.util.ArrayList;
 
-import lucgilr.inf.uva.hivev2.GameModel.Cube;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 

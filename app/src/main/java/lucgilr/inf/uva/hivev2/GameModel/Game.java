@@ -18,14 +18,10 @@ public class Game {
     private boolean end;
     private int start;
 
-    public Game(){
-        player1 = new Player("White");
-        player2 = new Player("Black");
-        hive = new Hive();
-        round = 1;
-        end = false;
-    }
-
+    /**
+     * A Game has 2 players (black & white) and "start" determines which one starts to play.
+     * @param start
+     */
     public Game(int start){
         player1 = new Player("White");
         player2 = new Player("Black");
@@ -152,8 +148,8 @@ public class Game {
         Hexagon p2 = this.getPlayer2().inspectPiece(PieceType.BEE).getHexagon();
         if(this.getHive().numberOfNeighbours(p1)==6 && this.getHive().numberOfNeighbours(p2)==6)
             return 3;
-        else if(this.getHive().numberOfNeighbours(p1)==6) return 2;
-        else if(this.getHive().numberOfNeighbours(p2)==6) return 1;
+        else if(this.getHive().numberOfNeighbours(p2)==6) return 2;
+        else if(this.getHive().numberOfNeighbours(p1)==6) return 1;
         else return 0;
 
     }

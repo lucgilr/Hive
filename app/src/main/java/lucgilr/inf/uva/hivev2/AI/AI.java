@@ -326,7 +326,7 @@ public class AI{
             Log.d("MOVES FOR THE PIECE",String.valueOf(pieceMoves.size()));
             if(!pieceMoves.isEmpty()) {
                 Piece[] n = new Piece[6];
-                n = game.getHive().pieceNeighbours(player.getPiecesInGame().get(i).getHexagon());
+                n = game.getHive().hexagonNeighbours(player.getPiecesInGame().get(i).getHexagon());
                 for (int j = 0; j < n.length; j++) {
                     if (n[j] != null) {
                         if (n[j].getType().equals(PieceType.BEE) && n[j].getPlayer().getColor().equals("White")) {
@@ -401,7 +401,7 @@ public class AI{
 
         int points = 0;
         Piece[] n = new Piece[6];
-        n = this.game.getHive().pieceNeighbours(hexagon);
+        n = this.game.getHive().hexagonNeighbours(hexagon);
         for(int j=0;j<n.length;j++){
             if(n[j]!=null){
                 if(n[j].getPlayer().getColor().equals(this.player.getColor())){
@@ -430,7 +430,7 @@ public class AI{
     private ArrayList<Piece> getFriends(Piece piece) {
         ArrayList<Piece> friends = new ArrayList<>();
         Piece[] neighbours = new Piece[6];
-        neighbours = this.game.getHive().pieceNeighbours(piece.getHexagon());
+        neighbours = this.game.getHive().hexagonNeighbours(piece.getHexagon());
         for(int i=0;i<neighbours.length;i++){
             if(neighbours[i]!=null)
                 if(neighbours[i].getPlayer().getColor().equals(this.player.getColor())) friends.add(neighbours[i]);
@@ -556,7 +556,7 @@ public class AI{
                 moves.add(new PieceMoveScore(piece,gaps.get(i),points));
             }
             //Delete piece from the board
-            this.game.getHive().detelePiece(piece);
+            this.game.getHive().deletePiece(piece);
         }
 
         return moves;
@@ -615,7 +615,7 @@ public class AI{
         bee = player.inspectPieceFromBox(PieceType.BEE);
         ArrayList<Hexagon> n = new ArrayList<>();
         Piece[] nb = new Piece[6];
-        nb = game.getHive().pieceNeighbours(bee.getHexagon());
+        nb = game.getHive().hexagonNeighbours(bee.getHexagon());
         for(int i=0;i<nb.length;i++){
             if(nb[i]==null) n.add(nb[i].getHexagon());
         }

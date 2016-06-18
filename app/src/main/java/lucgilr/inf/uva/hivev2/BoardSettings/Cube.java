@@ -1,4 +1,6 @@
-package lucgilr.inf.uva.hivev2.GameModel;
+package lucgilr.inf.uva.hivev2.BoardSettings;
+
+import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 
 /**
  * @author Narek (https://github.com/starwheel)
@@ -18,36 +20,8 @@ public class Cube {
         this.z = z;
     }
 
-    public Cube(float x, float y, float z) {
-        int rx = Math.round(x);
-        int ry = Math.round(y);
-        int rz = Math.round(z);
-
-        float x_diff = Math.abs(rx - x);
-        float y_diff = Math.abs(ry - y);
-        float z_diff = Math.abs(rz - z);
-
-        if (x_diff > y_diff && x_diff > z_diff)
-            rx = -ry-rz;
-        else if (y_diff > z_diff)
-            ry = -rx-rz;
-        else
-            rz = -rx-ry;
-
-        this.x = rx;
-        this.y = ry;
-        this.z = rz;
-    }
-
     public Hexagon toHex() {
         return new Hexagon(x, z);
-    }
-
-    public Hexagon cubeToOddRHex() {
-        int q = x + (z - (z&1)) / 2;
-        int r = z;
-
-        return new Hexagon(q, r);
     }
 
     public String toString() {

@@ -4,19 +4,18 @@ import java.util.ArrayList;
 
 
 /**
+ * @author Lucía Gil Román
+ *
  * A player is the person/AI who plays the game.
  * It has assigned a color to distinguish itself from the other player.
  * When a new player is set it receives a box with eleven pieces to play
  * and a turn count that increments every time the player makes a move
  * or adds a piece to the board.
- * @author Lucía Gil Román
  */
 public class Player {
 
     private String color;
     private int turn;
-    //private ArrayList<Piece> piecesInGame;
-    //private ArrayList<Piece> piecesInTheBox;
     private ArrayList<Piece> pieces;
     private boolean beeInGame;
 
@@ -29,9 +28,6 @@ public class Player {
         this.turn=1;
         this.pieces = new ArrayList<>();
         this.pieces = setPieces();
-        //this.piecesInTheBox = new ArrayList<>();
-        //this.piecesInTheBox = setPieces();
-        //this.piecesInGame = new ArrayList<>();
     }
 
     /**
@@ -126,7 +122,7 @@ public class Player {
     }
 
     /**
-     * Returns the Piece given its type.
+     * Returns the Piece from the box given its type.
      * @param type
      * @return
      */
@@ -139,7 +135,7 @@ public class Player {
     }
 
     /**
-     *
+     * Returns pieces that are in game
      * @return
      */
     public ArrayList<Piece> getPiecesInGame(){
@@ -151,7 +147,7 @@ public class Player {
     }
 
     /**
-     *
+     * Returns pieces that are in the box
      * @return
      */
     public ArrayList<Piece> getPiecesInTheBox(){
