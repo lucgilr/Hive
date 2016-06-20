@@ -1,9 +1,25 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.NavUtils;
+import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager.LayoutParams;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -12,9 +28,22 @@ import lucgilr.inf.uva.hivev2.R;
 /**
  * Created by Lucía Gil Román on 07/06/16.
  */
-public class HowToPlay extends AppCompatActivity {
+public class HowToPlay extends FragmentActivity {
 
     private String displayLanguage;
+
+    public static final String EXTRA_IMAGE = "extra_image";
+
+    //private ImagePagerAdapter mAdapter;
+    private ViewPager mPager;
+
+    // A static dataset to back the ViewPager adapter
+    public final static Integer[] imageSpanish = new Integer[] {
+            R.drawable.image_1, R.drawable.image_2, R.drawable.image_3,
+            R.drawable.image_4, R.drawable.image_5, R.drawable.image_6,
+            R.drawable.image_7, R.drawable.image_8, R.drawable.image_9,
+            R.drawable.image_10, R.drawable.image_11, R.drawable.image_12,
+            R.drawable.image_13};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +51,8 @@ public class HowToPlay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.how_to_play);
+
+        //mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), imageSpanish.length);
 
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();

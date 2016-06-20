@@ -149,7 +149,7 @@ public class CircleImageView extends ImageView {
         }
     }
 
-    public void setBorderWidth(int borderWidth) {
+    private void setBorderWidth(int borderWidth) {
         if (borderWidth == mBorderWidth) {
             return;
         }

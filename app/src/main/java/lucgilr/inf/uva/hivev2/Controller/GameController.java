@@ -20,10 +20,10 @@ import lucgilr.inf.uva.hivev2.UI.GameUI;
  */
 public class GameController {
 
-    private Game model;
-    private GameUI view;
+    private final Game model;
+    private final GameUI view;
     private AI ai;
-    private Language language;
+    private final Language language;
 
     /**
      * @param model

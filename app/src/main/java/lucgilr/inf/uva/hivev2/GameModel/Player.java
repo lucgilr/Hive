@@ -77,10 +77,9 @@ public class Player {
 
     /**
      * Assigns true if the bee's player has been set on the board.
-     * @param beeInGame
      */
-    public void setBeeInGame(boolean beeInGame) {
-        this.beeInGame = beeInGame;
+    public void setBeeInGame() {
+        this.beeInGame = true;
     }
 
     /**

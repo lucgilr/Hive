@@ -10,12 +10,12 @@
     <string name="grasshopper">Grasshopper</string>
     <string name="blackPlayer">Black Player Wins!</string>
     <string name="whitePlayer">White Player Wins!</string>
-    <string name="bothPlayers">Its a Draw...</string>
+    <string name="bothPlayers">Its a Draw…</string>
     <string name="playerTurn">Players turn</string>
     <string name="blackStarts">Black player starts to play</string>
     <string name="whiteStarts">White player starts to play</string>
     <string name="aiTurn">AI starts to play</string>
-    <string name="aiWins">AI Wins...</string>
+    <string name="aiWins">AI Wins…</string>
     <string name="playerStarts">User starts to play</string>
     <string name="emptyBox">The box is empty, all the pieces are in the game</string>
     <string name="leavingActivity">Are you sure you want to leave the game?</string>

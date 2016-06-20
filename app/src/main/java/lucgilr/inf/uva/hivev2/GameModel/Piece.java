@@ -76,7 +76,7 @@ public class Piece {
      * @return true if the piece has a BEETLE on top, false otherwise.
      */
     public boolean isBeetle() {
-        return beetle;
+        return !beetle;
     }
 
     /**
@@ -146,10 +146,9 @@ public class Piece {
 
     /**
      *
-     * @param inGame
      */
-    public void setInGame(boolean inGame) {
-        this.inGame = inGame;
+    public void setInGame() {
+        this.inGame = true;
     }
 
     /**

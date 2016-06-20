@@ -24,16 +24,16 @@ public class AI{
 
     private Game game;
     //AI is player2
-    private Player player;
+    private final Player player;
     //Opening sets vars
     private int random;
     private int randomOp;
-    Hexagon[] opening;
-    Hexagon hexagon;
+    private Hexagon[] opening;
+    private Hexagon hexagon;
     //To check if the AI has already move
-    boolean move;
+    private boolean move;
     //To check if second spider from opening one in game
-    boolean spider;
+    private boolean spider;
 
     public AI(Player player){
         this.player=player;
@@ -116,7 +116,7 @@ public class AI{
                 hexagon = opening[0];
             }
             //first: check if there is already a piece in that gap
-            if(!game.getHive().checkIfHexagonTaken(this.hexagon))
+            if(game.getHive().checkIfHexagonTaken(this.hexagon))
                 game.getHive().addPiece(t, this.hexagon);
             else attackOpponent();
         }
@@ -159,7 +159,7 @@ public class AI{
                 hexagon = opening[0];
             }
             //first: check if there is already a piece in that gap
-            if(!game.getHive().checkIfHexagonTaken(this.hexagon))
+            if(game.getHive().checkIfHexagonTaken(this.hexagon))
                 game.getHive().addPiece(t, this.hexagon);
             else{
                 beeStatus();
@@ -468,7 +468,7 @@ public class AI{
      *
      * @return Piece to place in the game.
      */
-    public Piece getPiece(){
+    private Piece getPiece(){
 
 
         Piece piece = new Piece();
@@ -628,7 +628,7 @@ public class AI{
      * @param max
      * @return
      */
-    public int getRandomPos(int min, int max){
+    private int getRandomPos(int min, int max){
         Random r = new Random();
         return r.nextInt(((max-min) + 1) + min);
     }
@@ -638,7 +638,7 @@ public class AI{
      * @param moves
      * @return
      */
-    public PieceMoveScore getBetterMove(ArrayList<PieceMoveScore> moves){
+    private PieceMoveScore getBetterMove(ArrayList<PieceMoveScore> moves){
         int max = -1000;
         PieceMoveScore chosenOne = new PieceMoveScore();
         for(int i=0;i<moves.size();i++){

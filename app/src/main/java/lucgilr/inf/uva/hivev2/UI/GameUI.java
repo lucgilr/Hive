@@ -58,24 +58,45 @@ public class GameUI extends AppCompatActivity {
     private int endGame;
     private PieceType bugType;
     private String bug;
+    private int screen;
 
     private RelativeLayout mRelativeLayout;
     private ScrollView vScrollView;
     private HorizontalScrollView hScrollView;
     private final int radius = 22;
-    private final int scale = 100;
+    private int scale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
 
+        //PRUEBA
+        if ((getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            Log.d("Large screen","yes");
+            //Tablet 8'
+            //Tablet 7'
+            this.screen=1;
+            this.scale=100;
+
+        }
+        if ((getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                Configuration.SCREENLAYOUT_SIZE_NORMAL) {
+            Log.d("NORMAL screen","yes");
+            //Smartphone 5'
+            this.screen=2;
+            this.scale=180;
+
+        }
+
         //Get the type of game we are going to play
         Bundle b = getIntent().getExtras();
         ai = false; // or other values
         if(b != null)
             ai = b.getBoolean("AI");
-        Log.d("AI?",String.valueOf(ai));
 
         //RelativeLayout
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
@@ -104,11 +125,13 @@ public class GameUI extends AppCompatActivity {
 
         //First player to play
         controller.getPlayer();
+        Player firstPlayer = getPlayer();
 
         initGridView();
 
         //Show dialog --> first player
-        firstPlayer(player);
+        firstPlayer(firstPlayer);
+
     }
 
     /**
@@ -131,7 +154,7 @@ public class GameUI extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        if(!isGameOver()) {
+        if(isGameOver()) {
             alert.setMessage(R.string.leavingActivity);
             alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
@@ -166,7 +189,7 @@ public class GameUI extends AppCompatActivity {
     /**
      * Scrolls to the middle of the RelativeLayout when Device in Portrait mode
      */
-    public void scrollWhenPortrait(){
+    private void scrollWhenPortrait(){
         Handler h = new Handler();
 
         h.postDelayed(new Runnable() {
@@ -182,7 +205,7 @@ public class GameUI extends AppCompatActivity {
     /**
      * Scrolls to the middle of the RelativeLayout when Device in Landscape mode
      */
-    public void scrollWhenLandscape(){
+    private void scrollWhenLandscape(){
         Handler h = new Handler();
 
         h.postDelayed(new Runnable() {
@@ -266,7 +289,7 @@ public class GameUI extends AppCompatActivity {
             //My stuff
             controller.getPlayer();
 
-            if(!this.movingPiece && !isGameOver()){
+            if(!this.movingPiece && isGameOver()){
                 //Get possible hexagons to place a piece for the first time is the pieces box is not empty
                 if(getPlayer().getPiecesInTheBox().size() != 0) controller.getPlayerHexagons(getPlayer());
                 else getHexagons().clear();
@@ -319,7 +342,7 @@ public class GameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_SCROLL:
                             break;
                         case MotionEvent.ACTION_UP:
-                            if(!isGameOver()) {
+                            if(isGameOver()) {
                                 v.setSelected(false);
                                 CircleImageView view = (CircleImageView) v;
                                 OnGridHexClick(view.getHex());
@@ -350,7 +373,7 @@ public class GameUI extends AppCompatActivity {
                         PieceType type = controller.getBoard().get(i).getType();
 
                         if(hexView.equals(sol)) {
-                            if(!controller.getBoard().get(i).isBeetle()){
+                            if(controller.getBoard().get(i).isBeetle()){
                                 if(displayLanguage.equals("English")) {
                                     if (color.equals("White")) {
                                         if (type.equals(PieceType.BEE))
@@ -576,7 +599,7 @@ public class GameUI extends AppCompatActivity {
         ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
             if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
-                    && !board.get(i).isBeetle())
+                    && board.get(i).isBeetle())
             return board.get(i);
         }
         return null;
@@ -611,7 +634,7 @@ public class GameUI extends AppCompatActivity {
         for(int i=0;i<controller.getBoardSize();i++){
             if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
                     && board.get(i).getPlayer().getColor().equals(getPlayer().getColor())
-                    && !board.get(i).isBeetle())
+                    && board.get(i).isBeetle())
                 return true;
         }
         return false;
@@ -622,7 +645,7 @@ public class GameUI extends AppCompatActivity {
      * @return
      */
     private boolean isGameOver(){
-        return this.gameOver;
+        return !this.gameOver;
     }
 
     //DIALOGS
@@ -728,7 +751,7 @@ public class GameUI extends AppCompatActivity {
         this.hexagons=hexagons;
     }
 
-    public ArrayList<Hexagon> getHexagons(){
+    private ArrayList<Hexagon> getHexagons(){
         return this.hexagons;
     }
 
@@ -736,7 +759,7 @@ public class GameUI extends AppCompatActivity {
         this.endGame=endGame;
     }
 
-    public int getEndGame(){
+    private int getEndGame(){
         return this.endGame;
     }
 
@@ -744,7 +767,7 @@ public class GameUI extends AppCompatActivity {
         this.bugType =bugType;
     }
 
-    public PieceType getBugType(){
+    private PieceType getBugType(){
         return this.bugType;
     }
 
@@ -752,7 +775,7 @@ public class GameUI extends AppCompatActivity {
         this.piece=piece;
     }
 
-    public Piece getPiece(){
+    private Piece getPiece(){
         return this.piece;
     }
 
@@ -760,7 +783,7 @@ public class GameUI extends AppCompatActivity {
         this.possibleHexagons=possibleHexagons;
     }
 
-    public ArrayList<Hexagon> getPossibleHexagons(){
+    private ArrayList<Hexagon> getPossibleHexagons(){
         return this.possibleHexagons;
     }
 

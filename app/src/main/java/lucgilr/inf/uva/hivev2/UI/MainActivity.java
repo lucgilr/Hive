@@ -19,8 +19,8 @@ import lucgilr.inf.uva.hivev2.R;
 public class MainActivity extends ListActivity {
 
     private class Sample{
-        private CharSequence title;
-        private Class<? extends Activity> activityClass;
+        private final CharSequence title;
+        private final Class<? extends Activity> activityClass;
 
         public Sample(int titleResId, Class<? extends Activity> activityClass){
             this.activityClass = activityClass;

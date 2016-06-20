@@ -22,8 +22,8 @@ import lucgilr.inf.uva.hivev2.GameModel.Piece;
  */
 public class Grid {
 
-    public final int radius; //The radius of the grid - the count of rings around the central node
-    public final int scale; //The radius of the single node in grid
+    private final int radius; //The radius of the grid - the count of rings around the central node
+    private final int scale; //The radius of the single node in grid
 
     //Derived node properties
     public final int width; //The width of the single hexagon node
@@ -34,7 +34,7 @@ public class Grid {
     public Cube[] nodes;
 
     //Added by Lucía Gil --> ArrayList of Hex generated
-    ArrayList<Hexagon> board;
+    private final ArrayList<Hexagon> board;
 
     /**
      * Construing a Grid with a set of cubes, scale, and shape

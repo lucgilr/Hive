@@ -101,13 +101,13 @@ public final class Hive {
      */
     public void addPiece(Piece piece, Hexagon hexagon) {
         //If is a bee --> set the player's bee in game as true
-        if (piece.getType() == PieceType.BEE) piece.getPlayer().setBeeInGame(true);
+        if (piece.getType() == PieceType.BEE) piece.getPlayer().setBeeInGame();
         //Add Hexagon position to the piece
         piece.setHexagon(hexagon);
         //Place piece on the board
         this.board.add(piece);
         //Change piece status to inGame
-        piece.setInGame(true);
+        piece.setInGame();
         //Get neighbours
         Piece[] neighbours = new Piece[6];
         neighbours = hexagonNeighbours(piece.getHexagon());
@@ -373,7 +373,7 @@ public final class Hive {
         ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
         boolean brokenHive = brokenHive(piece);
         if (ia) brokenHive = false;
-        if (!piece.isBeetle() && piece.getPlayer().isBeeInGame() && !brokenHive) {
+        if (piece.isBeetle() && piece.getPlayer().isBeeInGame() && !brokenHive) {
             switch (piece.getType()) {
                 case BEE:
                     possibleHexagons = beeMoves(piece);
@@ -909,9 +909,9 @@ public final class Hive {
     public boolean checkIfHexagonTaken(Hexagon hexagon) {
         for (int i = 0; i < this.getBoard().size(); i++) {
             if (this.getBoard().get(i).getHexagon().toString().equals(hexagon.toString()))
-                return true;
+                return false;
         }
-        return false;
+        return true;
     }
 
     /**
