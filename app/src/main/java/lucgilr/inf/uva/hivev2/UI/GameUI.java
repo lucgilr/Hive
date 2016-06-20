@@ -267,11 +267,13 @@ public class GameUI extends AppCompatActivity {
             controller.getPlayer();
 
             if(!this.movingPiece && !isGameOver()){
-                controller.getPlayerHexagons(getPlayer());
+                //Get possible hexagons to place a piece for the first time is the pieces box is not empty
+                if(getPlayer().getPiecesInTheBox().size() != 0) controller.getPlayerHexagons(getPlayer());
+                else getHexagons().clear();
                 //If there are no hexagons and the bee is not in game --> next player
                 if(getHexagons().isEmpty() && !controller.playerBeeInGame()) nextPlayer();
                 //If all the players pieces are in the game and the player can't move any piece --> next player
-                if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
+                if(getPlayer().getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
                 //If there are not hexagons to place the pieces and the player can't move any of the ones in the game
                 if(getHexagons().isEmpty() && controller.getHive().noMoves(getPlayer())) nextPlayer();
                 if(ai){
