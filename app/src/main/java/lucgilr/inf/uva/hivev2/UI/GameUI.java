@@ -264,16 +264,16 @@ public class GameUI extends AppCompatActivity {
             }
 
             //My stuff
-            //player = controller.getPlayer();
             controller.getPlayer();
 
             if(!this.movingPiece && !isGameOver()){
-                //hexagons = controller.getPlayerHexagons(player);
                 controller.getPlayerHexagons(getPlayer());
                 //If there are no hexagons and the bee is not in game --> next player
-                if(hexagons.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
+                if(getHexagons().isEmpty() && !controller.playerBeeInGame()) nextPlayer();
                 //If all the players pieces are in the game and the player can't move any piece --> next player
-                //if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
+                if(player.getPiecesInTheBox().size()==0 && game.getHive().noMoves(player)) nextPlayer();
+                //If there are not hexagons to place the pieces and the player can't move any of the ones in the game
+                if(getHexagons().isEmpty() && controller.getHive().noMoves(getPlayer())) nextPlayer();
                 if(ai){
                     if(player.getColor().equals("Black")){
 

@@ -1,6 +1,8 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -918,9 +920,16 @@ public final class Hive {
      * @return
      */
     public boolean noMoves(Player player){
+        Log.d("calling noMoves","yes");
         ArrayList<Piece> pieces = new ArrayList<>();
+        pieces = player.getPiecesInGame();
+        Log.d("In game",String.valueOf(pieces.size()));
         for(int i=0;i<pieces.size();i++){
-            if(getPossibleHexagons(pieces.get(i),false).size()!=0) return false;
+            if(getPossibleHexagons(pieces.get(i),false).size()!=0){
+                Log.d("gaps",String.valueOf(getPossibleHexagons(pieces.get(i),false).size()));
+                Log.d("for",pieces.get(i).pieceInfo());
+                return false;
+            }
         }
         return true;
     }
