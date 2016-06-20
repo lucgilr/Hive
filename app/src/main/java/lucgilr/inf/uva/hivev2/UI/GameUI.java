@@ -55,6 +55,9 @@ public class GameUI extends AppCompatActivity {
     private boolean gameOver;
     private boolean boardReady;
     private boolean ai;
+    private int endGame;
+    private PieceType bugType;
+    private String bug;
 
     private RelativeLayout mRelativeLayout;
     private ScrollView vScrollView;
@@ -100,12 +103,12 @@ public class GameUI extends AppCompatActivity {
         this.boardReady=false;
 
         //First player to play
-        Player firstPlayer = controller.getPlayer();
+        controller.getPlayer();
 
         initGridView();
 
         //Show dialog --> first player
-        firstPlayer(firstPlayer);
+        firstPlayer(player);
     }
 
     /**
@@ -252,18 +255,21 @@ public class GameUI extends AppCompatActivity {
             this.mRelativeLayout.removeAllViewsInLayout();
 
             //Check if a bee fully surrounded
-            int endgame = controller.endGame();
-            if(endgame!=0 && !this.gameOver){
+            //int endgame = controller.endGame();
+            controller.endGame();
+            if(getEndGame()!=0 && !this.gameOver){
                 //GAME OVER
                 this.gameOver =true;
-                gameOver(endgame);
+                gameOver(getEndGame());
             }
 
             //My stuff
-            player = controller.getPlayer();
+            //player = controller.getPlayer();
+            controller.getPlayer();
 
             if(!this.movingPiece && !isGameOver()){
-                hexagons = controller.getPlayerHexagons(player);
+                //hexagons = controller.getPlayerHexagons(player);
+                controller.getPlayerHexagons(getPlayer());
                 //If there are no hexagons and the bee is not in game --> next player
                 if(hexagons.isEmpty() && !controller.playerBeeInGame()) nextPlayer();
                 //If all the players pieces are in the game and the player can't move any piece --> next player
@@ -459,30 +465,29 @@ public class GameUI extends AppCompatActivity {
      */
     private void OnGridHexClick(final Hexagon hexagon) {
 
-        if(this.movingPiece && checkIfHexagonAvailable(hexagon, hexagons)){
+        if(this.movingPiece && checkIfHexagonAvailable(hexagon, getHexagons())){
             //Moving piece
             Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
-            controller.movePiece(piece, hex);
+            controller.movePiece(getPiece(), hex);
             controller.oneMoreTurn();
             controller.oneMoreRound();
             this.movingPiece =false;
             initGridView();
         }
-        else if(!this.movingPiece && checkIfHexagonAvailable(hexagon, hexagons)) {
+        else if(!this.movingPiece && checkIfHexagonAvailable(hexagon, getHexagons())) {
             //Adding a piece to the board
             ArrayList<Piece> pieces = controller.getPiecesFromBox();
             if(!pieces.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
-                int turn = controller.getPlayerTurn();
                 boolean bee = controller.playerBeeInGame();
-                String bug ="";
-                if(turn == 4 && !bee){
+
+                if(controller.getPlayerTurn() == 4 && !bee){
                     for (int i = 0; i < pieces.size(); i++) {
                         if (pieces.get(i).getType().equals(PieceType.BEE)) {
                             if (displayLanguage.equals("English")) {
-                                bug = controller.getEnglish(pieces.get(i).getType());
+                                controller.setEnglish(pieces.get(i).getType());
                             } else {
-                                bug = controller.getSpanish(pieces.get(i).getType());
+                                controller.setSpanish(pieces.get(i).getType());
                             }
                             t.add(bug);
                         }
@@ -490,9 +495,9 @@ public class GameUI extends AppCompatActivity {
                 } else {
                     for (int i = 0; i < pieces.size(); i++) {
                         if (displayLanguage.equals("English")) {
-                            bug = controller.getEnglish(pieces.get(i).getType());
+                            controller.setEnglish(pieces.get(i).getType());
                         } else {
-                            bug = controller.getSpanish(pieces.get(i).getType());
+                            controller.setSpanish(pieces.get(i).getType());
                         }
                         t.add(bug);
                     }
@@ -501,11 +506,12 @@ public class GameUI extends AppCompatActivity {
                 alert.setItems(t.toArray(new String[t.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        piece = new Piece();
-                        PieceType bug = controller.stringToPieceType(t.get(which));
-                        piece = controller.takePieceByType(bug);
+                        setPiece(new Piece());
+                        controller.stringToPieceType(t.get(which));
+                        //piece = controller.takePieceByType(getBugType());
+                        controller.takePieceByType(getBugType());
                         Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
-                        controller.playPiece(piece, hex);
+                        controller.playPiece(getPiece(), hex);
                         controller.oneMoreTurn();
                         controller.oneMoreRound();
                         initGridView();
@@ -528,17 +534,16 @@ public class GameUI extends AppCompatActivity {
             }
         }else if(pieceTouched(hexagon)){
             //Piece touched by the correct player
-            piece = new Piece();
-            piece = getPieceFromBoard(hexagon);
-            possibleHexagons = controller.getPossibleMoves(piece);
-            if (!possibleHexagons.isEmpty()) {
+            setPiece(getPieceFromBoard(hexagon));
+            controller.getPossibleMoves(getPiece());
+            if (!getPossibleHexagons().isEmpty()) {
                 movingPiece = true;
-                this.hexagons = new ArrayList<>(possibleHexagons);
+                this.hexagons = new ArrayList<>(getPossibleHexagons());
                 initGridView();
             }
-        }else if(!checkIfHexagonAvailable(hexagon, hexagons)) {
+        }else if(!checkIfHexagonAvailable(hexagon, getHexagons())) {
             //Deselect pieces moves
-            this.hexagons = controller.getPlayerHexagons(player);
+            controller.getPlayerHexagons(getPlayer());
             this.movingPiece =false;
             initGridView();
         }
@@ -603,7 +608,7 @@ public class GameUI extends AppCompatActivity {
         ArrayList<Piece> board = controller.getBoard();
         for(int i=0;i<controller.getBoardSize();i++){
             if(board.get(i).getHexagon().toString2D().equals(hexagon.toString2D())
-                    && board.get(i).getPlayer().getColor().equals(controller.getPlayer().getColor())
+                    && board.get(i).getPlayer().getColor().equals(getPlayer().getColor())
                     && !board.get(i).isBeetle())
                 return true;
         }
@@ -707,6 +712,63 @@ public class GameUI extends AppCompatActivity {
 
     }
 
+    //Getters and Setters
+
+    public void setPlayer(Player player){
+        this.player=player;
+    }
+
+    public Player getPlayer(){
+        return this.player;
+    }
+
+    public void setHexagons(ArrayList<Hexagon> hexagons){
+        this.hexagons=hexagons;
+    }
+
+    public ArrayList<Hexagon> getHexagons(){
+        return this.hexagons;
+    }
+
+    public void setEndGame(int endGame){
+        this.endGame=endGame;
+    }
+
+    public int getEndGame(){
+        return this.endGame;
+    }
+
+    public void setBugType(PieceType bugType){
+        this.bugType =bugType;
+    }
+
+    public PieceType getBugType(){
+        return this.bugType;
+    }
+
+    public void setPiece(Piece piece){
+        this.piece=piece;
+    }
+
+    public Piece getPiece(){
+        return this.piece;
+    }
+
+    public void setPossibleHexagons(ArrayList<Hexagon> possibleHexagons){
+        this.possibleHexagons=possibleHexagons;
+    }
+
+    public ArrayList<Hexagon> getPossibleHexagons(){
+        return this.possibleHexagons;
+    }
+
+    public void setBug(String bug){
+        this.bug=bug;
+    }
+
+    public String getBug(){
+        return this.bug;
+    }
 
 }
 

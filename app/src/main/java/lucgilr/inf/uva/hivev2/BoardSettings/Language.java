@@ -1,4 +1,6 @@
-package lucgilr.inf.uva.hivev2.GameModel;
+package lucgilr.inf.uva.hivev2.BoardSettings;
+
+import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 
 /**
  * @author Lucía Gil Román

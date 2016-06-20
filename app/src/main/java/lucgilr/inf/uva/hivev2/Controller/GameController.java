@@ -6,7 +6,7 @@ import lucgilr.inf.uva.hivev2.AI.AI;
 import lucgilr.inf.uva.hivev2.GameModel.Game;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Hive;
-import lucgilr.inf.uva.hivev2.GameModel.Language;
+import lucgilr.inf.uva.hivev2.BoardSettings.Language;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 import lucgilr.inf.uva.hivev2.GameModel.Player;
@@ -21,18 +21,17 @@ import lucgilr.inf.uva.hivev2.UI.GameUI;
 public class GameController {
 
     private Game model;
-    private GameUI viewGrid;
+    private GameUI view;
     private AI ai;
     private Language language;
 
     /**
-     * PRUEBA
      * @param model
      * @param view
      */
     public GameController(Game model, GameUI view){
         this.model=model;
-        this.viewGrid=view;
+        this.view =view;
         this.language = new Language();
     }
 
@@ -48,8 +47,8 @@ public class GameController {
      *
      * @return
      */
-    public Player getPlayer(){
-        return model.playerTurn();
+    public void getPlayer(){
+        this.view.setPlayer(model.playerTurn());
     }
 
     /**
@@ -57,8 +56,8 @@ public class GameController {
      * @param player
      * @return
      */
-    public ArrayList<Hexagon> getPlayerHexagons(Player player){
-        return model.getHive().getAvailableHexagonsPlayer(player);
+    public void getPlayerHexagons(Player player){
+        view.setHexagons(model.getHive().getAvailableHexagonsPlayer(player));
     }
 
     /**
@@ -66,7 +65,7 @@ public class GameController {
      * @return
      */
     public boolean playerBeeInGame(){
-        return getPlayer().isBeeInGame();
+        return view.getPlayer().isBeeInGame();
     }
 
     /**
@@ -89,8 +88,8 @@ public class GameController {
      *
      * @return
      */
-    public int endGame(){
-        return model.beeSurrounded();
+    public void endGame(){
+        view.setEndGame(model.beeSurrounded());
     }
 
     /**
@@ -113,7 +112,7 @@ public class GameController {
      *
      */
     public void oneMoreTurn(){
-        getPlayer().oneMoreTurn();
+        view.getPlayer().oneMoreTurn();
     }
 
     /**
@@ -121,7 +120,7 @@ public class GameController {
      * @return
      */
     public int getPlayerTurn(){
-        return getPlayer().getTurn();
+        return view.getPlayer().getTurn();
     }
 
     /**
@@ -129,7 +128,7 @@ public class GameController {
      * @return
      */
     public ArrayList<Piece> getPiecesFromBox(){
-        return getPlayer().getPiecesInTheBox();
+        return view.getPlayer().getPiecesInTheBox();
     }
 
     /**
@@ -137,8 +136,8 @@ public class GameController {
      * @param type
      * @return
      */
-    public Piece takePieceByType(PieceType type){
-        return getPlayer().inspectPieceFromBox(type);
+    public void takePieceByType(PieceType type){
+        view.setPiece(view.getPlayer().inspectPieceFromBox(type));
     }
 
     /**
@@ -155,8 +154,8 @@ public class GameController {
      * @param piece
      * @return
      */
-    public ArrayList<Hexagon> getPossibleMoves(Piece piece){
-        return model.getHive().getPossibleHexagons(piece, false);
+    public void getPossibleMoves(Piece piece){
+        view.setPossibleHexagons(model.getHive().getPossibleHexagons(piece,false));
     }
 
     /**
@@ -176,16 +175,16 @@ public class GameController {
     }
 
 
-    public String getEnglish(PieceType type){
-        return language.getEnglish(type);
+    public void setEnglish(PieceType type){
+        view.setBug(language.getEnglish(type));
     }
 
-    public String getSpanish(PieceType type){
-        return language.getSpanish(type);
+    public void setSpanish(PieceType type){
+        view.setBug(language.getSpanish(type));
     }
 
-    public PieceType stringToPieceType(String bug){
-        return language.stringToPieceType(bug);
+    public void stringToPieceType(String bug){
+        view.setBugType(language.stringToPieceType(bug));
     }
 
 
