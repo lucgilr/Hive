@@ -2,4 +2,5 @@
 <resources>
     <color name="yellowOrange">#FFCC00</color>
     <color name="darkGray">#7C858B</color>
+    <color name="white">#FFFFFF</color>
 </resources>
