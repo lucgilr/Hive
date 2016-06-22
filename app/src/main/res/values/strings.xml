@@ -26,52 +26,53 @@
                  "Is a boardgame for 2 players who have the same pieces: 11 hexagonal pieces that represent insects: 1 bee, 3 ants, 3 grasshoppers, 2 beetles y 2 spiders.\n\n"</string>
     <string name="paragraph_2">"The pieces will be placed on an imaginary board made by the own pieces, that is, the pieces will be the ones to form the hive in which they will slide to achieve its aim.\n\n"
 "AIM OF THE GAME\n\n"
-"To win the game you have to surround the enemy\'s bee with six pieces, with your own pieces or the other player pieces, at the same time that you defend your bee.\n"</string>
-    <string name="paragraph_3">"In this picture we can see how the white bee is fully surrounded with pieces of both players.\n\n"
-"HOW TO START\n\n"
+"To win the game you have to surround the enemy\'s bee with six pieces, with your own pieces or the other player pieces, at the same time that you defend your bee.\n"
+"In this picture we can see how the white bee is fully surrounded with pieces of both players."</string>
+    <string name="paragraph_3">"HOW TO START\n\n"
 "A random player places a piece on the "board" and the other player places another piece touching that piece.\n"
-"When starting a game in this app it will appear a grey hexagon meaning its the only gap you can place the first piece:\n\n"</string>
-    <string name="paragraph_4">"In the first round represented in the image we can see how tha players have placed their pieces together to start the formation of the hive.\n"
-"In the next rounds the players will placed or moved the pieces taking turns.\n\n"
-"HOW TO PLACE\n\n"
-"While the player has pieces to place it add them to the game, but a played piece can be move out from the game.\n"
+"When starting a game in this app it will appear a grey hexagon meaning its the only gap you can place the first piece.\n"
+"In the first round represented in the image we can see how the players have placed their pieces together to start the formation of the hive.\n"
+"In the next rounds the players will placed or moved the pieces taking turns."</string>
+    <string name="paragraph_4">"HOW TO PLACE\n\n"
+"While the player has pieces he can add them to the game, but a played piece can\'t be move out from the game.\n"
 "To add a piece to the game, if its not the first round, it can only touch pieces with the same color as him.\n"
-"If we want to add a piece when playing a game in this app you just have to touch a grey hexagon and select a piece from the list that will appear.\n\n"</string>
-    <string name="paragraph_5">"In this image we can see how, being the turn of the white player, that he/she can only place pieces on the shaded hexagons that are the gaps surrounding the hive and not touching enemy\'s pieces.\n\n"
-"PLACING THE BEE\n\n"
-"The bee is the most valuable bee in the game, is like the queen from the chess, and it has to be placed in the first four turns of the player. If in its fourth turn the player doesn\'t have the bee in game it must be placed.\n\n"
-"MOVES\n\n"
-"Once the bee is on the board the player can choose between placing a piece or move one that is already in the game. Each kind of piece has defined how it can be moved and once is in the game it can touch enemy\'s pieces. An important rule is that if moving a piece would cause the break of the hive it can\'t be moved. This rule will be better explained in "ONE HIVE RULE" section.\n"
-"When playing a game in this app yo can move a piece by touching it, if it can be moved a shaded hexagons will indicate the possible moves and by touching one of them the piece will move to it. If the piece can\'t be moved the shaded hexagons that appear when touching it indicates places where you can place a piece for the first time.\n\n"
-"BEE MOVES\n\n"
-"The bee can only slide one turn at a time. In spite of this one simple move would change the course of the whole game.\n\n"</string>
-    <string name="paragraph_6">"The bee can only be moved to one the two shaded gaps .\n\n"
-"BEETLE MOVES\n\n"
-"The beetle, like the bee, can only slide one space at a time, but this piece can move on top of other pieces. So the beetle can slide surrounding the hive or on top of it. The only way to block a beetle is by placing another one on top (There is no limit in placing beetles on top of other ones, just the maximum number of beetles that exists, 4). When adding a piece to the game the beetle on top of another piece will indicate the color of that space.\n\n"</string>
-    <string name="paragraph_7">Image 1.</string>
-    <string name="paragraph_8">"Image 2.\n"
-"In the first image we can see the current situation when the turn is on the white player. In the second image we can see where we canplace the beetle, including the top of other pieces.\n\n"
-"GRASSHOPPER MOVES\n\n"
-"The grasshoppers can slide by jumping over other pieces and in any direction, so this piece can access gaps that are blocked so it can\'t be access by other pieces, except the beetle. The grasshoppers can\'t jump empty spaces\n\n"</string>
-    <string name="paragraph_9">"The grasshopper can only be moved to any of the two shaded hexagons, over both bees or over the spider.\n\n"
-"SPIDER MOVES\n\n"
-"The spider can slide 3 spaces at a time, no more no less, in the same direction.\n\n"</string>
-    <string name="paragraph_10">"The spider could be moved to any of the 2 shaded gaps, because they are excatly three spaces away from its original position.\n\n"
-"ANT MOVES\n\n"
-"The ant is the second most valuable piece of the game because it can be moved surrounding the hive to any unblocked gap.\n"</string>
-    <string name="paragraph_11">"The ant can be moved to any of the shaded gaps in the image.\n\n"
-"RESTRICTIONS\n"
+"If we want to add a piece when playing a game in this app you just have to touch a grey hexagon and select a piece from the list that will appear.\n"
+"In this image we can see how, being the turn of the white player, that he can only place pieces on the shaded hexagons that are the gaps surrounding the hive and not touching enemy\'s pieces."</string>
+    <string name="paragraph_5">"PLACING THE BEE\n\n"
+"The bee is the most valuable piece in the game, is like the queen from the chess, and it has to be placed in the first four turns of the player. If in its fourth turn the player doesn\'t have the bee in game it must be placed.\n\n"
+</string>
+    <string name="paragraph_8">"BEETLE MOVES\n\n"
+"The beetle, like the bee, can only slide one space at a time, but this piece can move on top of other pieces. So the beetle can slide surrounding the hive or on top of it. The only way to block a beetle is by placing another one on top (There is no limit in placing beetles on top of other ones, just the maximum number of beetles that exists, 4). When adding a piece to the game the beetle on top of another piece will indicate the color of that space.\n\n"
+"Image 1"</string>
+    <string name="paragraph_9">"Image 2.\n\n"
+"In the first image we can see the current situation when the turn is on the white player. In the second image we can see where we canplace the beetle, including the top of other pieces.\n\n"</string>
+    <string name="paragraph_10">"GRASSHOPPER MOVES\n\n"
+"The grasshoppers can slide by jumping over other pieces and in any direction, so this piece can access gaps that are blocked so it can\'t be access by other pieces, except the beetle. The grasshoppers can\'t jump empty spaces\n"
+"The grasshopper can only be moved to any of the two shaded hexagons, over both bees or over the spider.\n"
+</string>
+    <string name="paragraph_11">"SPIDER MOVES\n\n"
+"The spider can slide 3 spaces at a time, no more no less, in the same direction.\n"
+"The spider could be moved to any of the 2 shaded gaps, because they are excatly three spaces away from its original position.\n"</string>
+    <string name="paragraph_12">"ANT MOVES\n\n"
+"The ant is the second most valuable piece of the game because it can be moved surrounding the hive to any unblocked gap.\n"
+"The ant can be moved to any of the shaded gaps in the image.\n"</string>
+    <string name="paragraph_13">"RESTRICTIONS\n"
 "ONE HIVE RULE\n\n"
-"The pieces in game must be linked with each other all the time, a piece that would cause the hive to split in two can\'t be moved .\n"</string>
-    <string name="paragraph_12">"If we try to move any of the two bees the hive would break, however, moving the grasshopper or the spider wouldn\'t.\n\n"
-"FREEDOM TO MOVE\n\n"
-"Every insect, except grasshoppers, must be moved sliding, that is, if a piece is surrounded in a way that it can\'t be moved by sliding it or it wants to go to a position that can go in without sliding, that piece can\'t be moved and/or go to that position.\n"</string>
-    <string name="paragraph_13">"The bee from the image can\'t be moved, if we try to do it some of the pieces surroinding it would be moved too."</string>
-    <string name="paragraph_14">"However in this one the black ant can moved to any of the shaded hexagons but the green one in the middle because it can\'t slide to it.\n\n"
-"UNABLE TO MOVE OR PLACE\n\n"
-"When a player can\'t place any piece (because all his/her pieces are already in game or can\'t place any without touching enemy\'s pieces) or move one that is already in game, the player lost the turn. The game keeps going in this way until the player can make an action or a bee is fully surrounded.\n"
+"The pieces in game must be linked with each other all the time, a piece that would cause the hive to split in two can\'t be moved .\n"
+"If we try to move any of the two bees the hive would break, however, moving the grasshopper or the spider wouldn\'t."
+</string>
+    <string name="paragraph_14">"FREEDOM TO MOVE\n\n"
+"Every insect, except grasshoppers, must be moved sliding, that is, if a piece is surrounded in a way that it can\'t be moved by sliding it or it wants to go to a position that can go in without sliding, that piece can\'t be moved and/or go to that position.\n"
+"The bee from the image can\'t be moved, if we try to do it some of the pieces surroinding it would be moved too."</string>
+    <string name="paragraph_16">"UNABLE TO MOVE OR PLACE\n\n"
+"When a player can\'t place any piece (because all his/her pieces are already in game or can\'t place any without touching enemy\'s pieces) or move one that is already in game, the player lost the turn. The game keeps going in this way until the player can make an action or a bee is fully surrounded.\n\n"
 "THE END OF THE GAME\n\n"
 "The game ends when one of the bees or both are fully surrounded by other pieces no matter the color. The player whose bee is fully surrounded lose the game.\n"
-"Draw: It can happen in two ways:\n"
-"When a piece is placed in a way that will fully surround both bees at once.\n\n"</string>
+"Draw: It can happen when:\n"
+"A piece is placed in a way that will fully surround both bees at once."</string><string name="paragraph_6">"MOVES\n\n"
+"Once the bee is on the board the player can choose between placing a piece or move one that is already in the game. Each kind of piece has defined how it can be moved and once is in the game it can touch enemy\'s pieces. An important rule is that if moving a piece would cause the break of the hive it can\'t be moved. This rule will be better explained in "ONE HIVE RULE" section.\n"
+"When playing a game in this app yo can move a piece by touching it, if it can be moved a shaded hexagons will indicate the possible moves and by touching one of them the piece will move to it. If the piece can\'t be moved the shaded hexagons that appear when touching it indicates places where you can place a piece for the first time."</string><string name="paragraph_7">"BEE MOVES\n\n"
+"The bee can only slide one turn at a time. In spite of this one simple move would change the course of the whole game.\n"
+"The bee can only be moved to one the two shaded gaps."</string>
+    <string name="paragraph_15">"However in this one the black ant can moved to any of the shaded hexagons but the green one in the middle because it can\'t slide to it."</string>
 </resources>

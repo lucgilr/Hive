@@ -27,27 +27,29 @@
     <string name="paragraph_6">"La abeja de la imagen sólo puede desplazarse a uno de los dos huecos sombreados.\n\n"
 "MOVIMIENTOS DEL ESCARABAJO\n\n"
 "El escarabajo, al igual que la abeja reina, sólo puede desplazarse un espacio por turno, la única diferencia es que esta puede subirse encima de otras fichas bloqueando así su movimiento. Por lo tanto el escarabajo podrá desplazarse tanto rodeando la colmena como por encima de ella y llegando incluso a huecos que estén completamente rodeados por otras fichas. La única forma de bloquear un escarabajo es poniendo otro encima (No hay límite de colocación de escarabajos unos encima de otros, el único límite lo pone el número de escarabajos que pueden estar en juego, 4). A la hora de colocar una ficha en juego si un escarabajo está encima de otra ficha prevalecerá el color del escarabajo.\n"</string>
-    <string name="paragraph_5">"En la imagen se puede ver como, siendo el turno de jugador blanco, sólo puede colocar fichas en los hexágonos sombreados, que son justo los huecos que rodean la colmena y solo tocan piezas blancas.\n\n"
-"COLOCACIÓN DE LA ABEJA REINA\n\n"
+    <string name="paragraph_5">"COLOCACIÓN DE LA ABEJA REINA\n\n"
 "La abeja es la pieza más importante del juego, es como la reina en el ajedrez, y al contrario del resto de fichas que pueden entrar en juego cuando el jugador prefiera esta debe entrar en cualquiera de los 4 primeros turnos del jugador. Si llegado el 4o turno el jugador no ha puesto la abeja en juego deberá ponerla obligatoriamente.\n\n"
 "MOVIMIENTOS\n\n"
 "Una vez la abeja esté en juego, pero nunca antes, el jugador podrá elegir entre seguir poniendo fichas en juego o mover las que ya tiene en juego. Cada tipo de ficha (cada tipo de insecto) se mueve de forma diferente y una vez puesta en juego podrá tocar piezas del jugador contrario al realizar un movimiento. Una regla muy importante a tener en cuenta a la hora de mover una ficha es que si mover dicha ficha provoca la partición de la colmena en 2 o más partes esta ficha no podrá moverse. Esta regla se ampliará en el apartado “Regla de una Colmena”.\n"
 "Cuando jugamos una partida usando esta aplicación si queremos mover una ficha basta con tocarla y aparecerán hexágonos sombreados indicando dónde podría ir la ficha, tocando dichos hexágonos desplazamos automaticamente la ficha a esa posición. Si la ficha no se puede mover al tocarla aparecerán los hexágonos grises indicando zonas dónde se puede añadir una nueva ficha "
 "MOVIMIENTOS DE LA ABEJA\n\n"
 "La abeja sólo puede desplazarse un espacio por turno. A pesar de que es la ficha con más límites de movimiento un simple desplazamiento puede alterar los planes del oponente.\n\n"</string>
-    <string name="paragraph_4">"En la primera ronda representada en la imagen se puede observar como los jugadores han colocado sus piezas juntas para empezar a formar la colmena.\n"
-"En las siguientes rondas los jugadores irán poniendo fichas nuevas o moviendo las que ya están en juego en turnos consecutivos, cada uno en su turno.\n\n"
-"COMO COLOCAR\n\n"
+    <string name="paragraph_4">"COMO COLOCAR\n\n"
 "Mientras tenga fichas por jugar el jugador puede ir añadiéndolas a la partida, pero nunca podrá sacar de la partida fichas que ya estén en juego.\n"
 "Para poner una ficha en juego, a excepción de la primera ronda, esta sólo podrá tocar piezas de su mismo color.\n"
-"Si queremos poner una pieza en juego en una partida de esta aplicación se tocará un hexágono sombreado y se elegirá una pieza de la lista emergente que aparecerá.\n\n"</string>
-    <string name="paragraph_3">"En esta imagen podemos observar como la abeja blanca a quedado rodeada tanto por piezas blancas como por piezas negras, incluyendo la abeja enemiga.\n\n"
-"INICIO DEL JUEGO\n\n"
+"Si queremos poner una pieza en juego en una partida de esta aplicación se tocará un hexágono sombreado y se elegirá una pieza de la lista emergente que aparecerá.\n"
+"En la imagen se puede ver como, siendo el turno de jugador blanco, sólo puede colocar fichas en los hexágonos sombreados, que son justo los huecos que rodean la colmena y solo tocan piezas blancas."
+</string>
+    <string name="paragraph_3">"INICIO DEL JUEGO\n\n"
 "Un jugador, elegido al azar, coloca una de sus fichas sobre la superficie de juego y el otro jugador colocará su ficha tocando cualquier borde de la que ya está en juego.\n"
-"Cuando empieces una partida en esta aplicación aparecerá un hexágono gris que es el único sitio del tablero dónde podrás colocar la primera ficha:\n\n"</string>
+"Cuando empieces una partida en esta aplicación aparecerá un hexágono gris que es el único sitio del tablero dónde podrás colocar la primera ficha:\n"
+"En la primera ronda representada en la imagen se puede observar como los jugadores han colocado sus piezas juntas para empezar a formar la colmena.\n"
+"En las siguientes rondas los jugadores irán poniendo fichas nuevas o moviendo las que ya están en juego en turnos consecutivos, cada uno en su turno."</string>
     <string name="paragraph_2">"Dichas piezas se pondrán en juego sobre un tablero imaginario formado por las propias fichas, es decir, las propias fichas formarán la colmena sobre la que se desplazarán para conseguir su objetivo.\n\n"
 "OBJETIVO DEL JUEGO\n\n"
-"Para ganar el juego se debe conseguir que la abeja del oponente quede completamente rodeada a la vez que evitas que rodeen la tuya, para ello deberá tener piezas bloqueando su movimiento en sus 6 caras, sin importar a qué jugador pertenecen dichas fichas.\n"</string>
+"Para ganar el juego se debe conseguir que la abeja del oponente quede completamente rodeada a la vez que evitas que rodeen la tuya, para ello deberá tener piezas bloqueando su movimiento en sus 6 caras, sin importar a qué jugador pertenecen dichas fichas.\n"
+"En esta imagen podemos observar como la abeja blanca a quedado rodeada tanto por piezas blancas como por piezas negras, incluyendo la abeja enemiga."
+</string>
     <string name="paragraph_13">"En esta imagen la abeja no puede desplazarse, al intentar hacerlo desplazaría físicamente el resto de fichas."</string>
     <string name="paragraph_12">"Si intentamos mover cualquiera de las dos abejas de la imagen romperíamos la colmena, sin embargo, no pasaría lo mismo si movemos el saltamontes o la araña.\n\n"
 "LIBERTAD DE MOVIMIENTO\n\n"

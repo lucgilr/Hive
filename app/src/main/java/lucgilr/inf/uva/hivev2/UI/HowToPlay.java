@@ -1,6 +1,7 @@
 package lucgilr.inf.uva.hivev2.UI;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.FragmentActivity;
@@ -21,8 +22,8 @@ import lucgilr.inf.uva.hivev2.R;
 public class HowToPlay extends FragmentActivity {
 
     private String displayLanguage;
-    private final int numberImages = 13;
-    private final int numberParagraphs = 14;
+    private final int numberImages = 16;
+    private final int numberParagraphs = 16;
     private int countImages;
     private int countParagraphs;
 
@@ -51,30 +52,36 @@ public class HowToPlay extends FragmentActivity {
         map.put("2",R.drawable.image_2);
         map.put("3",R.drawable.image_3);
         map.put("4",R.drawable.image_4);
-        map.put("5",R.drawable.image_5);
-        map.put("6",R.drawable.image_6);
-        map.put("7",R.drawable.image_7);
-        map.put("8",R.drawable.image_8);
-        map.put("9",R.drawable.image_9);
-        map.put("10",R.drawable.image_10);
-        map.put("11",R.drawable.image_11);
-        map.put("12", R.drawable.image_12);
-        map.put("13", R.drawable.image_13);
+        map.put("5",R.drawable.bee);
+        map.put("6",R.drawable.bee);
+        map.put("7",R.drawable.image_5);
+        map.put("8",R.drawable.image_6);
+        map.put("9",R.drawable.image_7);
+        map.put("10",R.drawable.image_8);
+        map.put("11",R.drawable.image_9);
+        map.put("12",R.drawable.image_10);
+        map.put("13",R.drawable.image_11);
+        map.put("14", R.drawable.image_12);
+        map.put("15", R.drawable.image_13);
+        map.put("16",R.drawable.final_image);
 
         final Map<String,Integer> mapEnglish = new HashMap<>();
         mapEnglish.put("1",R.drawable.image_1);
         mapEnglish.put("2",R.drawable.image_2_english);
         mapEnglish.put("3", R.drawable.image_3_english);
         mapEnglish.put("4",R.drawable.image_4_english);
-        mapEnglish.put("5",R.drawable.image_5_english);
-        mapEnglish.put("6",R.drawable.image_6_english);
-        mapEnglish.put("7",R.drawable.image_7_english);
-        mapEnglish.put("8",R.drawable.image_8_english);
-        mapEnglish.put("9",R.drawable.image_9_english);
-        mapEnglish.put("10",R.drawable.image_10_english);
-        mapEnglish.put("11",R.drawable.image_11_english);
-        mapEnglish.put("12", R.drawable.image_12_english);
-        mapEnglish.put("13", R.drawable.image_13_english);
+        mapEnglish.put("5",R.drawable.bee);
+        mapEnglish.put("6",R.drawable.bee);
+        mapEnglish.put("7",R.drawable.image_5_english);
+        mapEnglish.put("8",R.drawable.image_6_english);
+        mapEnglish.put("9",R.drawable.image_7_english);
+        mapEnglish.put("10",R.drawable.image_8_english);
+        mapEnglish.put("11",R.drawable.image_9_english);
+        mapEnglish.put("12",R.drawable.image_10_english);
+        mapEnglish.put("13",R.drawable.image_11_english);
+        mapEnglish.put("14", R.drawable.image_12_english);
+        mapEnglish.put("15", R.drawable.image_13_english);
+        mapEnglish.put("16",R.drawable.final_image);
 
         final Map<String,Integer> mapParagraphs = new HashMap<>();
         mapParagraphs.put("1",R.string.paragraph_1);
@@ -91,12 +98,15 @@ public class HowToPlay extends FragmentActivity {
         mapParagraphs.put("12",R.string.paragraph_12);
         mapParagraphs.put("13",R.string.paragraph_13);
         mapParagraphs.put("14",R.string.paragraph_14);
+        mapParagraphs.put("15",R.string.paragraph_15);
+        mapParagraphs.put("16",R.string.paragraph_16);
 
         paragraph.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (countImages < numberImages + 1) {
                     nextImage();
+                    Log.d("next image", String.valueOf(countImages));
                     String imageMsg = String.valueOf(countImages);
                     if (displayLanguage.equals("English")) {
                         image.setImageResource(mapEnglish.get(imageMsg));
@@ -106,6 +116,7 @@ public class HowToPlay extends FragmentActivity {
                 }
                 if (countParagraphs < numberParagraphs + 1) {
                     nextParagraph();
+                    Log.d("next paragraph", String.valueOf(countParagraphs));
                     String paragraphMsg = String.valueOf(countParagraphs);
                     paragraph.setText(mapParagraphs.get(paragraphMsg));
                 }
@@ -134,11 +145,11 @@ public class HowToPlay extends FragmentActivity {
     }
 
     private void nextImage(){
-        if(this.countImages<13) this.countImages+=1;
+        if(this.countImages<numberImages) this.countImages+=1;
     }
 
     private void nextParagraph(){
-        if(this.countParagraphs<14) this.countParagraphs+=1;
+        if(this.countParagraphs<numberParagraphs) this.countParagraphs+=1;
     }
 
     private void previousImage(){
