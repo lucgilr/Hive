@@ -48,11 +48,10 @@
 "In the first image we can see the current situation when the turn is on the white player. In the second image we can see where we canplace the beetle, including the top of other pieces.\n\n"</string>
     <string name="paragraph_10">"GRASSHOPPER MOVES\n\n"
 "The grasshoppers can slide by jumping over other pieces and in any direction, so this piece can access gaps that are blocked so it can\'t be access by other pieces, except the beetle. The grasshoppers can\'t jump empty spaces\n"
-"The grasshopper can only be moved to any of the two shaded hexagons, over both bees or over the spider.\n"
-</string>
+"The grasshopper can only be moved to any of the two shaded hexagons, over both bees or over the spider."</string>
     <string name="paragraph_11">"SPIDER MOVES\n\n"
 "The spider can slide 3 spaces at a time, no more no less, in the same direction.\n"
-"The spider could be moved to any of the 2 shaded gaps, because they are excatly three spaces away from its original position.\n"</string>
+"The spider could be moved to any of the 2 shaded gaps, because they are excatly three spaces away from its original position."</string>
     <string name="paragraph_12">"ANT MOVES\n\n"
 "The ant is the second most valuable piece of the game because it can be moved surrounding the hive to any unblocked gap.\n"
 "The ant can be moved to any of the shaded gaps in the image.\n"</string>
@@ -73,6 +72,6 @@
 "Once the bee is on the board the player can choose between placing a piece or move one that is already in the game. Each kind of piece has defined how it can be moved and once is in the game it can touch enemy\'s pieces. An important rule is that if moving a piece would cause the break of the hive it can\'t be moved. This rule will be better explained in "ONE HIVE RULE" section.\n"
 "When playing a game in this app yo can move a piece by touching it, if it can be moved a shaded hexagons will indicate the possible moves and by touching one of them the piece will move to it. If the piece can\'t be moved the shaded hexagons that appear when touching it indicates places where you can place a piece for the first time."</string><string name="paragraph_7">"BEE MOVES\n\n"
 "The bee can only slide one turn at a time. In spite of this one simple move would change the course of the whole game.\n"
-"The bee can only be moved to one the two shaded gaps."</string>
+"The bee from the image can only be moved to one the two shaded gaps."</string>
     <string name="paragraph_15">"However in this one the black ant can moved to any of the shaded hexagons but the green one in the middle because it can\'t slide to it."</string>
 </resources>
