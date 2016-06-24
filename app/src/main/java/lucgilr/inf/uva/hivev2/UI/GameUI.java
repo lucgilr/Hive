@@ -369,56 +369,11 @@ public class GameUI extends AppCompatActivity {
                         String hexView = view.getHex().toString2D();
                         String sol = controller.getBoard().get(i).getHexagon().toString2D();
                         String color = controller.getBoard().get(i).getPlayer().getColor();
-                        //int id = controller.getBoard().get(i).getId();
                         PieceType type = controller.getBoard().get(i).getType();
 
                         if(hexView.equals(sol)) {
                             if(controller.getBoard().get(i).isBeetle()){
-                                if(displayLanguage.equals("español")) {
-                                    if (color.equals("White")) {
-                                        if (type.equals(PieceType.BEE))
-                                            view.setBackgroundResource(R.drawable.abejablanca);
-                                        else if (type.equals(PieceType.GRASSHOPPER))
-                                            view.setBackgroundResource(R.drawable.saltamblanco);
-                                        else if (type.equals(PieceType.SPIDER))
-                                            view.setBackgroundResource(R.drawable.aranablanca);
-                                        else if (type.equals(PieceType.BEETLE))
-                                            view.setBackgroundResource(R.drawable.escarblanco);
-                                        else view.setBackgroundResource(R.drawable.hormigablanca);
-                                    } else {
-                                        if (type.equals(PieceType.BEE))
-                                            view.setBackgroundResource(R.drawable.abejanegra);
-                                        else if (type.equals(PieceType.GRASSHOPPER))
-                                            view.setBackgroundResource(R.drawable.saltamnegro);
-                                        else if (type.equals(PieceType.SPIDER))
-                                            view.setBackgroundResource(R.drawable.arananegra);
-                                        else if (type.equals(PieceType.BEETLE))
-                                            view.setBackgroundResource(R.drawable.escarnegro);
-                                        else view.setBackgroundResource(R.drawable.hormiganegra);
-                                    }
-                                }else{
-                                    if (color.equals("White")) {
-                                        if (type.equals(PieceType.BEE))
-                                            view.setBackgroundResource(R.drawable.whitebee);
-                                        else if (type.equals(PieceType.GRASSHOPPER))
-                                            view.setBackgroundResource(R.drawable.whitegrass);
-                                        else if (type.equals(PieceType.SPIDER))
-                                            view.setBackgroundResource(R.drawable.whitespider);
-                                        else if (type.equals(PieceType.BEETLE))
-                                            view.setBackgroundResource(R.drawable.whitebeetle);
-                                        else view.setBackgroundResource(R.drawable.whiteant);
-                                    } else {
-                                        if (type.equals(PieceType.BEE))
-                                            view.setBackgroundResource(R.drawable.blackbee);
-                                        else if (type.equals(PieceType.GRASSHOPPER))
-                                            view.setBackgroundResource(R.drawable.blackgrass);
-                                        else if (type.equals(PieceType.SPIDER))
-                                            view.setBackgroundResource(R.drawable.blackspider);
-                                        else if (type.equals(PieceType.BEETLE))
-                                            view.setBackgroundResource(R.drawable.blackbeetle);
-                                        else view.setBackgroundResource(R.drawable.blackant);
-                                    }
-                                }
+                                view.setBackgroundResource(getPiece(displayLanguage,color,type));
                             }
                         }
 
@@ -445,6 +400,56 @@ public class GameUI extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int getPiece(String language, String color, PieceType type){
+        int pieceToPlace;
+        if(language.equals("español")) {
+            if (color.equals("White")) {
+                if (type.equals(PieceType.BEE))
+                    pieceToPlace=R.drawable.abejablanca;
+                else if (type.equals(PieceType.GRASSHOPPER))
+                    pieceToPlace=R.drawable.saltamblanco;
+                else if (type.equals(PieceType.SPIDER))
+                    pieceToPlace=R.drawable.aranablanca;
+                else if (type.equals(PieceType.BEETLE))
+                    pieceToPlace=R.drawable.escarblanco;
+                else pieceToPlace=R.drawable.hormigablanca;
+            } else {
+                if (type.equals(PieceType.BEE))
+                    pieceToPlace=R.drawable.abejanegra;
+                else if (type.equals(PieceType.GRASSHOPPER))
+                    pieceToPlace=R.drawable.saltamnegro;
+                else if (type.equals(PieceType.SPIDER))
+                    pieceToPlace=R.drawable.arananegra;
+                else if (type.equals(PieceType.BEETLE))
+                    pieceToPlace=R.drawable.escarnegro;
+                else pieceToPlace=R.drawable.hormiganegra;
+            }
+        }else{
+            if (color.equals("White")) {
+                if (type.equals(PieceType.BEE))
+                    pieceToPlace=R.drawable.whitebee;
+                else if (type.equals(PieceType.GRASSHOPPER))
+                    pieceToPlace=R.drawable.whitegrass;
+                else if (type.equals(PieceType.SPIDER))
+                    pieceToPlace=R.drawable.whitespider;
+                else if (type.equals(PieceType.BEETLE))
+                    pieceToPlace=(R.drawable.whitebeetle);
+                else pieceToPlace=R.drawable.whiteant;
+            } else {
+                if (type.equals(PieceType.BEE))
+                    pieceToPlace=R.drawable.blackbee;
+                else if (type.equals(PieceType.GRASSHOPPER))
+                    pieceToPlace=R.drawable.blackgrass;
+                else if (type.equals(PieceType.SPIDER))
+                    pieceToPlace=R.drawable.blackspider;
+                else if (type.equals(PieceType.BEETLE))
+                    pieceToPlace=R.drawable.blackbeetle;
+                else pieceToPlace=R.drawable.blackant;
+            }
+        }
+        return pieceToPlace;
     }
 
     /**
