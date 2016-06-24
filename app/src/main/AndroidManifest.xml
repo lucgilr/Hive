@@ -32,7 +32,7 @@
             android:uiOptions="splitActionBarWhenNarrow"
             android:parentActivityName=".UI.MainActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:screenOrientation="landscape">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UI.MainActivity" />
         </activity>
