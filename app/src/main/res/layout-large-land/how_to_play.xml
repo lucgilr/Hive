@@ -19,7 +19,7 @@
         android:textColor="@color/darkGray"
         android:layout_gravity="center"
         android:layout_marginRight="20dp"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:id="@+id/first_paragraph"/>
 
 </LinearLayout>

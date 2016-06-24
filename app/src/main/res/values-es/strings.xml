@@ -16,7 +16,7 @@
 "La abeja sólo puede desplazarse un espacio por turno. A pesar de que es la ficha con más límites de movimiento un simple desplazamiento puede alterar los planes del oponente.\n"
 "La abeja de la imagen sólo se puede mover a uno de los dos hexágonos sombreados."</string>
     <string name="paragraph_6">"MOVIMIENTOS\n\n"
-"Una vez la abeja esté en juego, pero nunca antes, el jugador podrá elegir entre seguir poniendo fichas en juego o mover las que ya tiene en juego. Cada tipo de ficha (cada tipo de insecto) se mueve de forma diferente y una vez puesta en juego podrá tocar piezas del jugador contrario al realizar un movimiento. Una regla muy importante a tener en cuenta a la hora de mover una ficha es que si mover dicha ficha provoca la partición de la colmena en 2 o más partes esta ficha no podrá moverse. Esta regla se ampliará en el apartado “Regla de una Colmena”.\n"
+"Una vez la abeja esté en juego, pero nunca antes, el jugador podrá elegir entre seguir poniendo fichas en juego o mover las que ya tiene en juego. Cada tipo de ficha (cada tipo de insecto) se mueve de forma diferente y una vez puesta en juego podrá tocar piezas del jugador contrario al realizar un movimiento. Una regla muy importante a tener en cuenta a la hora de mover una ficha es que si mover dicha ficha provoca la partición de la colmena en 2 o más partes esta ficha no podrá moverse. Esta regla se ampliará en el apartado “Regla de una Colmena”."
 "Cuando jugamos una partida usando esta aplicación si queremos mover una ficha basta con tocarla y aparecerán hexágonos sombreados indicando dónde podría ir la ficha, tocando dichos hexágonos desplazamos automaticamente la ficha a esa posición. Si la ficha no se puede mover al tocarla aparecerán los hexágonos grises indicando zonas dónde se puede añadir una nueva ficha "
 </string>
     <string name="paragraph_5">"COLOCACIÓN DE LA ABEJA REINA\n\n"
@@ -47,7 +47,7 @@
     <string name="paragraph_10">"MOVIMIENTOS DEL SALTAMONTES\n\n"
 "Los saltamontes se desplazan únicamente saltando por encima de otras fichas y en cualquier dirección, dándole la ventaja de llegar a huecos totalmente rodeados, al igual que al escarabajo. No podrán saltar sobre espacios vacíos.\n"
 "El saltamontes solo podrá desplazarse a una de las dos zonas sombreadas, por encima de las abejas o por encima de la araña."   </string>
-    <string name="paragraph_1">"“Hive” (Colmena) es un juego diseñado por John Yianni y publicado en 2001 por la compañía de juegos de mesa Gen42 Games.\n"
+    <string name="paragraph_1">"“Hive” (Colmena) es un juego diseñado por John Yianni y publicado en 2001 por la compañía de juegos de mesa Gen42 Games.\n\n"
 "Es un juego de mesa para 2 jugadores en el que cada uno de ellos tiene las mismas fichas: 11 piezas hexagonales que representan diferentes insectos: 1 abeja, 3 hormigas, 3 saltamontes, 2 escarabajos y 2 arañas.\n\n"</string>
     <string name="howTo">Cómo jugar</string>
     <string name="blackStarts">Empiezan negras</string>
@@ -66,7 +66,7 @@
     <string name="paragraph_15">"Sin embargo en esta otra la hormiga negra puede desplazarse a todos los hexágonos sombrados menos al verde del centro pues no podría desplazarse hacia el."</string>
     <string name="paragraph_9">"Imagen 2.\n\n"
 "En la imagen 1 podemos observar la situación actual del juego siendo el turno del jugador blanco. En la imagen 2 se pueden ver sombreados los huecos en los que puede colocarse el escarabajo, tanto deslizándose al lado de una ficha como situándose encima suyo."</string>
-    <string name="paragraph_13">"RESTRICCIONES\n"
+    <string name="paragraph_13">"RESTRICCIONES\n\n"
 "REGLA DE UNA COLMENA\n\n"
 "Las fichas del juego deberán estar conectadas entre sí en todo momento, no se podrá mover una ficha que provoque la ruptura de la colmena.\n"
 "Si intentamos mover cualquiera de las dos abejas de la imagen romperíamos la colmena, sin embargo, no pasaría lo mismo si movemos el saltamontes o la araña."</string>

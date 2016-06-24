@@ -22,7 +22,7 @@
     <string name="yes">Yes</string>
     <string name="no" translatable="false">No</string>
     <string name="playAgain">Do yo want to play again?</string>
-    <string name="paragraph_1">"“Hive” is a game designed by John Yianni and published in 2001 by GameBoard Company Gen42 Games.\n"
+    <string name="paragraph_1">"“Hive” is a game designed by John Yianni and published in 2001 by GameBoard Company Gen42 Games.\n\n"
                  "Is a boardgame for 2 players who have the same pieces: 11 hexagonal pieces that represent insects: 1 bee, 3 ants, 3 grasshoppers, 2 beetles y 2 spiders.\n\n"</string>
     <string name="paragraph_2">"The pieces will be placed on an imaginary board made by the own pieces, that is, the pieces will be the ones to form the hive in which they will slide to achieve its aim.\n\n"
 "AIM OF THE GAME\n\n"
@@ -55,7 +55,7 @@
     <string name="paragraph_12">"ANT MOVES\n\n"
 "The ant is the second most valuable piece of the game because it can be moved surrounding the hive to any unblocked gap.\n"
 "The ant can be moved to any of the shaded gaps in the image."</string>
-    <string name="paragraph_13">"RESTRICTIONS\n"
+    <string name="paragraph_13">"RESTRICTIONS\n\n"
 "ONE HIVE RULE\n\n"
 "The pieces in game must be linked with each other all the time, a piece that would cause the hive to split in two can\'t be moved .\n"
 "If we try to move any of the two bees the hive would break, however, moving the grasshopper or the spider wouldn\'t."
