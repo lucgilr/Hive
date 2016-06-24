@@ -75,7 +75,6 @@ public class GameUI extends AppCompatActivity {
         if ((getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK) ==
                 Configuration.SCREENLAYOUT_SIZE_LARGE) {
-            Log.d("Large screen","yes");
             //Tablet 8'
             //Tablet 7'
             this.screen=1;
@@ -85,7 +84,6 @@ public class GameUI extends AppCompatActivity {
         if ((getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK) ==
                 Configuration.SCREENLAYOUT_SIZE_NORMAL) {
-            Log.d("NORMAL screen","yes");
             //Smartphone 5'
             this.screen=2;
             this.scale=180;
