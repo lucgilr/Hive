@@ -374,29 +374,7 @@ public class GameUI extends AppCompatActivity {
 
                         if(hexView.equals(sol)) {
                             if(controller.getBoard().get(i).isBeetle()){
-                                if(displayLanguage.equals("English")) {
-                                    if (color.equals("White")) {
-                                        if (type.equals(PieceType.BEE))
-                                            view.setBackgroundResource(R.drawable.whitebee);
-                                        else if (type.equals(PieceType.GRASSHOPPER))
-                                            view.setBackgroundResource(R.drawable.whitegrass);
-                                        else if (type.equals(PieceType.SPIDER))
-                                            view.setBackgroundResource(R.drawable.whitespider);
-                                        else if (type.equals(PieceType.BEETLE))
-                                            view.setBackgroundResource(R.drawable.whitebeetle);
-                                        else view.setBackgroundResource(R.drawable.whiteant);
-                                    } else {
-                                        if (type.equals(PieceType.BEE))
-                                            view.setBackgroundResource(R.drawable.blackbee);
-                                        else if (type.equals(PieceType.GRASSHOPPER))
-                                            view.setBackgroundResource(R.drawable.blackgrass);
-                                        else if (type.equals(PieceType.SPIDER))
-                                            view.setBackgroundResource(R.drawable.blackspider);
-                                        else if (type.equals(PieceType.BEETLE))
-                                            view.setBackgroundResource(R.drawable.blackbeetle);
-                                        else view.setBackgroundResource(R.drawable.blackant);
-                                    }
-                                }else{
+                                if(displayLanguage.equals("español")) {
                                     if (color.equals("White")) {
                                         if (type.equals(PieceType.BEE))
                                             view.setBackgroundResource(R.drawable.abejablanca);
@@ -417,6 +395,28 @@ public class GameUI extends AppCompatActivity {
                                         else if (type.equals(PieceType.BEETLE))
                                             view.setBackgroundResource(R.drawable.escarnegro);
                                         else view.setBackgroundResource(R.drawable.hormiganegra);
+                                    }
+                                }else{
+                                    if (color.equals("White")) {
+                                        if (type.equals(PieceType.BEE))
+                                            view.setBackgroundResource(R.drawable.whitebee);
+                                        else if (type.equals(PieceType.GRASSHOPPER))
+                                            view.setBackgroundResource(R.drawable.whitegrass);
+                                        else if (type.equals(PieceType.SPIDER))
+                                            view.setBackgroundResource(R.drawable.whitespider);
+                                        else if (type.equals(PieceType.BEETLE))
+                                            view.setBackgroundResource(R.drawable.whitebeetle);
+                                        else view.setBackgroundResource(R.drawable.whiteant);
+                                    } else {
+                                        if (type.equals(PieceType.BEE))
+                                            view.setBackgroundResource(R.drawable.blackbee);
+                                        else if (type.equals(PieceType.GRASSHOPPER))
+                                            view.setBackgroundResource(R.drawable.blackgrass);
+                                        else if (type.equals(PieceType.SPIDER))
+                                            view.setBackgroundResource(R.drawable.blackspider);
+                                        else if (type.equals(PieceType.BEETLE))
+                                            view.setBackgroundResource(R.drawable.blackbeetle);
+                                        else view.setBackgroundResource(R.drawable.blackant);
                                     }
                                 }
                             }
@@ -509,20 +509,20 @@ public class GameUI extends AppCompatActivity {
                 if(controller.getPlayerTurn() == 4 && !bee){
                     for (int i = 0; i < pieces.size(); i++) {
                         if (pieces.get(i).getType().equals(PieceType.BEE)) {
-                            if (displayLanguage.equals("English")) {
-                                controller.setEnglish(pieces.get(i).getType());
-                            } else {
+                            if (displayLanguage.equals("español")) {
                                 controller.setSpanish(pieces.get(i).getType());
+                            } else {
+                                controller.setEnglish(pieces.get(i).getType());
                             }
                             t.add(bug);
                         }
                     }
                 } else {
                     for (int i = 0; i < pieces.size(); i++) {
-                        if (displayLanguage.equals("English")) {
-                            controller.setEnglish(pieces.get(i).getType());
-                        } else {
+                        if (displayLanguage.equals("español")) {
                             controller.setSpanish(pieces.get(i).getType());
+                        } else {
+                            controller.setEnglish(pieces.get(i).getType());
                         }
                         t.add(bug);
                     }

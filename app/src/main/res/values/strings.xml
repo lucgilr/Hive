@@ -54,7 +54,7 @@
 "The spider could be moved to any of the 2 shaded gaps, because they are excatly three spaces away from its original position."</string>
     <string name="paragraph_12">"ANT MOVES\n\n"
 "The ant is the second most valuable piece of the game because it can be moved surrounding the hive to any unblocked gap.\n"
-"The ant can be moved to any of the shaded gaps in the image.\n"</string>
+"The ant can be moved to any of the shaded gaps in the image."</string>
     <string name="paragraph_13">"RESTRICTIONS\n"
 "ONE HIVE RULE\n\n"
 "The pieces in game must be linked with each other all the time, a piece that would cause the hive to split in two can\'t be moved .\n"

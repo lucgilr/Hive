@@ -39,6 +39,7 @@ public class HowToPlay extends FragmentActivity {
 
         //Language
         displayLanguage = Locale.getDefault().getDisplayLanguage();
+        Log.d("language",displayLanguage);
 
         //First image and paragraph
         final ImageView image = (ImageView) this.findViewById(R.id.image_1);
@@ -108,10 +109,10 @@ public class HowToPlay extends FragmentActivity {
                     nextImage();
                     Log.d("next image", String.valueOf(countImages));
                     String imageMsg = String.valueOf(countImages);
-                    if (displayLanguage.equals("English")) {
-                        image.setImageResource(mapEnglish.get(imageMsg));
-                    } else {
+                    if (displayLanguage.equals("español")) {
                         image.setImageResource(map.get(imageMsg));
+                    } else {
+                        image.setImageResource(mapEnglish.get(imageMsg));
                     }
                 }
                 if (countParagraphs < numberParagraphs + 1) {
@@ -129,10 +130,10 @@ public class HowToPlay extends FragmentActivity {
                 previousImage();
                 if(countImages>0){
                     String imageMsg = String.valueOf(countImages);
-                    if(displayLanguage.equals("English")){
-                        image.setImageResource(mapEnglish.get(imageMsg));
-                    }else {
+                    if(displayLanguage.equals("español")){
                         image.setImageResource(map.get(imageMsg));
+                    }else {
+                        image.setImageResource(mapEnglish.get(imageMsg));
                     }
                 }
                 previousParagraph();

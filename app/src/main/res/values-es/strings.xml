@@ -42,7 +42,7 @@
 "La hormiga es, después de la abeja, la ficha más valiosa del juego pues puede desplazarse rodeando la colmena a cualquier posición.\n"
 "La hormiga puede desplazarse en cualquiera de los huecos grises de la imagen.”</string>
     <string name="paragraph_11">"MOVIMIENTOS DE LA ARAÑA\n\n"
-"Las arañas puede desplazarse exactamente 3 posiciones, no podrán desplazarse ni más ni menos, en el mismo sentido y sin poder retroceder.\n”
+"Las arañas puede desplazarse exactamente 3 posiciones, no podrán desplazarse ni más ni menos, en el mismo sentido y sin poder retroceder.\n"
 "La araña podrá desplazarse a cualquiera de los dos huecos sombreados, pues están exactamente a tres huecos de distancia."</string>
     <string name="paragraph_10">"MOVIMIENTOS DEL SALTAMONTES\n\n"
 "Los saltamontes se desplazan únicamente saltando por encima de otras fichas y en cualquier dirección, dándole la ventaja de llegar a huecos totalmente rodeados, al igual que al escarabajo. No podrán saltar sobre espacios vacíos.\n"
@@ -64,7 +64,7 @@
 "El juego termina cuando una de las dos abejas queda rodeada por completo independientemente del color de las fichas que la rodean. el jugador cuya abeja queda completamente rodeada pierde la partida.\n"
 "Empate: Cuando se coloca una ficha que provoca que las dos abejas queden a la vez completamente rodeadas por otras fichas."</string>
     <string name="paragraph_15">"Sin embargo en esta otra la hormiga negra puede desplazarse a todos los hexágonos sombrados menos al verde del centro pues no podría desplazarse hacia el."</string>
-    <string name="paragraph_9">"Imagen 2.\n"
+    <string name="paragraph_9">"Imagen 2.\n\n"
 "En la imagen 1 podemos observar la situación actual del juego siendo el turno del jugador blanco. En la imagen 2 se pueden ver sombreados los huecos en los que puede colocarse el escarabajo, tanto deslizándose al lado de una ficha como situándose encima suyo."</string>
     <string name="paragraph_13">"RESTRICCIONES\n"
 "REGLA DE UNA COLMENA\n\n"
