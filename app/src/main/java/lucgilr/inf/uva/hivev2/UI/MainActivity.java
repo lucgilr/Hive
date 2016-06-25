@@ -60,7 +60,7 @@ public class MainActivity extends ListActivity {
         if(position==1) {
             Bundle b = new Bundle();
             b.putBoolean("AI", true);
-            intent.putExtras(b); 
+            intent.putExtras(b);
         }
         startActivity(intent);
     }

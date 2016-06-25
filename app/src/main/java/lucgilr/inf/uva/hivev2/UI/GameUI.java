@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -71,7 +70,7 @@ public class GameUI extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
 
-        //PRUEBA
+        //Setting scale value
         if ((getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK) ==
                 Configuration.SCREENLAYOUT_SIZE_LARGE) {
@@ -152,7 +151,7 @@ public class GameUI extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        if(isGameOver()) {
+        if(isNotGameOver()) {
             alert.setMessage(R.string.leavingActivity);
             alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
@@ -276,7 +275,6 @@ public class GameUI extends AppCompatActivity {
             this.mRelativeLayout.removeAllViewsInLayout();
 
             //Check if a bee fully surrounded
-            //int endgame = controller.endGame();
             controller.endGame();
             if(getEndGame()!=0 && !this.gameOver){
                 //GAME OVER
@@ -287,7 +285,7 @@ public class GameUI extends AppCompatActivity {
             //My stuff
             controller.getPlayer();
 
-            if(!this.movingPiece && isGameOver()){
+            if(!this.movingPiece && isNotGameOver()){
                 //Get possible hexagons to place a piece for the first time is the pieces box is not empty
                 if(getPlayer().getPiecesInTheBox().size() != 0) controller.getPlayerHexagons(getPlayer());
                 else getHexagons().clear();
@@ -327,7 +325,6 @@ public class GameUI extends AppCompatActivity {
                             float xPoint = event.getX();
                             float yPoint = event.getY();
                             boolean isPointOutOfCircle = (grid.centerOffsetX -xPoint)*(grid.centerOffsetX -xPoint) + (grid.centerOffsetY -yPoint)*(grid.centerOffsetY -yPoint) > grid.width * grid.width / 4;
-
                             if (isPointOutOfCircle) return false;
                             else v.setSelected(true);
                             break;
@@ -340,7 +337,7 @@ public class GameUI extends AppCompatActivity {
                         case MotionEvent.ACTION_SCROLL:
                             break;
                         case MotionEvent.ACTION_UP:
-                            if(isGameOver()) {
+                            if(isNotGameOver()) {
                                 v.setSelected(false);
                                 CircleImageView view = (CircleImageView) v;
                                 OnGridHexClick(view.getHex());
@@ -352,8 +349,7 @@ public class GameUI extends AppCompatActivity {
             };
 
             for(Cube cube : grid.nodes) {
-                Hexagon hexagon = null;
-                hexagon = cube.toHex();
+                Hexagon hexagon = cube.toHex();
 
                 CircleImageView view = new CircleImageView(this);
                 view.setHex(hexagon);
@@ -400,7 +396,7 @@ public class GameUI extends AppCompatActivity {
         return null;
     }
 
-    public int getPiece(String language, String color, PieceType type){
+    private int getPiece(String language, String color, PieceType type){
         int pieceToPlace;
         if(language.equals("español")) {
             if (color.equals("White")) {
@@ -569,13 +565,12 @@ public class GameUI extends AppCompatActivity {
                 this.hexagons = new ArrayList<>(getPossibleHexagons());
                 initGridView();
             }
-        }else if(!checkIfHexagonAvailable(hexagon, getHexagons())) {
+        }else if(this.movingPiece && !checkIfHexagonAvailable(hexagon, getHexagons())) {
             //Deselect pieces moves
             controller.getPlayerHexagons(getPlayer());
             this.movingPiece =false;
             initGridView();
         }
-
     }
 
     /**
@@ -647,7 +642,7 @@ public class GameUI extends AppCompatActivity {
      * Checks if the game is over
      * @return
      */
-    private boolean isGameOver(){
+    private boolean isNotGameOver(){
         return !this.gameOver;
     }
 
