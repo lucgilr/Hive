@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -12,9 +11,13 @@ import android.widget.ListView;
 import lucgilr.inf.uva.hivev2.R;
 
 /**
+ * @author Vogella https://github.com/vogella
+ * Original Code: https://github.com/vogellacompany/codeexamples-android/blob/master/com.vogella.android.inlineprogressreporting/src/com/example/android/animationsdemo/MainActivity.java
+ *
  * The first screen is a menu in which the user can choose
- * between a player vs player game or player vs AI game.
- * Created by Lucía Gil Román on 05/05/16.
+ * between a player vs player game, player vs AI game or
+ * see the rules of the game.
+ *
  */
 public class MainActivity extends ListActivity {
 
@@ -53,17 +56,13 @@ public class MainActivity extends ListActivity {
     protected void onListItemClick(ListView listView, View view, int position, long id) {
         // Launch the sample associated with this list position.
         Intent intent = new Intent(MainActivity.this, mSamples[position].activityClass);
-        Log.d("POSITION",String.valueOf(position));
         //If the user clicked the second option --> Game against the AI
         if(position==1) {
-            Log.d("ADDING BUNDLE","TRUE");
             Bundle b = new Bundle();
-            b.putBoolean("AI", true); //Your id
-            intent.putExtras(b); //Put your id to your next Intent
+            b.putBoolean("AI", true);
+            intent.putExtras(b); 
         }
         startActivity(intent);
-        //finish();
-        //startActivity(new Intent(MainActivity.this, mSamples[position].activityClass));
     }
 
 }
