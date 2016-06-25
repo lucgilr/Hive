@@ -101,7 +101,7 @@ public class Grid {
             for (int y = -radius; y <= radius; y++) {
                 int z = -x-y;
                 if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
-                    if(isInPossibleGaps(gaps, new Cube(x, y, z)) || isOnBoard(board, new Cube(x, y, z)))
+                    if(isInPossibleGaps(gaps, new Cube(x, y, z)) || isInTheGame(board, new Cube(x, y, z)))
                         nodes[i++] = new Cube(x, y, z);
                     this.board.add(new Cube(x,y,z).toHex());
                 }
@@ -120,7 +120,7 @@ public class Grid {
             for (int y = -radius; y <= radius; y++) {
                 int z = -x-y;
                 if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
-                    if(isOnBoard(board, new Cube(x, y, z)))
+                    if(isInTheGame(board, new Cube(x, y, z)))
                         nodes[i++] = new Cube(x, y, z);
                     this.board.add(new Cube(x,y,z).toHex());
                 }
@@ -162,7 +162,7 @@ public class Grid {
         return false;
     }
 
-    private boolean isOnBoard(ArrayList<Piece> gaps, Cube cube){
+    private boolean isInTheGame(ArrayList<Piece> gaps, Cube cube){
         for(int i=0;i<gaps.size();i++){
             if(gaps.get(i).getHexagon().toString().equals(cube.toHex().toString())) return true;
         }

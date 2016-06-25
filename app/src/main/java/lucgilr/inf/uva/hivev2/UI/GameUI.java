@@ -657,8 +657,8 @@ public class GameUI extends AppCompatActivity {
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                game.oneMoreRound();
-                player.oneMoreTurn();
+                controller.oneMoreRound();
+                controller.oneMoreTurn();
                 initGridView();
             }
         });
