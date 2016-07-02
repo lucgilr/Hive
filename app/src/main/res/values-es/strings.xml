@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="aiGame">Jugador VS Máquina</string>
-    <string name="ant">Hormiga</string>
-    <string name="bee">Abeja</string>
-    <string name="beetle">Escarabajo</string>
     <string name="game">Jugador VS Jugador</string>
-    <string name="grasshopper">Saltamontes</string>
-    <string name="spider">Araña</string>
     <string name="blackPlayer">¡Ganan Negras!</string>
     <string name="bothPlayers">Empate…</string>
     <string name="whitePlayer">¡Ganan Blancas!</string>

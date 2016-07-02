@@ -1,8 +1,5 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
-
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -19,9 +16,9 @@ import org.jgrapht.alg.BlockCutpointGraph;
  */
 public final class Hive {
 
-    private ArrayList<Hexagon> availableHexagons;
-    private ArrayList<Piece> board;
-    private UndirectedGraph<Integer, DefaultEdge> graph;
+    private final ArrayList<Hexagon> availableHexagons;
+    private final ArrayList<Piece> board;
+    private final UndirectedGraph<Integer, DefaultEdge> graph;
     private int vertex;
 
     /**
@@ -31,7 +28,7 @@ public final class Hive {
         this.board = new ArrayList<>();
         availableHexagons = new ArrayList<>();
         this.availableHexagons.add(new Hexagon(0, 0, 0));
-        this.graph = new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+        this.graph = new SimpleGraph<>(DefaultEdge.class);
         this.vertex = 0;
     }
 
@@ -43,52 +40,10 @@ public final class Hive {
     }
 
     /**
-     * @param board
-     */
-    public void setBoard(ArrayList<Piece> board) {
-        this.board = board;
-    }
-
-    /**
      * @return
      */
-    public ArrayList<Hexagon> getAvailableHexagons() {
+    private ArrayList<Hexagon> getAvailableHexagons() {
         return availableHexagons;
-    }
-
-    /**
-     * @param availableHexagons
-     */
-    public void setAvailableHexagons(ArrayList<Hexagon> availableHexagons) {
-        this.availableHexagons = availableHexagons;
-    }
-
-    /**
-     * @return
-     */
-    public UndirectedGraph<Integer, DefaultEdge> getGraph() {
-        return graph;
-    }
-
-    /**
-     * @param graph
-     */
-    public void setGraph(UndirectedGraph<Integer, DefaultEdge> graph) {
-        this.graph = graph;
-    }
-
-    /**
-     * @return
-     */
-    public int getVertex() {
-        return vertex;
-    }
-
-    /**
-     * @param vertex
-     */
-    public void setVertex(int vertex) {
-        this.vertex = vertex;
     }
 
     /**
@@ -109,8 +64,8 @@ public final class Hive {
         //Change piece status to inGame
         piece.setInGame();
         //Get neighbours
-        Piece[] neighbours = new Piece[6];
-        neighbours = hexagonNeighbours(piece.getHexagon());
+        //Piece[] neighbours = new Piece[6];
+        Piece[] neighbours = hexagonNeighbours(piece.getHexagon());
         //Set piece a graph id
         piece.setGraphId(this.vertex);
         this.vertex = this.vertex + 1;
@@ -211,8 +166,7 @@ public final class Hive {
      * @param hexagon
      */
     private void updateAvailableHexagons(Hexagon hexagon) {
-        ArrayList<Hexagon> newNeighbours = new ArrayList<>();
-        newNeighbours = getNeighbourHex(hexagon);
+        ArrayList<Hexagon> newNeighbours = getNeighbourHex(hexagon);
         for (int i = 0; i < newNeighbours.size(); i++) {
             if (searchPiece(newNeighbours.get(i)) == null)
                 if (checkIfDuplicate(newNeighbours.get(i)))
@@ -254,8 +208,7 @@ public final class Hive {
      * @return
      */
     private boolean checkNeighboursPieceSamePlayer(Player player, Hexagon hexagon) {
-        Piece[] n = new Piece[6];
-        n = hexagonNeighbours(hexagon);
+        Piece[] n = hexagonNeighbours(hexagon);
         for (Piece n1 : n) {
             if (n1 != null) {
                 if (!n1.getPlayer().getColor().equals(player.getColor())) {
@@ -272,7 +225,7 @@ public final class Hive {
      * @param hexagon
      * @return
      */
-    private ArrayList<Hexagon> getNeighbourHex(Hexagon hexagon) {
+    public ArrayList<Hexagon> getNeighbourHex(Hexagon hexagon) {
 
         int x = hexagon.getQ();
         int y = hexagon.getR();
@@ -336,8 +289,7 @@ public final class Hive {
      * @param hexagon
      */
     private void deleteAvailableHexagons(Hexagon hexagon, ArrayList<Hexagon> list) {
-        ArrayList<Hexagon> oldNeighbours = new ArrayList<>();
-        oldNeighbours = getNeighbourHex(hexagon);
+        ArrayList<Hexagon> oldNeighbours = getNeighbourHex(hexagon);
         for (int i = 0; i < oldNeighbours.size(); i++) {
             //If this neighbours has no neighbours --> delete from AvailableHexagons
             if (numberOfNeighbours(oldNeighbours.get(i)) == 0)
@@ -353,10 +305,9 @@ public final class Hive {
      */
     public int numberOfNeighbours(Hexagon hexagon) {
         int n = 0;
-        Piece[] nb = new Piece[6];
-        nb = hexagonNeighbours(hexagon);
-        for (int i = 0; i < nb.length; i++) {
-            if (nb[i] != null) n = n + 1;
+        Piece[] nb = hexagonNeighbours(hexagon);
+        for (Piece aNb : nb) {
+            if (aNb != null) n = n + 1;
         }
         return n;
     }
@@ -364,15 +315,15 @@ public final class Hive {
     /**
      * Returns a list of hexagons where a given piece can be moved.
      * the piece is already in game.
-     * IA --> COMENTAR!!!!!!!!
      *
+     * @param ai --> used for the AI when placing a token temporarily
      * @param piece
      * @return
      */
-    public ArrayList<Hexagon> getPossibleHexagons(Piece piece, boolean ia) {
+    public ArrayList<Hexagon> getPossibleHexagons(Piece piece, boolean ai) {
         ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
         boolean brokenHive = brokenHive(piece);
-        if (ia) brokenHive = false;
+        if (ai) brokenHive = false;
         if (piece.isBeetle() && piece.getPlayer().isBeeInGame() && !brokenHive) {
             switch (piece.getType()) {
                 case BEE:
@@ -399,22 +350,24 @@ public final class Hive {
 
     /**
      * Moves a piece from its currently hexagon to a new one.
-     * IA
+     * The beetle situation is not checked if the AI is using this method
      *
      * @param piece   to move
      * @param hexagon new position
      */
-    public void movePiece(Piece piece, Hexagon hexagon, boolean ia) {
+    public void movePiece(Piece piece, Hexagon hexagon, boolean ai) {
         Hexagon c = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getL());
-        if (!ia) {
-            //Check, if the piece is a beetle, if its moving from the top of another piece --> unmark it
+        if (!ai) {
+            //Check, if the piece is a beetle, if its moving from the top of another piece --> clear it
             if (piece.getType() == PieceType.BEETLE && piece.getHexagon().getL() != 0) {
                 Piece t = searchPiece(new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getL() - 1));
+                assert t != null;
                 t.setBeetle(false);
             }
             //And if its moving on top of another --> mark it
             if (piece.getType() == PieceType.BEETLE && hexagon.getL() != 0) {
                 Piece t = searchPiece(new Hexagon(hexagon.getQ(), hexagon.getR(), hexagon.getL() - 1));
+                assert t != null;
                 t.setBeetle(true);
             }
         }
@@ -488,7 +441,7 @@ public final class Hive {
      * @param hexagon
      * @return
      */
-    private boolean checkIfHexagonBlocked(Hexagon hexagon) {
+    public boolean checkIfHexagonBlocked(Hexagon hexagon) {
         //Second: If number of neighbours more than 4;
         if (numberOfNeighbours(hexagon) > 4) return true;
         //Third: If it has at less 2 consecutive neighbours free --> Not blocked
@@ -521,9 +474,8 @@ public final class Hive {
             return false;
         else if (searchPiece(new Hexagon(x - 1, y, 0)) == null && searchPiece(new Hexagon(x, y - 1, 0)) == null)
             return false;
-        else if (searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y - 1, 0)) == null)
-            return false;
-        else return true;
+        else
+            return !(searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y - 1, 0)) == null);
     }
 
     /**
@@ -539,9 +491,8 @@ public final class Hive {
 
         if (searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y, 0)) == null && searchPiece(new Hexagon(x - 1, y + 1, 0)) == null)
             return true;
-        else if (searchPiece(new Hexagon(x + 1, y - 1, 0)) == null && searchPiece(new Hexagon(x, y + 1, 0)) == null && searchPiece(new Hexagon(x - 1, y, 0)) == null)
-            return true;
-        else return false;
+        else
+            return searchPiece(new Hexagon(x + 1, y - 1, 0)) == null && searchPiece(new Hexagon(x, y + 1, 0)) == null && searchPiece(new Hexagon(x - 1, y, 0)) == null;
     }
 
     /**
@@ -551,12 +502,11 @@ public final class Hive {
      * @return
      */
     private ArrayList<Hexagon> beeMoves(Piece piece) {
-        ArrayList<Hexagon> possibleHex = new ArrayList<>();
         ArrayList<Hexagon> realHex = new ArrayList<>();
         //First: Check if blocked
         if (!checkIfPieceBlocked(piece)) {
             //Second: Get neighbours
-            possibleHex = getNeighbourHex(piece.getHexagon());
+            ArrayList<Hexagon> possibleHex = getNeighbourHex(piece.getHexagon());
             //Third : For each hexagon --> check if the piece can slide to it
             for (int i = 0; i < possibleHex.size(); i++) {
                 if (possibleHex.get(i).getL() == 0) {
@@ -650,13 +600,10 @@ public final class Hive {
      * @return
      */
     private ArrayList<Hexagon> beetleMoves(Piece piece) {
-        ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
         ArrayList<Hexagon> realHexagons = new ArrayList<>();
         int x, y, z;
-        possibleHexagons = getNeighbourHex(piece.getHexagon());
+        ArrayList<Hexagon> possibleHexagons = getNeighbourHex(piece.getHexagon());
         for (int i = 0; i < possibleHexagons.size(); i++) {
-            x = possibleHexagons.get(i).getR();
-            y = possibleHexagons.get(i).getQ();
             z = possibleHexagons.get(i).getL();
             if (z != 0) {
                 int n = checkHexagon(piece.getHexagon(), possibleHexagons.get(i));
@@ -682,15 +629,12 @@ public final class Hive {
      */
     private ArrayList<Hexagon> spiderMoves(Piece piece) {
         ArrayList<Hexagon> realHexagons = new ArrayList<>();
-        ArrayList<Hexagon> l1Piece = new ArrayList<>();
-        ArrayList<Hexagon> l2Piece = new ArrayList<>();
-        ArrayList<Hexagon> l3Piece = new ArrayList<>();
 
         //Save original Hexagon
         Hexagon c1 = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), 0);
 
         //Level 1
-        l1Piece = getNeighbourHex(piece.getHexagon());
+        ArrayList<Hexagon> l1Piece = getNeighbourHex(piece.getHexagon());
         for (int i = 0; i < l1Piece.size(); i++) {
             if (l1Piece.get(i).getL() == 0) {
                 if (checkHexagon(c1, l1Piece.get(i)) == 1) {
@@ -699,7 +643,7 @@ public final class Hive {
                     //Move Spider to that hexagon
                     updateHexagon(piece, l1Piece.get(i));
                     //Take neighbours
-                    l2Piece = getNeighbourHex(l1Piece.get(i));
+                    ArrayList<Hexagon> l2Piece = getNeighbourHex(l1Piece.get(i));
                     //Level 2
                     for (int j = 0; j < l2Piece.size(); j++) {
                         //if is not the hexagon from previous spider position
@@ -713,7 +657,7 @@ public final class Hive {
                                     //Move Spider to that hexagon
                                     updateHexagon(piece, l2Piece.get(j));
                                     //Take neighbours
-                                    l3Piece = getNeighbourHex(l2Piece.get(j));
+                                    ArrayList<Hexagon> l3Piece = getNeighbourHex(l2Piece.get(j));
                                     //Level 3
                                     for (int k = 0; k < l3Piece.size(); k++) {
                                         if (!(l3Piece.get(k).getR() == c3.getR() && l3Piece.get(k).getQ() == c3.getQ())
@@ -751,9 +695,9 @@ public final class Hive {
      */
     private ArrayList<Hexagon> antMoves(Piece piece) {
         //First: Copy AvailableHexagons to new Array
-        ArrayList<Hexagon> availableHexagonsClon = new ArrayList<>();
+        ArrayList<Hexagon> availableHexagonsClone = new ArrayList<>();
         for (int i = 0; i < this.availableHexagons.size(); i++)
-            availableHexagonsClon.add(this.availableHexagons.get(i));
+            availableHexagonsClone.add(this.availableHexagons.get(i));
         Hexagon c = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getL());
         ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
         //First: Check if blocked
@@ -762,12 +706,12 @@ public final class Hive {
             //Free hexagon in the board
             updateHexagon(piece,new Hexagon(-100,-100,-100));
             //Delete hexagon neighbours if they haven't any neighbour
-            deleteAvailableHexagons(c, availableHexagonsClon);
+            deleteAvailableHexagons(c, availableHexagonsClone);
             //Third: Get all available hexagons and check if d==0 and then if they are not blocked
-            for (int i = 0; i < availableHexagonsClon.size(); i++) {
-                if (availableHexagonsClon.get(i).getL() == 0)
-                    if (!checkIfHexagonBlocked(availableHexagonsClon.get(i)))
-                        possibleHexagons.add(availableHexagonsClon.get(i));
+            for (int i = 0; i < availableHexagonsClone.size(); i++) {
+                if (availableHexagonsClone.get(i).getL() == 0)
+                    if (!checkIfHexagonBlocked(availableHexagonsClone.get(i)))
+                        possibleHexagons.add(availableHexagonsClone.get(i));
             }
         }
         //Fourth: Return ant to its original hexagon
@@ -920,14 +864,9 @@ public final class Hive {
      * @return
      */
     public boolean noMoves(Player player){
-        Log.d("calling noMoves","yes");
-        ArrayList<Piece> pieces = new ArrayList<>();
-        pieces = player.getPiecesInGame();
-        Log.d("In game",String.valueOf(pieces.size()));
+        ArrayList<Piece> pieces = player.getPiecesInGame();
         for(int i=0;i<pieces.size();i++){
             if(getPossibleHexagons(pieces.get(i),false).size()!=0){
-                Log.d("gaps",String.valueOf(getPossibleHexagons(pieces.get(i),false).size()));
-                Log.d("for",pieces.get(i).pieceInfo());
                 return false;
             }
         }

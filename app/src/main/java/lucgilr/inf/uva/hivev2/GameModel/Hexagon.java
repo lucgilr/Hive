@@ -13,9 +13,9 @@ package lucgilr.inf.uva.hivev2.GameModel;
  */
 public class Hexagon {
 
-    private int q; //column
-    private int r; //row
-    private int l; //level
+    private final int q; //column
+    private final int r; //row
+    private final int l; //level
 
     /**
      * The initial values of the coordinates are (0,0,0)
@@ -61,23 +61,12 @@ public class Hexagon {
         return q;
     }
 
-    public void setQ(int q) {
-        this.q = q;
-    }
-
     public int getR() {
         return r;
-    }
-
-    public void setR(int r) {
-        this.r = r;
     }
 
     public int getL() {
         return l;
     }
 
-    public void setL(int l) {
-        this.l = l;
-    }
 }

@@ -9,7 +9,7 @@ package lucgilr.inf.uva.hivev2.GameModel;
 public class Piece {
 
     private PieceType type;
-    private int value;
+    private final int value;
     private Player player;
     private Hexagon hexagon;
     private boolean beetle;
@@ -49,26 +49,10 @@ public class Piece {
 
     /**
      *
-     * @param type
-     */
-    public void setType(PieceType type) {
-        this.type = type;
-    }
-
-    /**
-     *
      * @return
      */
     public int getValue() {
         return value;
-    }
-
-    /**
-     *
-     * @param value
-     */
-    public void setValue(int value) {
-        this.value = value;
     }
 
     /**
@@ -109,14 +93,6 @@ public class Piece {
      */
     public Player getPlayer() {
         return player;
-    }
-
-    /**
-     * Every piece is from a player. We can indicate which player with this method.
-     * @param player
-     */
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     /**
@@ -162,7 +138,7 @@ public class Piece {
                 + " X: "+this.hexagon.getQ()+" "
                 + " Y: "+this.hexagon.getR()+" "
                 + " Z: "+this.hexagon.getL()+" "
-                + " graphid: "+this.getGraphId()+" "
+                + " graphId: "+this.getGraphId()+" "
                 + " inGame: "+this.inGame+" "
                 + " Beetle: "+this.beetle+"\n";
     }

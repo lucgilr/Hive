@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Player {
 
-    private String color;
+    private final String color;
     private int turn;
     private ArrayList<Piece> pieces;
     private boolean beeInGame;
@@ -38,34 +38,14 @@ public class Player {
     }
 
     /**
-     * Sets a color to a player
-     * @param color
-     */
-    public void setColor(String color) {
-        this.color=color;
-    }
-
-    /**
      * @return the number of turns the player has played.
      */
     public int getTurn() {
         return turn;
     }
 
-    /**
-     * Assigns a turn to the player.
-     * @param turn
-     */
-    public void setTurn(int turn) {
-        this.turn = turn;
-    }
-
-    public ArrayList<Piece> getPieces() {
+    private ArrayList<Piece> getPieces() {
         return pieces;
-    }
-
-    public void setPieces(ArrayList<Piece> pieces) {
-        this.pieces = pieces;
     }
 
     /**

@@ -57,7 +57,6 @@ public class GameUI extends AppCompatActivity {
     private int endGame;
     private PieceType bugType;
     private String bug;
-    private int screen;
 
     private RelativeLayout mRelativeLayout;
     private ScrollView vScrollView;
@@ -76,7 +75,6 @@ public class GameUI extends AppCompatActivity {
                 Configuration.SCREENLAYOUT_SIZE_LARGE) {
             //Tablet 8'
             //Tablet 7'
-            this.screen=1;
             this.scale=100;
 
         }
@@ -84,7 +82,6 @@ public class GameUI extends AppCompatActivity {
                 Configuration.SCREENLAYOUT_SIZE_MASK) ==
                 Configuration.SCREENLAYOUT_SIZE_NORMAL) {
             //Smartphone 5'
-            this.screen=2;
             this.scale=180;
 
         }
@@ -233,7 +230,8 @@ public class GameUI extends AppCompatActivity {
             }
         }
         setGridDimensions();
-        Grid grid = setGridNodes();
+        //Grid grid = setGridNodes();
+        setGridNodes();
     }
 
     /**
@@ -256,7 +254,6 @@ public class GameUI extends AppCompatActivity {
         if(displayWidth > displayHeight) displayWidth = displayHeight;
 
         int horizontalPadding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
-        displayWidth -= 2 * horizontalPadding;
 
         // Changes the height and width of the grid to the specified *pixels*
         params.width = Grid.getGridWidth(radius, scale);
@@ -268,7 +265,7 @@ public class GameUI extends AppCompatActivity {
      * Prepares which hexagons to draw
      * @return
      */
-    private Grid setGridNodes() {
+    private void setGridNodes() {
         try {
 
             //Clear View
@@ -386,14 +383,11 @@ public class GameUI extends AppCompatActivity {
 
             }
 
-            return grid;
-
 
         } catch (Exception e) {
             Toast.makeText(GameUI.this, "Sorry, there was a problem initializing the application.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
-        return null;
     }
 
     private int getPiece(String language, String color, PieceType type){
@@ -787,10 +781,6 @@ public class GameUI extends AppCompatActivity {
 
     public void setBug(String bug){
         this.bug=bug;
-    }
-
-    public String getBug(){
-        return this.bug;
     }
 
 }

@@ -11,12 +11,12 @@ package lucgilr.inf.uva.hivev2.GameModel;
  */
 public class Game {
 
-    private Player player1;
-    private Player player2;
-    private Hive hive;
+    private final Player player1;
+    private final Player player2;
+    private final Hive hive;
     private int round;
-    private boolean end;
-    private int start;
+    private final boolean end;
+    private final int start;
 
     /**
      * A Game has 2 players (black & white) and "start" determines which one starts to play.
@@ -39,14 +39,6 @@ public class Game {
     }
 
     /**
-     * Assigns new hive to the Game.
-     * @param hive
-     */
-    public void setHive(Hive hive) {
-        this.hive = hive;
-    }
-
-    /**
      * @return player one ("White")
      */
     public Player getPlayer1() {
@@ -54,64 +46,10 @@ public class Game {
     }
 
     /**
-     * Assigns player 1 to the Game.
-     * @param player1
-     */
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    /**
      * @return player two ("Black")
      */
     public Player getPlayer2() {
         return player2;
-    }
-
-    /**
-     * Assigns player 2 to the Game.
-     * @param player2
-     */
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
-    /**
-     * @return current round of the Game.
-     */
-    public int getRound() {
-        return round;
-    }
-
-    /**
-     * Assigns a round to the Game.
-     * @param round
-     */
-    public void setRound(int round) {
-        this.round = round;
-    }
-
-    /**
-     * @return true if the game is over, false otherwise.
-     */
-    public boolean isEnd() {
-        return end;
-    }
-
-    /**
-     * Assigns a state to the Game, false if its not over and true if it is.
-     * @param end
-     */
-    public void setEnd(boolean end) {
-        this.end = end;
-    }
-
-    public int getStart() {
-        return start;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
     }
 
     /**

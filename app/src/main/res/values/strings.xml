@@ -3,11 +3,6 @@
     <string name="game">Player VS Player</string>
     <string name="aiGame">Player VS Machine</string>
     <string name="howTo">How to Play</string>
-    <string name="bee">Bee</string>
-    <string name="beetle">Beetle</string>
-    <string name="ant">Ant</string>
-    <string name="spider">Spider</string>
-    <string name="grasshopper">Grasshopper</string>
     <string name="blackPlayer">Black Player Wins!</string>
     <string name="whitePlayer">White Player Wins!</string>
     <string name="bothPlayers">Its a Draw…</string>

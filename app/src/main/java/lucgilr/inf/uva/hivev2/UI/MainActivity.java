@@ -46,7 +46,7 @@ public class MainActivity extends ListActivity {
                 new Sample(R.string.aiGame,GameUI.class),
                 new Sample(R.string.howTo,HowToPlay.class)};
 
-        setListAdapter(new ArrayAdapter<Sample>(this,
+        setListAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1,
                 mSamples));

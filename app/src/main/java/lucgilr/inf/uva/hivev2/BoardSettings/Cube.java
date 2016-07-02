@@ -10,9 +10,9 @@ import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
  * Cube using 3-vector for the coordinates (x, y, z)
  */
 public class Cube {
-    private int x;
-    private int y;
-    private int z;
+    private final int x;
+    private final int y;
+    private final int z;
 
     public Cube(int x, int y, int z) {
         this.x = x;

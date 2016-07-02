@@ -42,11 +42,22 @@ public class Language {
      * @return
      */
     public PieceType stringToPieceType(String bug){
-        if(bug.equals("Bee") || bug.equals("Abeja")) return PieceType.BEE;
-        else if(bug.equals("Ant") || bug.equals("Hormiga")) return PieceType.ANT;
-        else if(bug.equals("Beetle") || bug.equals("Escarabajo")) return PieceType.BEETLE;
-        else if(bug.equals("Grasshopper") || bug.equals("Saltamontes")) return PieceType.GRASSHOPPER;
-        else return PieceType.SPIDER;
+        switch (bug) {
+            case "Bee":
+            case "Abeja":
+                return PieceType.BEE;
+            case "Ant":
+            case "Hormiga":
+                return PieceType.ANT;
+            case "Beetle":
+            case "Escarabajo":
+                return PieceType.BEETLE;
+            case "Grasshopper":
+            case "Saltamontes":
+                return PieceType.GRASSHOPPER;
+            default:
+                return PieceType.SPIDER;
+        }
     }
 
 }

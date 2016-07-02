@@ -10,11 +10,11 @@ import lucgilr.inf.uva.hivev2.GameModel.Piece;
  * Created to combine Piece, possible gaps where it can be moved and the score of the new position.
  * score will be used to choose the best move.
  */
-public class PieceMoveScore {
+class PieceMoveScore {
 
-    private Piece piece;
-    private Hexagon hexagon;
-    private int score;
+    private final Piece piece;
+    private final Hexagon hexagon;
+    private final int score;
 
     public PieceMoveScore(){
         this.piece =null;
@@ -32,24 +32,12 @@ public class PieceMoveScore {
         return piece;
     }
 
-    public void setPiece(Piece piece) {
-        this.piece = piece;
-    }
-
     public Hexagon getHexagon() {
         return hexagon;
     }
 
-    public void setHexagon(Hexagon hexagon) {
-        this.hexagon = hexagon;
-    }
-
     public int getScore() {
         return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
     }
 
     public String getInfo(){
