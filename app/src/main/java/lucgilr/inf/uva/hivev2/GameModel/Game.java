@@ -1,13 +1,13 @@
 package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
- * @author Lucía Gil Román
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
  * The Game is form by two players and a Hive.
  * Both players have the same set of pieces, what makes them different its their name:
  * One will be "Black" and the other one "White", because of the color of their pieces.
  * The Game also has a round count, that increments when a player plays.
- * When the Game ends it will be indicated by a boolean named "end".
+ *
  */
 public class Game {
 
@@ -15,19 +15,16 @@ public class Game {
     private final Player player2;
     private final Hive hive;
     private int round;
-    private final boolean end;
     private final int start;
 
     /**
      * A Game has 2 players (black & white) and "start" determines which one starts to play.
-     * @param start
      */
     public Game(int start){
         player1 = new Player("White");
         player2 = new Player("Black");
         hive = new Hive();
         round = 1;
-        end = false;
         this.start=start;
     }
 
@@ -79,7 +76,6 @@ public class Game {
      * If both bees have 6 neighbours, then both are dead and the game ends in a draw.
      * If the bee of the player one is surrounded by 6 neighbours then the winner is
      * player 2, and vice versa.
-     * @return
      */
     public int beeSurrounded(){
         Hexagon p1 = this.getPlayer1().inspectPiece(PieceType.BEE).getHexagon();

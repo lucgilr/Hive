@@ -12,7 +12,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            tools:ignore="UselessParent">
 
             <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/horizontal_scroll"
@@ -25,8 +26,6 @@
                     android:id="@+id/container_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
                     android:gravity="center"
                     android:orientation="vertical">
 

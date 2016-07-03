@@ -3,7 +3,7 @@ package lucgilr.inf.uva.hivev2.BoardSettings;
 import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 
 /**
- * @author Narek (https://github.com/starwheel)
+ * @author Narek (https://github.com/starwheel) modified by Lucía Gil Román (https://github.com/lucgilr)
  *
  * Original source for this file:
  * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Cube.java

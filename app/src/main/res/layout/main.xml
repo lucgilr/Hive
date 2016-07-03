@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentLeft="true"
+        tools:ignore="RelativeOverlap,RtlHardcoded,UseCompoundDrawables">
 
         <ImageView
             android:layout_width="250dp"
@@ -19,8 +20,9 @@
             android:layout_marginLeft="10dp"
             android:src="@drawable/hive_logo"
             android:layout_gravity="center"
-            android:contentDescription="logo"
-            android:id="@+id/logo"/>
+            android:contentDescription="@string/logo"
+            android:id="@+id/logo"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,9 +30,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:textSize="40sp"
-            android:layout_below="@+id/logo"
             android:layout_gravity="center"
-            android:text="@string/app_name"/>
+            android:text="@string/app_name"
+            tools:ignore="RtlHardcoded" />
 
     </LinearLayout>
 
@@ -40,6 +42,7 @@
         android:layout_height="400dp"
         android:layout_marginTop="80dp"
         android:layout_marginRight="30dp"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        tools:ignore="RtlHardcoded" />
 
 </RelativeLayout>

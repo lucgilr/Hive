@@ -4,7 +4,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 
 /**
- * @author Lucía Gil Román
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
  * Used in the AI class.
  * Created to combine Piece, possible gaps where it can be moved and the score of the new position.

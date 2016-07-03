@@ -1,7 +1,5 @@
 package lucgilr.inf.uva.hivev2.AI;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -12,8 +10,11 @@ import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 
 /**
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
- * Created by Lucía Gil Román on 11/05/16.
+ * The Artificial Intelligent will be a group of rules that will be executed in an order
+ * relying on the situtation of the board.
+ *
  */
 public class AI{
 
@@ -43,7 +44,7 @@ public class AI{
 
     /**
      * Using this method the AI will decide which will be it next move.
-     * @param game
+     * @param game --> To see the current situation of the game
      */
     public void makeAChoice(Game game){
         this.move=false;
@@ -85,7 +86,6 @@ public class AI{
             Piece t = player.inspectPieceFromBox(PieceType.SPIDER);
             this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
             game.getHive().addPiece(t, hexagon);
-            Log.d("Adding piece","openingOne");
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Ant
@@ -93,7 +93,6 @@ public class AI{
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
             game.getHive().addPiece(t, hexagon);
-            Log.d("Adding piece", "openingOne");
         }else if(player.getTurn()==3){
             //Place Bee
             Piece t = player.inspectPieceFromBox(PieceType.BEE);
@@ -105,7 +104,6 @@ public class AI{
             //first: check if there is already a piece in that gap
             if(game.getHive().checkIfHexagonTaken(this.hexagon)) {
                 game.getHive().addPiece(t, this.hexagon);
-                Log.d("Adding piece", "openingOne"+t.pieceInfo());
             }else attackOpponent();
         }
     }
@@ -125,7 +123,6 @@ public class AI{
             Piece t = player.inspectPieceFromBox(PieceType.BEE);
             this.hexagon = game.getHive().getAvailableHexagonsPlayer(player).get(random);
             game.getHive().addPiece(t, hexagon);
-            Log.d("Adding piece", "openingTwo");
         }else if(player.getTurn()==2){
             this.random = rand.nextBoolean() ? 0:1;
             //Place Spider
@@ -133,7 +130,6 @@ public class AI{
             this.opening = game.getHive().vHexagons(hexagon);
             this.hexagon = opening[random];
             game.getHive().addPiece(t, hexagon);
-            Log.d("Adding piece", "openingTwo");
         }else if(player.getTurn()==3) {
             //Place Spider
             Piece t = player.inspectPieceFromBox(PieceType.SPIDER);
@@ -145,7 +141,6 @@ public class AI{
             //first: check if there is already a piece in that gap
             if (game.getHive().checkIfHexagonTaken(this.hexagon)){
                 game.getHive().addPiece(t, this.hexagon);
-                Log.d("Adding piece", "openingTwo"+t.pieceInfo());
         }else{
                 beeStatus();
                 if(!this.move) attackOpponent();
@@ -185,11 +180,8 @@ public class AI{
     /**
      * If the bee is blocked we can try to save it by moving one of his
      * neighbours if this one is a friend.
-     * @param bee
-     * @return
      */
     private void saveBee(Piece bee){
-        Log.d("SAVING BEE!","YES");
         ArrayList<PieceMoveScore> moves = new ArrayList<>();
         //Get friendly pieces
         ArrayList<Piece> friends = getFriends(bee);
@@ -209,17 +201,14 @@ public class AI{
         if(!moves.isEmpty()){
             PieceMoveScore bestMove = getBetterMove(moves);
             this.game.getHive().movePiece(bestMove.getPiece(), bestMove.getHexagon(), false);
-            Log.d("moving piece", "savebee"+bestMove.getPiece().pieceInfo());
             this.move = true;
         }
     }
 
     /**
      * Tries to find a better position for the bee.
-     * @param bee
      */
     private void moveBee(Piece bee){
-        Log.d("MOVING BEE!","YES!");
         //Array to store the possible moves
         ArrayList<PieceMoveScore> moves = new ArrayList<>();
         //Take possible moves for the bee:
@@ -237,7 +226,6 @@ public class AI{
         if(!moves.isEmpty()){
             PieceMoveScore bestMove = getBetterMove(moves);
             this.game.getHive().movePiece(bestMove.getPiece(), bestMove.getHexagon(), false);
-            Log.d("moving piece", "movebee "+bestMove.getPiece().pieceInfo());
             this.move = true;
         }
     }
@@ -247,7 +235,8 @@ public class AI{
      * The order of attack will be:
      * First: Move a piece already in the game by besting its current score.
      * Second: If any piece in the game can best its current position --> Add new piece.
-     * Third: If the AI can't take any of the two last decisions --> WHAT TO DO??? NEXT PLAYER
+     * Third: If the AI can't add any pieces --> move the ones already in the game.
+     * Fourth: If the AI can't do any of that --> next player
      */
     private void attackOpponent() {
         //First: Check if a piece is already in the game can be place in a better position
@@ -256,17 +245,15 @@ public class AI{
         if(!bestMoves.isEmpty()){
             PieceMoveScore bestMove = getBetterMove(bestMoves);
             this.game.getHive().movePiece(bestMove.getPiece(), bestMove.getHexagon(), false);
-            Log.d("moving piece", "attackoponent 1 "+bestMove.getPiece().pieceInfo());
             this.move = true;
         }
         if(!this.move) {
             //Second: If the pieces in the game can't be in a better position --> Add new ones
-            if (!this.move && !this.game.getHive().getAvailableHexagonsPlayer(this.player).isEmpty()) {
+            if (!this.game.getHive().getAvailableHexagonsPlayer(this.player).isEmpty()) {
                 //Takes a piece from the box
                 Piece newPiece = getPiece();
                 //Add piece to the board
                 this.game.getHive().addPiece(newPiece, newPiece.getHexagon());
-                Log.d("Adding piece", "attackoponent" + newPiece.pieceInfo());
                 this.move = true;
             } else {
                 //Third: No pieces to add...
@@ -275,7 +262,6 @@ public class AI{
                 if (!bestMoves.isEmpty()) {
                     PieceMoveScore bestMove = getBetterMove(bestMoves);
                     this.game.getHive().movePiece(bestMove.getPiece(), bestMove.getHexagon(), false);
-                    Log.d("moving piece", "attackoponent 2 " + bestMove.getPiece().pieceInfo());
                     this.move = true;
                 } else {
                     //Next player
@@ -299,25 +285,16 @@ public class AI{
         ArrayList<PieceMoveScore> bestMoves = new ArrayList<>();
         boolean pieceBlocking = false;
         for(int i=0;i<player.getPiecesInGame().size();i++){
-            Log.d("EVALUATING PIECE",player.getPiecesInGame().get(i).pieceInfo());
             //Array to store the moves for the piece
             ArrayList<PieceMoveScore> moves = new ArrayList<>();
             //If the piece can't be moved --> Do nothing
-            //ArrayList<Hexagon> pieceMoves = new ArrayList<>();
             ArrayList<Hexagon> pieceMoves = this.game.getHive().getPossibleHexagons(player.getPiecesInGame().get(i), false);
-            Log.d("MOVES FOR THE PIECE",String.valueOf(pieceMoves.size()));
             if(!pieceMoves.isEmpty()) {
-                //Piece[] n = new Piece[6];
                 Piece[] n = game.getHive().hexagonNeighbours(player.getPiecesInGame().get(i).getHexagon());
                 for (Piece aN : n) {
                     if (aN != null) {
                         if (aN.getType().equals(PieceType.BEE) && aN.getPlayer().getColor().equals("White")) {
-                            //If the piece is already blocking the enemy's bee --> Do nothing
-                            /*if (checkIfUnblockingGap(player.getPiecesInGame().get(i), n[j])) {
-                                pieceBlocking = true;
-                            }*/
                             //If the piece is already touching enemy's bee
-                            Log.d("IS TOUCHING ENEMY BEE", "YES!");
                             pieceBlocking = true;
                         }
                     }
@@ -326,21 +303,13 @@ public class AI{
                     //Evaluate each move
                     for (int j = 0; j < pieceMoves.size(); j++) {
                         int points = evalPosition(player.getPiecesInGame().get(i), pieceMoves.get(j));
-                        Log.d("POINTS 1",String.valueOf(points));
                         moves.add(new PieceMoveScore(player.getPiecesInGame().get(i), pieceMoves.get(j), points));
                     }
-                    Log.d("MOVES SIZE",String.valueOf(moves.size()));
                     PieceMoveScore bestMovePiece = getBetterMove(moves);
                     int bestMove = bestMovePiece.getScore();
-                    Log.d("PIECE ATTACKING",player.getPiecesInGame().get(i).pieceInfo());
-                    //Log.d("NEXT MOVE",bestMovePiece.getInfo());
-                    Log.d("PIECE",bestMovePiece.getPiece().pieceInfo());
-                    Log.d("MOVE",bestMovePiece.getHexagon().toString());
-                    Log.d("SCORE", String.valueOf(bestMovePiece.getScore()));
                     //Check if it's current position is better than the new one
                     if(evalCurrent) {
                         int current = evalPosition(player.getPiecesInGame().get(i), player.getPiecesInGame().get(i).getHexagon());
-                        Log.d("CURRENT POSITION: ",String.valueOf(current));
                         if(bestMove>current) bestMoves.add(bestMovePiece);
                     }
                 }
@@ -352,10 +321,8 @@ public class AI{
 
     /**
      * Evaluate a position where a piece can be placed. The score is calculated watching its neighbours value.
-     * Score: If the piece is friendly: -value and if it can be blocked 2*(-value)
-     *        If its a enemy piece: +value and if it can be blocked 2*(+value)
-     * @param hexagon
-     * @return
+     * @return Score: If the piece is friendly: -value and if it can be blocked 2*(-value)
+     *                If its a enemy piece: +value and if it can be blocked 2*(+value)
      */
     private int evalPosition(Piece toMove,Hexagon hexagon) {
 
@@ -370,9 +337,6 @@ public class AI{
         if(toMove.getType().equals(PieceType.BEETLE) && hexagon.getL()!=0){
             //noinspection ConstantConditions
             if(this.game.getHive().searchPiece(new Hexagon(hexagon.getQ(),hexagon.getR(),hexagon.getL()-1)).getPlayer().getColor().equals("Black")) {
-                Log.d("Moving on top of black","Moving on top of a black!");
-                Log.d("Piece",toMove.pieceInfo());
-                Log.d("Position",hexagon.toString());
                 return -100;
             }
         }
@@ -381,7 +345,6 @@ public class AI{
         Hexagon currentPos = new Hexagon(toMove.getHexagon().getQ(),toMove.getHexagon().getR(),toMove.getHexagon().getL());
         //Move piece to the position to evaluate
         this.game.getHive().movePiece(toMove, hexagon, true);
-        Log.d("moving piece", "evalposition 1 " + toMove.pieceInfo());
 
         int points = 0;
         Piece[] n = this.game.getHive().hexagonNeighbours(hexagon);
@@ -402,14 +365,11 @@ public class AI{
         }
         //Return piece to its original position
         this.game.getHive().movePiece(toMove, currentPos, true);
-        Log.d("moving piece", "evalposition 2 " + toMove.pieceInfo());
         return points;
     }
 
     /**
-     * Returns friendly piece from a given piece.
-     * @param piece
-     * @return
+     * @return friendly pieces from a given piece.
      */
     private ArrayList<Piece> getFriends(Piece piece) {
         ArrayList<Piece> friends = new ArrayList<>();
@@ -422,37 +382,8 @@ public class AI{
         return friends;
     }
 
-// --Commented out by Inspection START (02/07/16 11:55):
-//    /**
-//     * Checks, if the piece in the given coordinates gaps is blocked,
-//     * and if moving the given piece would unblock it.
-//     * @param piece
-//     * @param toCheck
-//     * @return
-//     */
-//    private boolean checkIfUnblockingGap(Piece piece, Piece toCheck){
-//        //Blocked?
-//        boolean unBlocked = false;
-//        //If the piece in the given gap is already blocked
-//        if(game.getHive().checkIfPieceBlocked(toCheck)) {
-//            //Save actual piece coordinates
-//            Hexagon currentPos = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), piece.getHexagon().getL());
-//            //Change coordinates of the piece to move --> Hexagon outside the board
-//            this.game.getHive().movePiece(piece, new Hexagon(piece.getHexagon().getQ()+10, piece.getHexagon().getR()+10, 10), true);
-//            //Check if the piece is now blocked
-//            if (!game.getHive().checkIfPieceBlocked(toCheck)) unBlocked = true;
-//            //Return the piece to the board
-//            this.game.getHive().movePiece(piece, currentPos, true);
-//        }
-//        return unBlocked;
-//    }
-// --Commented out by Inspection STOP (02/07/16 11:55)
-
-
     /**
-     *
-     *
-     * @return Piece to place in the game.
+     * @return the better piece to place in the game for the very first time
      */
     private Piece getPiece(){
 
@@ -472,14 +403,11 @@ public class AI{
         }else{
             //If enemy's bee has an empty blocked gap as neighbour --> add grasshopper
             ArrayList<Hexagon> freeGapsEnemyBee = getFreeGapsEnemyBee();
-            Log.d("free gaps bee",String.valueOf(freeGapsEnemyBee.size()));
             ArrayList<Hexagon> blockedGaps = getBockedGaps(freeGapsEnemyBee);
-            Log.d("Blocked gap bee",String.valueOf(blockedGaps.size()));
             if(!blockedGaps.isEmpty()){
-                Log.d("Adding grasshopper","yes");
                 piece = this.player.inspectPieceFromBox(PieceType.GRASSHOPPER);
             }else {
-                int type = getRandomPos(0, 2);
+                int type = getRandomPos();
                 if (type == 0) {
                     //Take beetle
                     if (this.player.inspectPieceFromBox(PieceType.BEETLE) != null)
@@ -518,11 +446,11 @@ public class AI{
     }
 
     /**
-     *
-     * @param piece
-     * @return
+     * @return the list of possible moves and its values for a piece that
+     * is added to the game for the first time
      */
     private ArrayList<PieceMoveScore> addPieceScores(Piece piece){
+
         //Get possible gaps for the player
         ArrayList<Hexagon> gaps = this.game.getHive().getAvailableHexagonsPlayer(this.player);
         //ArrayList to store pieces and its moves
@@ -531,7 +459,6 @@ public class AI{
         for(int i=0;i<gaps.size();i++){
             //Place piece in that gap
             this.game.getHive().addPiece(piece, gaps.get(i));
-            Log.d("Adding piece", "addPiecesScores "+piece.pieceInfo());
             //Get possible moves from that position
             ArrayList<Hexagon> possibleMoves = this.game.getHive().getPossibleHexagons(piece, true);
             //Evaluate those moves
@@ -547,20 +474,16 @@ public class AI{
     }
 
     /**
-     *
-     * @param min
-     * @param max
-     * @return
+     * @return a random number between two given values
      */
-    private int getRandomPos(int min, int max){
+    private int getRandomPos(){
         Random r = new Random();
-        return r.nextInt(((max-min) + 1) + min);
+        return r.nextInt(((2) + 1));
     }
 
     /**
-     *
-     * @param moves
-     * @return
+     * @return the better move from a list of moves.
+     * The better move is the higher one.
      */
     private PieceMoveScore getBetterMove(ArrayList<PieceMoveScore> moves){
         int max = -1000;
@@ -575,10 +498,9 @@ public class AI{
     }
 
     /**
-     *
-     * @return
+     * @return the free hexagons surrounding the enemy's bee
      */
-    public ArrayList<Hexagon> getFreeGapsEnemyBee(){
+    private ArrayList<Hexagon> getFreeGapsEnemyBee(){
         ArrayList<Hexagon> freeGaps = new ArrayList<>();
         Piece bee = game.getPlayer1().inspectPiece(PieceType.BEE);
         if(bee.isInGame()){
@@ -591,9 +513,7 @@ public class AI{
     }
 
     /**
-     *
-     * @param freeGapsEnemyBee
-     * @return
+     * @return the gaps that are blocked in a given list of hexagons
      */
     private ArrayList<Hexagon> getBockedGaps(ArrayList<Hexagon> freeGapsEnemyBee) {
         ArrayList<Hexagon> blockedGaps = new ArrayList<>();

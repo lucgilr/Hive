@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 
 /**
- * @author Lucía Gil Román
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
  * A player is the person/AI who plays the game.
  * It has assigned a color to distinguish itself from the other player.
  * When a new player is set it receives a box with eleven pieces to play
  * and a turn count that increments every time the player makes a move
  * or adds a piece to the board.
+ *
  */
 public class Player {
 
@@ -20,8 +21,8 @@ public class Player {
     private boolean beeInGame;
 
     /**
-     *
-     * @param color
+     * To distinguish a player from the other we give him/her a color.
+     * It also has the turn count equal to one and is assigned a set of pieces.
      */
     public Player(String color){
         this.color=color;
@@ -88,9 +89,7 @@ public class Player {
     }
 
     /**
-     * Returns a piece given its type.
-     * @param type
-     * @return
+     * @return a piece given its type.
      */
     public Piece inspectPiece(PieceType type){
         for(int i=0;i<this.pieces.size();i++){
@@ -101,9 +100,7 @@ public class Player {
     }
 
     /**
-     * Returns the Piece from the box given its type.
-     * @param type
-     * @return
+     * @return the Piece from the box given its type.
      */
     public Piece inspectPieceFromBox(PieceType type){
         for(int i=0;i<this.pieces.size();i++){
@@ -114,8 +111,7 @@ public class Player {
     }
 
     /**
-     * Returns pieces that are in game
-     * @return
+     * @return pieces that are in game
      */
     public ArrayList<Piece> getPiecesInGame(){
         ArrayList<Piece> piecesInGame = new ArrayList<>();
@@ -126,8 +122,7 @@ public class Player {
     }
 
     /**
-     * Returns pieces that are in the box
-     * @return
+     * @return pieces that are in the box
      */
     public ArrayList<Piece> getPiecesInTheBox(){
         ArrayList<Piece> piecesInGame = new ArrayList<>();

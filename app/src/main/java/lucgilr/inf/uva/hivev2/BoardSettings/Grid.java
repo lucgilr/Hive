@@ -8,7 +8,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Hexagon;
 import lucgilr.inf.uva.hivev2.GameModel.Piece;
 
 /**
- * @author Narek (https://github.com/starwheel)
+ * @author Narek (https://github.com/starwheel) modified by Lucía Gil Román (lucgilr)
  *         <p/>
  *         Original source for this file:
  *         https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Grid.java
@@ -22,7 +22,7 @@ import lucgilr.inf.uva.hivev2.GameModel.Piece;
  */
 public class Grid {
 
-    private final int radius; //The radius of the grid - the count of rings around the central node
+    private int radius; //The radius of the grid - the count of rings around the central node
     private final int scale; //The radius of the single node in grid
 
     //Derived node properties
@@ -32,9 +32,6 @@ public class Grid {
     public final int centerOffsetY; //Relative center coordinate within one node
 
     public Cube[] nodes;
-
-    //Added by Lucía Gil Román--> ArrayList of Hex generated
-    private final ArrayList<Hexagon> board;
 
     /**
      * Construing a Grid with a set of cubes, scale, and shape
@@ -52,9 +49,6 @@ public class Grid {
         centerOffsetX = width / 2;
         centerOffsetY = height / 2;
 
-        //Init ArrayList
-        this.board = new ArrayList<>();
-
         //Init nodes
         generateHexagonalShape(radius, gaps, board);
     }
@@ -69,15 +63,8 @@ public class Grid {
         centerOffsetX = width / 2;
         centerOffsetY = height / 2;
 
-        //Init ArrayList
-        this.board = new ArrayList<>();
-
         //Init nodes
         generateHexagonalShape(radius, board);
-    }
-
-    public ArrayList<Hexagon> getBoard() {
-        return board;
     }
 
     public Point hexToPixel(Hexagon hexagon) {
@@ -102,7 +89,6 @@ public class Grid {
                 if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
                     if (isInPossibleGaps(gaps, new Cube(x, y, z)) || isInTheGame(board, new Cube(x, y, z)))
                         nodes[i++] = new Cube(x, y, z);
-                    this.board.add(new Cube(x, y, z).toHex());
                 }
             }
         }
@@ -121,7 +107,6 @@ public class Grid {
                 if (Math.abs(x) <= radius && Math.abs(y) <= radius && Math.abs(z) <= radius) {
                     if (isInTheGame(board, new Cube(x, y, z)))
                         nodes[i++] = new Cube(x, y, z);
-                    this.board.add(new Cube(x, y, z).toHex());
                 }
             }
         }

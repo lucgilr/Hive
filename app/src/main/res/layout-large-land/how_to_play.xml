@@ -12,7 +12,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_gravity="center"
-        android:contentDescription="image_rule"
+        android:contentDescription="@string/image_rule"
         android:id="@+id/image_1"/>
 
     <TextView
@@ -23,6 +23,7 @@
         android:layout_gravity="center"
         android:layout_marginRight="20dp"
         android:textSize="18sp"
-        android:id="@+id/first_paragraph"/>
+        android:id="@+id/first_paragraph"
+        tools:ignore="RtlHardcoded" />
 
 </LinearLayout>

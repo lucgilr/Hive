@@ -14,7 +14,7 @@ import java.util.Map;
 import lucgilr.inf.uva.hivev2.R;
 
 /**
- * @author Lucía Gil Román
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
  *         Rules of the Game!
  */

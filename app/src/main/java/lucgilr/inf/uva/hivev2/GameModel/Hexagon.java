@@ -2,7 +2,7 @@ package lucgilr.inf.uva.hivev2.GameModel;
 
 /**
  * @author Narek (https://github.com/starwheel)
- * @author Lucía Gil Román - Adding d for a 3 dimension coordinate system.
+ * @author Lucía Gil Román (https://github.com/lucgilr) - Adding d for a 3 dimension coordinate system.
  *
  * The original file can be found in:
  * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/model/Hex.java

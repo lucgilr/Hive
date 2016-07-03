@@ -17,8 +17,10 @@
     <string name="yes">Yes</string>
     <string name="no" translatable="false">No</string>
     <string name="playAgain">Do yo want to play again?</string>
+    <string name="image_rule">Image from rules</string>
+    <string name="logo" translatable="false">Logo</string>
     <string name="paragraph_1">"“Hive” is a game designed by John Yianni and published in 2001 by GameBoard Company Gen42 Games.\n\n"
-                 "Is a boardgame for 2 players who have the same pieces: 11 hexagonal pieces that represent insects: 1 bee, 3 ants, 3 grasshoppers, 2 beetles y 2 spiders.\n\n"</string>
+                 "Is a board game for 2 players who have the same pieces: 11 hexagonal pieces that represent insects: 1 bee, 3 ants, 3 grasshoppers, 2 beetles y 2 spiders.\n\n"</string>
     <string name="paragraph_2">"The pieces will be placed on an imaginary board made by the own pieces, that is, the pieces will be the ones to form the hive in which they will slide to achieve its aim.\n\n"
 "AIM OF THE GAME\n\n"
 "To win the game you have to surround the enemy\'s bee with six pieces, with your own pieces or the other player pieces, at the same time that you defend your bee.\n"
@@ -40,13 +42,13 @@
 "The beetle, like the bee, can only slide one space at a time, but this piece can move on top of other pieces. So the beetle can slide surrounding the hive or on top of it. The only way to block a beetle is by placing another one on top (There is no limit in placing beetles on top of other ones, just the maximum number of beetles that exists, 4). When adding a piece to the game the beetle on top of another piece will indicate the color of that space.\n\n"
 "Image 1"</string>
     <string name="paragraph_9">"Image 2.\n\n"
-"In the first image we can see the current situation when the turn is on the white player. In the second image we can see where we canplace the beetle, including the top of other pieces.\n\n"</string>
+"In the first image we can see the current situation when the turn is on the white player. In the second image we can see where we can place the beetle, including the top of other pieces.\n\n"</string>
     <string name="paragraph_10">"GRASSHOPPER MOVES\n\n"
 "The grasshoppers can slide by jumping over other pieces and in any direction, so this piece can access gaps that are blocked so it can\'t be access by other pieces, except the beetle. The grasshoppers can\'t jump empty spaces\n"
 "The grasshopper can only be moved to any of the two shaded hexagons, over both bees or over the spider."</string>
     <string name="paragraph_11">"SPIDER MOVES\n\n"
 "The spider can slide 3 spaces at a time, no more no less, in the same direction.\n"
-"The spider could be moved to any of the 2 shaded gaps, because they are excatly three spaces away from its original position."</string>
+"The spider could be moved to any of the 2 shaded gaps, because they are exactly three spaces away from its original position."</string>
     <string name="paragraph_12">"ANT MOVES\n\n"
 "The ant is the second most valuable piece of the game because it can be moved surrounding the hive to any unblocked gap.\n"
 "The ant can be moved to any of the shaded gaps in the image."</string>
@@ -57,7 +59,7 @@
 </string>
     <string name="paragraph_14">"FREEDOM TO MOVE\n\n"
 "Every insect, except grasshoppers, must be moved sliding, that is, if a piece is surrounded in a way that it can\'t be moved by sliding it or it wants to go to a position that can go in without sliding, that piece can\'t be moved and/or go to that position.\n"
-"The bee from the image can\'t be moved, if we try to do it some of the pieces surroinding it would be moved too."</string>
+"The bee from the image can\'t be moved, if we try to do it some of the pieces surrounding it would be moved too."</string>
     <string name="paragraph_16">"UNABLE TO MOVE OR PLACE\n\n"
 "When a player can\'t place any piece (because all his/her pieces are already in game or can\'t place any without touching enemy\'s pieces) or move one that is already in game, the player lost the turn. The game keeps going in this way until the player can make an action or a bee is fully surrounded.\n\n"
 "THE END OF THE GAME\n\n"

@@ -3,7 +3,7 @@ package lucgilr.inf.uva.hivev2.BoardSettings;
 import lucgilr.inf.uva.hivev2.GameModel.PieceType;
 
 /**
- * @author Lucía Gil Román
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
  * The reason this class was created is to translate the pieces type from the class enum PieceType
  * to spanish and english.
@@ -12,8 +12,6 @@ public class Language {
 
     /**
      * Gets the english translation of the given PieceType bug
-     * @param bug
-     * @return
      */
     public String getEnglish(PieceType bug){
         if(bug.equals(PieceType.BEE)) return "Bee";
@@ -25,8 +23,6 @@ public class Language {
 
     /**
      * Gets the spanish translation of the given PieceType bug
-     * @param bug
-     * @return
      */
     public String getSpanish(PieceType bug){
         if(bug.equals(PieceType.BEE)) return "Abeja";
@@ -38,8 +34,6 @@ public class Language {
 
     /**
      * Gets the PieceType equivalent to a given String bug from spanish or english.
-     * @param bug
-     * @return
      */
     public PieceType stringToPieceType(String bug){
         switch (bug) {

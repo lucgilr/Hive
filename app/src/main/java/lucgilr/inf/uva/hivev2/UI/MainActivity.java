@@ -11,7 +11,7 @@ import android.widget.ListView;
 import lucgilr.inf.uva.hivev2.R;
 
 /**
- * @author Vogella https://github.com/vogella
+ * @author Vogella https://github.com/vogella modified by Lucía Gil Román (https://github.com/lucgilr)
  * Original Code: https://github.com/vogellacompany/codeexamples-android/blob/master/com.vogella.android.inlineprogressreporting/src/com/example/android/animationsdemo/MainActivity.java
  *
  * The first screen is a menu in which the user can choose

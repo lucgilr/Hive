@@ -9,10 +9,11 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.alg.BlockCutpointGraph;
 
 /**
- * @author Lucía Gil Román
+ * @author Lucía Gil Román (https://github.com/lucgilr)
  *
  * Representation of the Hive.
  * The Hive has a fictional board, it is made by putting together pieces.
+ *
  */
 public final class Hive {
 
@@ -33,14 +34,14 @@ public final class Hive {
     }
 
     /**
-     * @return
+     * @return list of pieces that are in game
      */
     public ArrayList<Piece> getBoard() {
         return board;
     }
 
     /**
-     * @return
+     * @return hexagons that are free and can be used
      */
     private ArrayList<Hexagon> getAvailableHexagons() {
         return availableHexagons;
@@ -50,9 +51,6 @@ public final class Hive {
      * Adds a piece to a hexagon on the board.
      * Deletes de used hexagon from the list of available hexagons for its use and adds the new ones from
      * the new piece.
-     *
-     * @param piece
-     * @param hexagon
      */
     public void addPiece(Piece piece, Hexagon hexagon) {
         //If is a bee --> set the player's bee in game as true
@@ -84,10 +82,7 @@ public final class Hive {
     }
 
     /**
-     * returns the neighbours of a given hexagon.
-     *
-     * @param hexagon
-     * @return
+     * @return the neighbours of a given hexagon.
      */
     public Piece[] hexagonNeighbours(Hexagon hexagon) {
 
@@ -124,7 +119,6 @@ public final class Hive {
         while (searchPiece(new Hexagon(x, y - 1, z)) != null) z = z + 1;
         if (z == 0) n[5] = searchPiece(new Hexagon(x, y - 1, z));
         else n[5] = searchPiece(new Hexagon(x, y - 1, z - 1));
-        z = 0;
         //
         return n;
     }
@@ -146,8 +140,6 @@ public final class Hive {
 
     /**
      * Deletes a hexagon from a given list with hexagons.
-     *
-     * @param hexagon
      */
     private void removeHexFromList(Hexagon hexagon, ArrayList<Hexagon> list) {
         Iterator<Hexagon> it = list.iterator();
@@ -162,8 +154,6 @@ public final class Hive {
     /**
      * Add new hexagon to the list of available hexagons.
      * Checks if the new hexagon is not already in the list.
-     *
-     * @param hexagon
      */
     private void updateAvailableHexagons(Hexagon hexagon) {
         ArrayList<Hexagon> newNeighbours = getNeighbourHex(hexagon);
@@ -177,10 +167,7 @@ public final class Hive {
     }
 
     /**
-     * Gets the hexagons where a player can place a piece.
-     *
-     * @param player
-     * @return
+     * @return the hexagons where a player can place a piece.
      */
     public ArrayList<Hexagon> getAvailableHexagonsPlayer(Player player) {
         ArrayList<Hexagon> hexagons = new ArrayList<>();
@@ -202,10 +189,6 @@ public final class Hive {
 
     /**
      * Checks if all the neighbors of a piece for a given hexagon are from a specific player.
-     *
-     * @param player
-     * @param hexagon
-     * @return
      */
     private boolean checkNeighboursPieceSamePlayer(Player player, Hexagon hexagon) {
         Piece[] n = hexagonNeighbours(hexagon);
@@ -220,10 +203,7 @@ public final class Hive {
     }
 
     /**
-     * Returns the list of hexagons surrounding an hexagon.
-     *
-     * @param hexagon
-     * @return
+     * @return the list of hexagons surrounding an hexagon.
      */
     public ArrayList<Hexagon> getNeighbourHex(Hexagon hexagon) {
 
@@ -268,9 +248,6 @@ public final class Hive {
 
     /**
      * Checks if a hexagon is already in the list of available hexagons.
-     *
-     * @param hexagon
-     * @return
      */
     private boolean checkIfDuplicate(Hexagon hexagon) {
         for (int i = 0; i < this.availableHexagons.size(); i++) {
@@ -285,8 +262,6 @@ public final class Hive {
 
     /**
      * Deletes a hexagon from a given list with hexagons if they haven't any neighbour.
-     *
-     * @param hexagon
      */
     private void deleteAvailableHexagons(Hexagon hexagon, ArrayList<Hexagon> list) {
         ArrayList<Hexagon> oldNeighbours = getNeighbourHex(hexagon);
@@ -298,10 +273,7 @@ public final class Hive {
     }
 
     /**
-     * counts how many neighbors has a given hexagon.
-     *
-     * @param hexagon
-     * @return
+     * @return how many neighbors has a given hexagon.
      */
     public int numberOfNeighbours(Hexagon hexagon) {
         int n = 0;
@@ -313,12 +285,10 @@ public final class Hive {
     }
 
     /**
-     * Returns a list of hexagons where a given piece can be moved.
+     * @return a list of hexagons where a given piece can be moved.
      * the piece is already in game.
      *
      * @param ai --> used for the AI when placing a token temporarily
-     * @param piece
-     * @return
      */
     public ArrayList<Hexagon> getPossibleHexagons(Piece piece, boolean ai) {
         ArrayList<Hexagon> possibleHexagons = new ArrayList<>();
@@ -415,9 +385,6 @@ public final class Hive {
 
     /**
      * Checks if a given piece is blocked.
-     *
-     * @param piece
-     * @return
      */
     public boolean checkIfPieceBlocked(Piece piece) {
         //First: If moving the piece breaks the hive...
@@ -438,8 +405,7 @@ public final class Hive {
     }
 
     /**
-     * @param hexagon
-     * @return
+     * Checks if the given hexagon is blocked by pieces
      */
     public boolean checkIfHexagonBlocked(Hexagon hexagon) {
         //Second: If number of neighbours more than 4;
@@ -455,9 +421,6 @@ public final class Hive {
 
     /**
      * Checks if a hexagon surrounded by 4 pieces is blocked.
-     *
-     * @param hexagon
-     * @return
      */
     private boolean checkIfBlockedByFourNeighbours(Hexagon hexagon) {
 
@@ -472,34 +435,24 @@ public final class Hive {
             return false;
         else if (searchPiece(new Hexagon(x - 1, y + 1, 0)) == null && searchPiece(new Hexagon(x - 1, y, 0)) == null)
             return false;
-        else if (searchPiece(new Hexagon(x - 1, y, 0)) == null && searchPiece(new Hexagon(x, y - 1, 0)) == null)
-            return false;
         else
-            return !(searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y - 1, 0)) == null);
+            return !(searchPiece(new Hexagon(x - 1, y, 0)) == null && searchPiece(new Hexagon(x, y - 1, 0)) == null) && !(searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y - 1, 0)) == null);
     }
 
     /**
      * If a hexagon is surrounded by 3 separated pieces is blocked.
-     *
-     * @param hexagon
-     * @return
      */
     private boolean checkIfBlockedByThreeNeighbours(Hexagon hexagon) {
 
         int x = hexagon.getQ();
         int y = hexagon.getR();
 
-        if (searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y, 0)) == null && searchPiece(new Hexagon(x - 1, y + 1, 0)) == null)
-            return true;
-        else
-            return searchPiece(new Hexagon(x + 1, y - 1, 0)) == null && searchPiece(new Hexagon(x, y + 1, 0)) == null && searchPiece(new Hexagon(x - 1, y, 0)) == null;
+        return searchPiece(new Hexagon(x, y - 1, 0)) == null && searchPiece(new Hexagon(x + 1, y, 0)) == null && searchPiece(new Hexagon(x - 1, y + 1, 0)) == null || searchPiece(new Hexagon(x + 1, y - 1, 0)) == null && searchPiece(new Hexagon(x, y + 1, 0)) == null && searchPiece(new Hexagon(x - 1, y, 0)) == null;
     }
 
     /**
+     * @return moves for the bee
      * The bee can slide to an empty neighbour hexagon.
-     *
-     * @param piece
-     * @return
      */
     private ArrayList<Hexagon> beeMoves(Piece piece) {
         ArrayList<Hexagon> realHex = new ArrayList<>();
@@ -519,10 +472,8 @@ public final class Hive {
     }
 
     /**
+     * @return moves for a grasshopper
      * The grasshopper can jump over other insects.
-     *
-     * @param hexagon
-     * @return
      */
     private ArrayList<Hexagon> grasshopperMoves(Hexagon hexagon) {
 
@@ -594,14 +545,12 @@ public final class Hive {
     }
 
     /**
+     * @return moves for a beetle
      * The beetle can go on top of its neighbours or slide to an empty hexagon.
-     *
-     * @param piece
-     * @return
      */
     private ArrayList<Hexagon> beetleMoves(Piece piece) {
         ArrayList<Hexagon> realHexagons = new ArrayList<>();
-        int x, y, z;
+        int z;
         ArrayList<Hexagon> possibleHexagons = getNeighbourHex(piece.getHexagon());
         for (int i = 0; i < possibleHexagons.size(); i++) {
             z = possibleHexagons.get(i).getL();
@@ -622,10 +571,8 @@ public final class Hive {
     }
 
     /**
+     * @return moves for a spider
      * The spider can slide to a hexagon 3 hexagons away. Exactly 3, not less not more.
-     *
-     * @param piece
-     * @return
      */
     private ArrayList<Hexagon> spiderMoves(Piece piece) {
         ArrayList<Hexagon> realHexagons = new ArrayList<>();
@@ -688,10 +635,8 @@ public final class Hive {
     }
 
     /**
+     * @return moves for an ant
      * An ant could go in any hexagon that is not blocked.
-     *
-     * @param piece
-     * @return
      */
     private ArrayList<Hexagon> antMoves(Piece piece) {
         //First: Copy AvailableHexagons to new Array
@@ -720,13 +665,9 @@ public final class Hive {
     }
 
     /**
-     * Checks if a piece could go in a hexagon
+     * @return if a piece could go in a hexagon
      * 1st checks that the hexagon is empty
      * 2nd checks if it has neighbours. If it has 2 blocking its entry the piece can't slide to it.
-     *
-     * @param piece
-     * @param hexagon
-     * @return
      */
     private int checkHexagon(Hexagon piece, Hexagon hexagon) {
 
@@ -775,8 +716,7 @@ public final class Hive {
     }
 
     /**
-     * @param piece
-     * @return
+     * @return true if moving the given piece would broke the hive
      */
     private boolean brokenHive(Piece piece) {
         //If the destination hexagon is in level 0
@@ -788,8 +728,8 @@ public final class Hive {
     }
 
     /**
-     * @param hexagon
-     * @return
+     * @return two hexagons to place pieces forming a V form
+     * This method is used my the artificial intelligent
      */
     public Hexagon[] vHexagons(Hexagon hexagon) {
         Hexagon[] hexagons = new Hexagon[2];
@@ -846,9 +786,6 @@ public final class Hive {
 
     /**
      * Checks if a given hexagon has a piece.
-     *
-     * @param hexagon
-     * @return
      */
     public boolean checkIfHexagonTaken(Hexagon hexagon) {
         for (int i = 0; i < this.getBoard().size(); i++) {
@@ -860,8 +797,6 @@ public final class Hive {
 
     /**
      * Returns true if the player can't move any piece on the board
-     * @param player
-     * @return
      */
     public boolean noMoves(Player player){
         ArrayList<Piece> pieces = player.getPiecesInGame();

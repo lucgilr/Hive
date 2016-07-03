@@ -35,10 +35,13 @@ import lucgilr.inf.uva.hivev2.GameModel.Player;
 import lucgilr.inf.uva.hivev2.R;
 
 /**
+ * @author https://github.com/starwheel modified my Lucía Gil Román (https://github.com/lucgilr)
+ *
  * The original code has been modified but it can be found in:
  * https://github.com/omplanet/android-hexagonal-grids/blob/master/HexagonalGrids/app/src/main/java/net/omplanet/hexagonalgrids/ui/MainActivity.java
  * When a player choose to play a game against other real player
  * in the same device it will load this Activity.
+ *
  */
 public class GameUI extends AppCompatActivity {
 
@@ -104,7 +107,7 @@ public class GameUI extends AppCompatActivity {
 
         //Choose which player stars to play
         Random r = new Random();
-        int p = r.nextInt(((1) + 1) + 0);
+        int p = r.nextInt(((1) + 1));
 
         //Create new Game
         game = new Game(p);
@@ -130,7 +133,6 @@ public class GameUI extends AppCompatActivity {
 
     /**
      * Scrolls to the middle of the RelativeLayout when rotating the screen
-     * @param newConfig
      */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -230,13 +232,11 @@ public class GameUI extends AppCompatActivity {
             }
         }
         setGridDimensions();
-        //Grid grid = setGridNodes();
         setGridNodes();
     }
 
     /**
      * Sets Grid dimensions
-     * @return
      */
     private void setGridDimensions() {
 
@@ -247,13 +247,6 @@ public class GameUI extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int displayWidth = size.x;
-        int displayHeight = size.y;
-
-        //If in landscape mode, keep the width small as in portrait mode
-        if(displayWidth > displayHeight) displayWidth = displayHeight;
-
-        int horizontalPadding = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
 
         // Changes the height and width of the grid to the specified *pixels*
         params.width = Grid.getGridWidth(radius, scale);
@@ -263,7 +256,6 @@ public class GameUI extends AppCompatActivity {
 
     /**
      * Prepares which hexagons to draw
-     * @return
      */
     private void setGridNodes() {
         try {
@@ -442,9 +434,6 @@ public class GameUI extends AppCompatActivity {
 
     /**
      * Add hexagon View to Layout
-     * @param view
-     * @param hexagon
-     * @param grid
      */
     private void addViewToLayout(View view, Hexagon hexagon, Grid grid) {
 
@@ -479,7 +468,6 @@ public class GameUI extends AppCompatActivity {
 
     /**
      * Choose which action to execute when board touched
-     * @param hexagon
      */
     private void OnGridHexClick(final Hexagon hexagon) {
 
@@ -568,10 +556,7 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     * Returns true if the hexagon is free
-     * @param hexagon
-     * @param gaps
-     * @return
+     * @return true if the hexagon is free
      */
     private boolean checkIfHexagonAvailable(Hexagon hexagon, ArrayList<Hexagon> gaps) {
         for(int i=0;i<gaps.size();i++){
@@ -583,9 +568,7 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     * Gets a piece from the board to move it if it hasn't a beetle on top
-     * @param hexagon
-     * @return
+     * @return a piece from the board to move it if it hasn't a beetle on top
      */
     private Piece getPieceFromBoard(Hexagon hexagon){
         ArrayList<Piece> board = controller.getBoard();
@@ -598,13 +581,10 @@ public class GameUI extends AppCompatActivity {
     }
 
     /**
-     * Returns the real hexagon for a piece.
+     * @return the real hexagon for a piece.
      * This method is necessary because the board is represented in 2D,
      * but the piece representation is in 3D because a piece can be on
      * top of another.
-     * @param r
-     * @param q
-     * @return
      */
     private Hexagon getRealHexagon(int r, int q){
         for(int i=0;i< hexagons.size();i++){
@@ -618,8 +598,6 @@ public class GameUI extends AppCompatActivity {
      * Reasons it can't be moved:
      * - The player color doesn't match the piece color
      * - The piece has a beetle on top
-     * @param hexagon
-     * @return
      */
     private boolean pieceTouched(Hexagon hexagon){
         ArrayList<Piece> board = controller.getBoard();
@@ -634,7 +612,6 @@ public class GameUI extends AppCompatActivity {
 
     /**
      * Checks if the game is over
-     * @return
      */
     private boolean isNotGameOver(){
         return !this.gameOver;
@@ -662,7 +639,6 @@ public class GameUI extends AppCompatActivity {
 
     /**
      * Dialog showing which player has won
-     * @param player
      */
     private void gameOver(int player){
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));

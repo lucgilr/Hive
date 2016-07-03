@@ -2,9 +2,11 @@ package lucgilr.inf.uva.hivev2.GameModel;
 
 
 /**
+ * @author Lucía Gil Román (https://github.com/lucgilr)
+ *
  * A piece represents an insect of the hive.
  * An hexagon is assigned to a piece to represent its position on the board.
- * @author Lucía Gil Román
+ *
  */
 public class Piece {
 
@@ -26,9 +28,8 @@ public class Piece {
     }
 
     /**
-     *
-     * @param type
-     * @param player
+     * A piece has only a type, a player assigned and a value
+     * when its not in the game
      */
     public Piece(PieceType type, Player player,int value){
         this.type=type;
@@ -40,16 +41,14 @@ public class Piece {
 
 
     /**
-     *
-     * @return
+     * @return Type of a piece
      */
     public PieceType getType() {
         return type;
     }
 
     /**
-     *
-     * @return
+     * @return values of a piece
      */
     public int getValue() {
         return value;
@@ -73,15 +72,13 @@ public class Piece {
 
     /**
      * Assigns an hexagon to the piece.
-     * @param hexagon
      */
     public void setHexagon(Hexagon hexagon) {
         this.hexagon = hexagon;
     }
 
     /**
-     * Gives the hexagon of the piece.
-     * @return
+     * @return the hexagon of the piece.
      */
     public Hexagon getHexagon() {
         return hexagon;
@@ -98,7 +95,6 @@ public class Piece {
     /**
      * When a piece is placed on the board for the first time it is given
      * an Unique Identifier so it can be represented as a vertex in a graph.
-     * @return
      */
     public int getGraphId() {
         return graphId;
@@ -106,30 +102,27 @@ public class Piece {
 
     /**
      * Sets the piece ID for the graph.
-     * @param graphId
      */
     public void setGraphId(int graphId) {
         this.graphId = graphId;
     }
 
     /**
-     *
-     * @return
+     * @return true if the piece is in game
      */
     public boolean isInGame() {
         return inGame;
     }
 
     /**
-     *
+     * Sets to true if the piece is added to the game
      */
     public void setInGame() {
         this.inGame = true;
     }
 
     /**
-     *
-     * @return
+     * @return information about the piece
      */
     public String pieceInfo(){
         return " Type: "+this.type+" "
