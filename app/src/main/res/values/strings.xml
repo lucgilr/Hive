@@ -19,6 +19,8 @@
     <string name="playAgain">Do yo want to play again?</string>
     <string name="image_rule">Image from rules</string>
     <string name="logo" translatable="false">Logo</string>
+    <string name="nextPlayer">Next player</string>
+    <string name="nextPlayerMessage">You can\'t make any move or add any piece</string>
     <string name="paragraph_1">"“Hive” is a game designed by John Yianni and published in 2001 by GameBoard Company Gen42 Games.\n\n"
                  "Is a board game for 2 players who have the same pieces: 11 hexagonal pieces that represent insects: 1 bee, 3 ants, 3 grasshoppers, 2 beetles y 2 spiders.\n\n"</string>
     <string name="paragraph_2">"The pieces will be placed on an imaginary board made by the own pieces, that is, the pieces will be the ones to form the hive in which they will slide to achieve its aim.\n\n"

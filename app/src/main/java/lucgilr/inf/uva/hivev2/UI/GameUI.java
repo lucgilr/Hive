@@ -624,8 +624,8 @@ public class GameUI extends AppCompatActivity {
      */
     private void nextPlayer(){
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-        alert.setMessage("You can't make any move or add any piece");
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alert.setMessage(R.string.nextPlayerMessage);
+        alert.setPositiveButton(R.string.nextPlayer, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 controller.oneMoreRound();
@@ -633,6 +633,7 @@ public class GameUI extends AppCompatActivity {
                 initGridView();
             }
         });
+        alert.setCancelable(false);
         alert.create();
         alert.show();
     }

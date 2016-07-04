@@ -124,10 +124,7 @@ public final class Hive {
     }
 
     /**
-     * Search a piece in the board given its hexagon
-     *
-     * @param hexagon --> position of the piece to look for
-     * @return piece if found
+     * @return if found a piece in the board given its hexagon
      */
     public Piece searchPiece(Hexagon hexagon) {
         for (Piece board1 : this.board) {
@@ -244,8 +241,6 @@ public final class Hive {
         return neighbours;
     }
 
-
-
     /**
      * Checks if a hexagon is already in the list of available hexagons.
      */
@@ -257,8 +252,6 @@ public final class Hive {
         }
         return true;
     }
-
-
 
     /**
      * Deletes a hexagon from a given list with hexagons if they haven't any neighbour.
