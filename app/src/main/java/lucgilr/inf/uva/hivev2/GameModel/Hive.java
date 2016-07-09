@@ -559,7 +559,6 @@ public final class Hive {
                 }
             }
         }
-        System.out.println(realHexagons.size());
         return realHexagons;
     }
 
@@ -573,18 +572,17 @@ public final class Hive {
         //Save original Hexagon
         Hexagon c1 = new Hexagon(piece.getHexagon().getQ(), piece.getHexagon().getR(), 0);
 
-        //Level 1
+        //Step 1
         ArrayList<Hexagon> l1Piece = getNeighbourHex(piece.getHexagon());
         for (int i = 0; i < l1Piece.size(); i++) {
             if (l1Piece.get(i).getL() == 0) {
                 if (checkHexagon(c1, l1Piece.get(i)) == 1) {
-                    //Hexagon c2 = new Hexagon(l1Piece.get(i).getR(),l1Piece.get(i).getQ(), 0);
                     Hexagon c2 = new Hexagon(l1Piece.get(i).getQ(), l1Piece.get(i).getR(), 0);
                     //Move Spider to that hexagon
                     updateHexagon(piece, l1Piece.get(i));
                     //Take neighbours
                     ArrayList<Hexagon> l2Piece = getNeighbourHex(l1Piece.get(i));
-                    //Level 2
+                    //Step 2
                     for (int j = 0; j < l2Piece.size(); j++) {
                         //if is not the hexagon from previous spider position
                         if (!(l2Piece.get(j).getR() == c2.getR() && l2Piece.get(j).getQ() == c2.getQ())
@@ -592,13 +590,12 @@ public final class Hive {
                             if (l2Piece.get(j).getL() == 0) {
                                 if (checkHexagon(l1Piece.get(i), l2Piece.get(j)) == 1) {
                                     //Save original Hexagon
-                                    //Hexagon c3 = new Hexagon(l2Piece.get(j).getR(),l2Piece.get(j).getQ(),0);
                                     Hexagon c3 = new Hexagon(l2Piece.get(j).getQ(), l2Piece.get(j).getR(), 0);
                                     //Move Spider to that hexagon
                                     updateHexagon(piece, l2Piece.get(j));
                                     //Take neighbours
                                     ArrayList<Hexagon> l3Piece = getNeighbourHex(l2Piece.get(j));
-                                    //Level 3
+                                    //Step 3
                                     for (int k = 0; k < l3Piece.size(); k++) {
                                         if (!(l3Piece.get(k).getR() == c3.getR() && l3Piece.get(k).getQ() == c3.getQ())
                                                 && !(l3Piece.get(k).getR() == c2.getR() && l3Piece.get(k).getQ() == c2.getQ())

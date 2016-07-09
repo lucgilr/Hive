@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">UVaHive</string>
+    <string name="app_name" translatable="false">Hive</string>
     <string name="game">Player VS Player</string>
     <string name="aiGame">Player VS Machine</string>
     <string name="howTo">How to Play</string>

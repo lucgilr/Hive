@@ -92,8 +92,11 @@ public class GameUI extends AppCompatActivity {
         //Get the type of game we are going to play
         Bundle b = getIntent().getExtras();
         ai = false; // or other values
-        if(b != null)
-            ai = b.getBoolean("AI");
+        /*if(b != null)
+            ai = b.getBoolean("AI");*/
+        if(b !=null)
+            setAi(b.getBoolean("AI"));
+
 
         //RelativeLayout
         mRelativeLayout = (RelativeLayout) findViewById(R.id.gridLayout);
@@ -483,7 +486,6 @@ public class GameUI extends AppCompatActivity {
         else if(!this.movingPiece && checkIfHexagonAvailable(hexagon, getHexagons())) {
             //Adding a piece to the board
             ArrayList<Piece> pieces = controller.getPiecesFromBox();
-            if(!pieces.isEmpty()) {
                 final ArrayList<String> t = new ArrayList<>();
                 boolean bee = controller.playerBeeInGame();
 
@@ -514,7 +516,6 @@ public class GameUI extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         setPiece(new Piece());
                         controller.stringToPieceType(t.get(which));
-                        //piece = controller.takePieceByType(getBugType());
                         controller.takePieceByType(getBugType());
                         Hexagon hex = getRealHexagon(hexagon.getR(), hexagon.getQ());
                         controller.playPiece(getPiece(), hex);
@@ -525,19 +526,6 @@ public class GameUI extends AppCompatActivity {
                 });
                 alert.create();
                 alert.show();
-            }else{
-                //No pieces in the box!
-                AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.AlertDialogCustom));
-                alert.setMessage(R.string.emptyBox);
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        initGridView();
-                    }
-                });
-                alert.create();
-                alert.show();
-            }
         }else if(pieceTouched(hexagon)){
             //Piece touched by the correct player
             setPiece(getPieceFromBoard(hexagon));
@@ -760,5 +748,8 @@ public class GameUI extends AppCompatActivity {
         this.bug=bug;
     }
 
+    public void setAi(boolean ai) {
+        this.ai = ai;
+    }
 }
 
