@@ -531,7 +531,8 @@ public class GameUI extends AppCompatActivity {
             setPiece(getPieceFromBoard(hexagon));
             controller.getPossibleMoves(getPiece());
             if (!getPossibleHexagons().isEmpty()) {
-                movingPiece = true;
+                //movingPiece = true;
+                setMovingPiece(true);
                 this.hexagons = new ArrayList<>(getPossibleHexagons());
                 initGridView();
             }
@@ -751,5 +752,9 @@ public class GameUI extends AppCompatActivity {
     public void setAi(boolean ai) {
         this.ai = ai;
     }
+
+    public void setMovingPiece(boolean movingPiece){this.movingPiece=movingPiece;}
+
+
 }
 

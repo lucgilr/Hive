@@ -51,7 +51,7 @@
     <string name="leavingActivity">¿Seguro que quieres abandonar la partida?</string>
     <string name="yes">Sí</string>
     <string name="playerStarts">El usuario empieza primero</string>
-    <string name="aiWins">La Máquina ha gandado la partida</string>
+    <string name="aiWins">La Máquina ha ganado la partida</string>
     <string name="playAgain">¿Quieres echar otra partida?</string>
     <string name="paragraph_16">"NO SE PUEDE MOVER O COLOCAR\n\n"
 "Cuando un jugador no puede colocar una ficha (porque ya tiene todas en juego o no puede colocarla de modo que no toque fichas del enemigo) ni mover una que tenga en juego pierde su turno. El juego continúa de esta forma hasta que el jugador pueda realizar una acción o una abeja quede completamente rodeada.\n\n"
